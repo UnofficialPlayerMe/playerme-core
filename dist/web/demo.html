@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PlayerMe Web Demo</title>
+
+    <script src="playerme-core-common.js"></script>
+    <script src="playerme-core-API.js"></script>
+    <script src="playerme-core-Model.js"></script>
+    <script src="playerme-core-RealTime.js"></script>
+</head>
+<body>
+    <h1>PlayerMe Web Demo</h1>
+
+    <div id="contents"></div>
+
+    <script>
+        console.log('Body Script');
+        console.log('> PlayerMe', window.PlayerMe);
+        console.log('');
+
+        window.onload = function() {
+            console.log('On Document Ready');
+            console.log('> PlayerMe', window.PlayerMe);
+            console.log('');
+
+            var contents = document.getElementById('contents');
+            contents.innerHTML = JSON.stringify(window.PlayerMe);
+        }
+    </script>
+</body>
+</html>
