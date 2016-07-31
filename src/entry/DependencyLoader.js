@@ -1,3 +1,5 @@
+// TODO Remove DependencyLoader if not being used
+
 /**
  * This is an object with can have dynamic properties added for the library items,
  * plus some extra stuff for managing callbacks whilst its dependencies are loading.
