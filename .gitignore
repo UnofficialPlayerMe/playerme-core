@@ -19,4 +19,5 @@ node_modules
 env.js
 
 # Distributables
+# TODO Remove this rule when nearing public-ready state
 dist

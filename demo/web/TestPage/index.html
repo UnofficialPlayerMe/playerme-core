@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unofficial PlayerMe Core</title>
+
+    <script src="../../../dist/web/playerme-core.js"></script>
+    <script src="./scripts/general.js"></script>
+    <script src="./scripts/api.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+
+    <script>
+        window.onload = function() {
+            logLibrary('PlayerMe',       PlayerMe      );
+            logLibrary('PlayerMe.Model', PlayerMe.Model);
+            logLibrary('PlayerMe.API',   PlayerMe.API  );
+
+            updateAdapter();
+            updateBaseURL();
+        }
+    </script>
+</head>
+<body>
+<h1>Demo: Test Page</h1>
+<p>See the console log for details</p>
+
+<div id="api">
+    <h2>API</h2>
+    <div>
+        <h3>Adapter: <span id="adapterName"></span></h3>
+        <input type="button" value="JSONPRequestAdapter" onClick="useAdapter('JSONPRequestAdapter')">
+        <input type="button" value="XMLHttpRequest" onClick="useAdapter('XMLHttpRequestAdapter')">
+
+        <h3>Environment: <span id="baseURL"></span></h3>
+        <input type="button" value="Live server" onClick="setBaseURL('https://player.me')">
+        <input type="button" value="Staging server" onClick="setBaseURL('https://staging.player.me')">
+
+        <h3>Log in</h3>
+        <form>
+            <p>Username: <input type="text" name="username"></p>
+            <p>Password: <input type="password" name="password"></p>
+            <input type="button" value="Log in"  onClick="login(this.form)">
+            <input type="button" value="Log out" onClick="clickedRequest('actions/logout')">
+        </form>
+
+        <h3>Test Actions</h3>
+        <p>
+            <button onclick="clickedRequest('api/v1/feed')">Request Feed</button>
+            <button onclick="clickedRequest('api/v1/users/me')">Request User</button>
+        </p>
+        <p>
+            <button onclick="clickedUsersRepository(1)">UsersRepository GET</button>
+        </p>
+        <p>
+            <button onclick="clickedRequest('api/v1/404')">404 error</button>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
