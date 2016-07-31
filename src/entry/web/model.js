@@ -1,17 +1,12 @@
-import UserModel         from '../../models/user/UserModel';
-import UserExtendedModel from '../../models/user/UserExtendedModel';
-import CommentModel      from '../../models/activity/comment/CommentModel';
-import ActivityModel     from '../../models/activity/ActivityModel';
-import GameModel         from '../../models/game/GameModel';
-import GameExtendedModel from '../../models/game/GameExtendedModel';
-import NotificationModel from '../../models/notification/NotificationModel';
+import DependencyLoader from '../DependencyLoader';
+import modelChunk from '../chunk/model';
 
-export {
-    UserModel,
-    UserExtendedModel,
-    CommentModel,
-    ActivityModel,
-    GameModel,
-    GameExtendedModel,
-    NotificationModel
-};
+var lib = new DependencyLoader();
+
+lib.addLoadingDependency();
+modelChunk.onLoad(function(chunkItems){
+    lib.addItems(chunkItems);
+    lib.dependencyLoaded();
+});
+
+module.exports = lib;

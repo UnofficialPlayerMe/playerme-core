@@ -168,14 +168,20 @@
     </div>
 
     <script>
-        window.onload = function() {
+        logLibrary('PlayerMe', window.PlayerMe);
+
+        window.PlayerMe.API.onLoad(function(){
+            logLibrary('PlayerMe.API', this);
             updateAdapter();
             updateBaseURL();
+        });
 
-            logLibrary('PlayerMe', window.PlayerMe);
-            logLibrary('PlayerMe.API', window.PlayerMe.API);
-            logLibrary('PlayerMe.Model', window.PlayerMe.Model);
-//            logLibrary('PlayerMe.RealTime', window.PlayerMe.RealTime);
+        window.PlayerMe.Model.onLoad(function(){
+            logLibrary('PlayerMe.Model', this);
+        });
+
+        window.onload = function() {
+
         }
     </script>
 </body>

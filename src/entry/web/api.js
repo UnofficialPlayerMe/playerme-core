@@ -1,48 +1,22 @@
-// <editor-fold desc="Imports">
+import DependencyLoader from '../DependencyLoader';
+import apiChunk from '../chunk/api';
 
-import AuthService     from '../../api/auth/AuthService';
-import UsersRepository from '../../api/users/UsersRepository';
-import APIService      from '../../api/request/APIService';
+var lib = new DependencyLoader();
 
-import JSONPRequestAdapter   from '../../api/request/adapter/JSONPRequestAdapter';
-import XMLHttpRequestAdapter from '../../api/request/adapter/XMLHttpRequestAdapter';
+lib.addLoadingDependency();
+apiChunk.onLoad(function(chunkItems){
 
-// </editor-fold> Imports
-// <editor-fold desc="Check Requirements">
+    lib.addItems(chunkItems);
+    lib.removeItem('JSONPRequestAdapter');
+    lib.removeItem('XMLHttpRequestAdapter');
 
-function checkDependency(variable, errorMessage){
-    if (typeof variable === 'undefined') {
-        if (typeof alert !== 'undefined') {
-            alert(errorMessage);
-        } else {
-            console.error(errorMessage);
-        }
-    }
-}
+    lib.addItem('adapters', {
+        JSONPRequestAdapter: chunkItems.JSONPRequestAdapter,
+        XMLHttpRequestAdapter: chunkItems.XMLHttpRequestAdapter
+    });
+    chunkItems.APIService.setAdapter(chunkItems.JSONPRequestAdapter);
 
-checkDependency(Promise, "'Promise' isn't available on this platform and needs a polyfill.");
+    lib.dependencyLoaded();
+});
 
-
-// </editor-fold> Check Requirements
-// <editor-fold desc="Adapters">
-
-// List possibilities
-var adapters = {
-    JSONPRequestAdapter: JSONPRequestAdapter,
-    XMLHttpRequestAdapter: XMLHttpRequestAdapter
-};
-
-// Set default
-APIService.setAdapter(adapters.JSONPRequestAdapter);
-
-// </editor-fold> Check Requirements
-// <editor-fold desc="Export">
-
-export {
-    adapters,
-    APIService,
-    AuthService,
-    UsersRepository
-};
-
-// </editor-fold> Export
+module.exports = lib;
