@@ -18,7 +18,9 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "browse-insecure-linux":  "google-chrome %U --disable-web-security --user-data-dir",
+    "browse-insecure-windows": "start chrome %U --disable-web-security --user-data-dir"
   },
   "devDependencies": {
     "babel-core": "^6.11.4",
@@ -28,5 +30,8 @@
     "gulp-util": "^3.0.7",
     "webpack": "^1.13.1",
     "webpack-stream": "^3.2.0"
+  },
+  "dependencies": {
+    "cookie": "^0.3.1"
   }
 }

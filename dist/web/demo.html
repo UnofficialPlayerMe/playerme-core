@@ -7,49 +7,175 @@
     <script src="playerme-core-common.js"></script>
     <script src="playerme-core-API.js"></script>
     <script src="playerme-core-Model.js"></script>
-    <script src="playerme-core-RealTime.js"></script>
+    <!--<script src="playerme-core-RealTime.js"></script>-->
+
+    <script>
+        // <editor-fold desc="General">
+
+        function logLibrary(name, library){
+            console.groupCollapsed(name);
+
+            if (typeof library === 'object') {
+                for (var entryName in library) {
+                    if (!library.hasOwnProperty(entryName)) continue;
+                    var entity = library[entryName];
+                    try {
+                        console.log(entryName, new entity);
+                    } catch (e) {
+                        console.log(entryName, typeof entity, entity);
+                    }
+                }
+            }else{
+                console.log(library);
+            }
+            console.groupEnd();
+        }
+
+        // </editor-fold> General
+        // <editor-fold desc="Model">
+
+        // </editor-fold> Model
+        // <editor-fold desc="API">
+
+        function useAdapter(name){
+            window.PlayerMe.API.APIService.setAdapter(PlayerMe.API.adapters[name]);
+            updateAdapter();
+        }
+        function updateAdapter(){
+            var adapterName = document.getElementById('adapterName');
+            adapterName.innerHTML = window.PlayerMe.API.APIService.getAdapter().name;
+        }
+        function setBaseURL(url){
+            window.PlayerMe.API.APIService.baseUrl = url;
+            updateBaseURL();
+        }
+        function updateBaseURL(){
+            var adapterName = document.getElementById('baseURL');
+            adapterName.innerHTML = window.PlayerMe.API.APIService.baseUrl;
+        }
+
+        function clickedRequest(url){
+            var data = null;
+            console.group("GET", url, data);
+
+            try {
+                var promise = PlayerMe.API.APIService.get(url, data);
+            } catch(e) {
+                console.error("Initial failure");
+                console.log(e);
+                console.groupEnd();
+                return;
+            }
+
+            promise.then(function(payload){
+                console.log("Processed");
+                try {
+                    console.log(payload);
+                }catch(e){
+                    console.error(e);
+                }
+                console.groupEnd();
+            }, function(payload){
+                console.error("Failure");
+                console.log(payload);
+                console.groupEnd();
+            });
+        }
+
+        function login(form){
+            var AuthService = window.PlayerMe.API.AuthService;
+            var username = form.children.username.value;
+            var password = form.children.password.value;
+
+            if (username && password) {
+                console.group("Log in...");
+                AuthService.login(username, password, false).then(
+                    function(success){
+                        console.log("Processed");
+                        console.log(success);
+                        console.groupEnd();
+                    },
+                    function(failure){
+                        console.error("Failure");
+                        console.log(failure);
+                        console.groupEnd();
+                    }
+                );
+            } else {
+                alert("Username and password required");
+            }
+        }
+
+        function clickedUsersRepository(id){
+            console.group("Get user", id);
+            try {
+                var promise = PlayerMe.API.UsersRepository.get(id);
+                promise.then(function(payload){
+                    console.log("Processed");
+                    console.log(payload);
+                    console.groupEnd();
+                }, function(error){
+                    console.error("Failure");
+                    console.log(error);
+                    console.groupEnd();
+                })
+            }catch(e){
+                console.error(e);
+                console.groupEnd();
+                return;
+            }
+        }
+
+        // </editor-fold> API
+        // <editor-fold desc="Real-Time">
+
+        // </editor-fold> Real-Time
+    </script>
 </head>
 <body>
     <h1>PlayerMe Web Demo</h1>
+    <p>See the console log for details</p>
 
-    <div id="contents"></div>
+    <h2>API</h2>
+    <div style="padding-left: 25px">
+        <h3>Adapter: <span id="adapterName"></span></h3>
+        <input type="button" value="JSONPRequestAdapter" onClick="useAdapter('JSONPRequestAdapter')">
+        <input type="button" value="XMLHttpRequest" onClick="useAdapter('XMLHttpRequestAdapter')">
+
+        <h3>Environment: <span id="baseURL"></span></h3>
+        <input type="button" value="Live server" onClick="setBaseURL('https://player.me')">
+        <input type="button" value="Staging server" onClick="setBaseURL('https://staging.player.me')">
+
+        <h3>Log in</h3>
+        <form>
+            Username: <input type="text" name="username">
+            Password: <input type="password" name="password">
+            <input type="button" value="Log in"  onClick="login(this.form)">
+            <input type="button" value="Log out" onClick="clickedRequest('actions/logout')">
+        </form>
+
+        <h3>Test Actions</h3>
+        <p>
+            <button onclick="clickedRequest('api/v1/feed')">Request Feed</button>
+            <button onclick="clickedRequest('api/v1/users/me')">Request User</button>
+        </p>
+        <p>
+            <button onclick="clickedUsersRepository(1)">UsersRepository GET</button>
+        </p>
+        <p>
+            <button onclick="clickedRequest('api/v1/404')">404 error</button>
+        </p>
+    </div>
 
     <script>
-        console.log('Body Script');
-        console.log('> PlayerMe', window.PlayerMe);
-        console.log('');
-
         window.onload = function() {
-            var PlayerMe = window.PlayerMe;
+            updateAdapter();
+            updateBaseURL();
 
-            var contents = document.getElementById('contents');
-            contents.innerHTML = JSON.stringify(PlayerMe);
-
-            console.log('On Document Ready');
-            console.log('> PlayerMe', PlayerMe);
-            console.log('');
-
-//            var API = PlayerMe.API;
-//            console.group('API');
-//            for (var apiName in API){
-//                console.log(apiName, new API[apiName]);
-//            }
-//            console.groupEnd();
-
-            var Model = PlayerMe.Model;
-            console.group('Model');
-            for (var modelName in Model){
-                console.log(modelName, new Model[modelName]);
-            }
-            console.groupEnd();
-
-//            var RealTime = PlayerMe.RealTime;
-//            console.group('RealTime');
-//            for (var realTimeName in RealTime){
-//                console.log(realTimeName, new RealTime[realTimeName]);
-//            }
-//            console.groupEnd();
-
+            logLibrary('PlayerMe', window.PlayerMe);
+            logLibrary('PlayerMe.API', window.PlayerMe.API);
+            logLibrary('PlayerMe.Model', window.PlayerMe.Model);
+//            logLibrary('PlayerMe.RealTime', window.PlayerMe.RealTime);
         }
     </script>
 </body>

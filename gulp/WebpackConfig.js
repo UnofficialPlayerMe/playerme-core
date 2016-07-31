@@ -28,8 +28,8 @@ function makeWeb(){
     return make({
         API:      './src/entry/web/api',
         Model:    './src/entry/web/model',
-        RealTime: './src/entry/web/real-time',
-        common:   []
+        RealTime: './src/entry/web/real-time'
+        // common:   []
     });
 }
 
