@@ -14,8 +14,8 @@ function setBaseURL(url){
 }
 
 function updateBaseURL(){
-    var adapterName = document.getElementById('baseURL');
-    adapterName.innerHTML = window.PlayerMe.API.APIService.baseUrl;
+    var baseURL = document.getElementById('baseURL');
+    baseURL.innerHTML = window.PlayerMe.API.APIService.baseUrl;
 }
 
 function clickedRequest(url){
@@ -48,8 +48,12 @@ function clickedRequest(url){
 
 function login(form){
     var AuthService = window.PlayerMe.API.AuthService;
-    var username = form.children.username.value;
-    var password = form.children.password.value;
+
+    var usernameField = form.querySelectorAll('[name=username]')[0];
+    var passwordField = form.querySelectorAll('[name=password]')[0];
+
+    var username = usernameField.value;
+    var password = passwordField.value;
 
     if (username && password) {
         console.group("Log in...");
