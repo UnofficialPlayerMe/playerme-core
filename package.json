@@ -19,7 +19,7 @@
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "browse-insecure-linux":  "google-chrome %U --disable-web-security --user-data-dir",
+    "browse-insecure-linux": "google-chrome %U --disable-web-security --user-data-dir",
     "browse-insecure-windows": "start chrome %U --disable-web-security --user-data-dir"
   },
   "devDependencies": {
@@ -32,6 +32,8 @@
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
-    "cookie": "^0.3.1"
+    "cookie": "^0.3.1",
+    "sails.io.js": "^0.13.8",
+    "socket.io-client": "^1.4.8"
   }
 }

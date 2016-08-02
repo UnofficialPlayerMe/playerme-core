@@ -7,14 +7,16 @@
     <script src="../../../dist/web/playerme-core.js"></script>
     <script src="./scripts/general.js"></script>
     <script src="./scripts/api.js"></script>
+    <script src="./scripts/realtime.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./styles.css">
 
     <script>
         window.onload = function() {
-            logLibrary('PlayerMe',       PlayerMe      );
-            logLibrary('PlayerMe.Model', PlayerMe.Model);
-            logLibrary('PlayerMe.API',   PlayerMe.API  );
+            logLibrary('PlayerMe',          PlayerMe         );
+            logLibrary('PlayerMe.Model',    PlayerMe.Model   );
+            logLibrary('PlayerMe.API',      PlayerMe.API     );
+            logLibrary('PlayerMe.RealTime', PlayerMe.RealTime);
 
             updateAdapter();
             updateBaseURL();
@@ -55,6 +57,15 @@
         <p>
             <button onclick="clickedRequest('api/v1/404')">404 error</button>
         </p>
+    </div>
+</div>
+
+
+<div id="realtime">
+    <h2>Real-Time</h2>
+    <div>
+        <button onclick="realtimeConnect(PlayerMe.API.APIService.baseUrl+':443')">Connect</button>
+        <button onclick="realtimeDisconnect()">Disconnect</button>
     </div>
 </div>
 

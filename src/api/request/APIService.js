@@ -28,7 +28,7 @@ class APIService extends AbstractRequestAdapter{
         this._adapter = null;
 
         // Set defaults
-        this.baseUrl = "https://player.me/";
+        this.baseUrl = "https://player.me";
     }
 
     //

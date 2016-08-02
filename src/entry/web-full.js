@@ -32,8 +32,16 @@ var api = {
 api.APIService.setAdapter(api.adapters.JSONPRequestAdapter);
 
 // </editor-fold>
+// <editor-fold desc="Real-Time">
+
+var realtime = {
+    RealTimeService: require('../realtime/RealTimeService').default
+};
+
+// </editor-fold>
 
 module.exports = {
     Model: models,
-    API: api
+    API: api,
+    RealTime: realtime
 };
