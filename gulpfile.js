@@ -20,6 +20,9 @@ gulp.task('default', ['doc', 'build']);
 
 gulp.task('build', ['build:web', 'build:node']);
 
+/**
+ * Build with the web entry point and settings
+ */
 gulp.task('build:web', function(){
     return gulp.src('').pipe(
         webpackStream(
@@ -30,10 +33,19 @@ gulp.task('build:web', function(){
     );
 });
 
+/**
+ * TODO Build with a node entry file and settings
+ */
 gulp.task('build:node', function(){
     Log.red('build:node - Not implemented');
 });
 
+/**
+ * Pass a custom entry point to webpack.
+ * Takes an entry flag and an output flag
+ * @example gulp build:custom --entry example.js --output playerme-core.example.js
+ * TODO Prompt for input if required flags haven't been set
+ */
 gulp.task('build:custom', function(){
     var entryFileName = argv.entry || argv.E || false;
     var outputFileName = argv.output || argv.O || 'playerme-core.custom.js';
