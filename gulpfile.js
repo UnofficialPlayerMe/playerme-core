@@ -60,6 +60,9 @@ gulp.task('build:custom', function(){
 // </editor-fold> Build Tasks
 // <editor-fold desc="Documentation Tasks">
 
+/**
+ * Build and open the generated documentation
+ */
 gulp.task('doc', ['doc:build'], function(){
     return gulp.src(
         './docs/index.html'
@@ -68,10 +71,12 @@ gulp.task('doc', ['doc:build'], function(){
     );
 });
 
+/**
+ * Clear out the existing documentation and build some new ones
+ */
 gulp.task('doc:build', function (done) {
     var config = require('./gulp/jsdoc.config.json');
-
-    // del(config.opts.destination); // Clear existing files
+    del(config.opts.destination);
 
     gulp.src(
         ['README.md', './src/**/*.js'], {read: false}
