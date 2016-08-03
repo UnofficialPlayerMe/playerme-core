@@ -18,11 +18,11 @@ function make(entry, outputFileName){
 }
 
 function makeWeb(){
-    return make('./src/entry/web-full.js', 'playerme-core.js');
+    return make('./entry/web-full.js', 'playerme-core.js');
 }
 
 function makeNode(){
-    return make('./src/entry/node.js', 'playerme-core.node.js');
+    return make('./entry/node.js', 'playerme-core.node.js');
 }
 
 module.exports = {
