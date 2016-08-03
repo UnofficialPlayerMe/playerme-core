@@ -3,16 +3,21 @@
 var gulp = require('gulp');
 var path = require('path');
 var argv = require('yargs').argv;
+var del  = require('del');
 
 var webpackStream = require('webpack-stream');
+var jsdoc         = require('gulp-jsdoc3');
+var openBrowser   = require('gulp-open');
 
 var Log           = require('./gulp/Log');
 var WebpackConfig = require('./gulp/WebpackConfig');
 
 // </editor-fold> Dependencies
-// <editor-fold desc="Tasks">
 
-gulp.task('default', ['build']);
+gulp.task('default', ['doc', 'build']);
+
+// <editor-fold desc="Build Tasks">
+
 gulp.task('build', ['build:web', 'build:node']);
 
 gulp.task('build:web', function(){
@@ -52,4 +57,27 @@ gulp.task('build:custom', function(){
     );
 });
 
-// </editor-fold> Tasks
+// </editor-fold> Build Tasks
+// <editor-fold desc="Documentation Tasks">
+
+gulp.task('doc', ['doc:build'], function(){
+    return gulp.src(
+        './docs/index.html'
+    ).pipe(
+        openBrowser()
+    );
+});
+
+gulp.task('doc:build', function (done) {
+    var config = require('./gulp/jsdoc.config.json');
+
+    // del(config.opts.destination); // Clear existing files
+
+    gulp.src(
+        ['README.md', './src/**/*.js'], {read: false}
+    ).pipe(
+        jsdoc(config, done)
+    );
+});
+
+// </editor-fold> Documentation Tasks
