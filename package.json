@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "The core stand-alone library for interacting with the official API.",
   "private": true,
-  "main": "dist/playerme.full.js",
+  "main": "dist/playerme-core.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/UnofficialPlayerMe/playerme-core.git"
@@ -29,7 +29,8 @@
     "gulp": "^3.9.1",
     "gulp-util": "^3.0.7",
     "webpack": "^1.13.1",
-    "webpack-stream": "^3.2.0"
+    "webpack-stream": "^3.2.0",
+    "yargs": "^4.8.1"
   },
   "dependencies": {
     "cookie": "^0.3.1",

@@ -2,6 +2,7 @@
 
 var gulp = require('gulp');
 var path = require('path');
+var argv = require('yargs').argv;
 
 var webpackStream = require('webpack-stream');
 
@@ -26,6 +27,29 @@ gulp.task('build:web', function(){
 
 gulp.task('build:node', function(){
     Log.red('build:node - Not implemented');
+});
+
+gulp.task('build:custom', function(){
+    var entryFileName = argv.entry || argv.E || false;
+    var outputFileName = argv.output || argv.O || 'playerme-core.custom.js';
+
+    var example = "(e.g. `gulp build:custom --entry example.js --output playerme-core.example.js`)";
+
+    if (!entryFileName){
+        Log.red('Please pass an entry file name. '+example);
+        return;
+    }
+
+    return gulp.src('').pipe(
+        webpackStream(
+            WebpackConfig.make(
+                path.resolve('./entry', entryFileName),
+                path.resolve(outputFileName)
+            )
+        )
+    ).pipe(
+        gulp.dest('dist/web')
+    );
 });
 
 // </editor-fold> Tasks
