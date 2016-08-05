@@ -14,7 +14,13 @@ var openBrowser = require('gulp-open');
 /**
  * Build and open the index
  */
-gulp.task('default', ['build']);
+gulp.task('default', ['build'], function(){
+    return gulp.src(
+        path.resolve('index.html')
+    ).pipe(
+        openBrowser()
+    );
+});
 
 /**
  * Open the live page
