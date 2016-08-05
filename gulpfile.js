@@ -60,8 +60,10 @@ gulp.task('doc', function (done) {
         return;
     }
 
-    // Clear current directory
-    del.sync(targetDir);
+    // Clear files
+    del.sync(
+        path.join(targetDir, '*.*')
+    );
 
     // Create Doc
     gulp.src([
