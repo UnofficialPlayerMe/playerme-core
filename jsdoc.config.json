@@ -9,7 +9,8 @@
     "destination": "./api"
   },
   "plugins": [
-    "plugins/markdown"
+    "plugins/markdown",
+    "plugins/summarize"
   ],
   "templates": {
     "cleverLinks": false,

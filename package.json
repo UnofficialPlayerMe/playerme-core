@@ -1,6 +1,6 @@
 {
   "name": "playerme-core-gh-pages",
-  "private": "true",
+  "private": true,
   "description": "The github project page for playerme-core",
   "homepage": "https://unofficialplayerme.github.io/playerme-core",
   "devDependencies": {

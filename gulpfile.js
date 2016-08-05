@@ -59,6 +59,7 @@ gulp.task('doc', function (done) {
         done();
         return;
     }
+    config.templates.systemName = packageObj.name+" "+packageObj.version;
 
     // Clear files
     del.sync(
