@@ -14,13 +14,7 @@ var openBrowser = require('gulp-open');
 /**
  * Build and open the index
  */
-gulp.task('default', ['build'], function(){
-    return gulp.src(
-        path.resolve('index.html')
-    ).pipe(
-        openBrowser()
-    );
-});
+gulp.task('default', ['build'], openLocal);
 
 /**
  * Open the live page
@@ -34,6 +28,11 @@ gulp.task('open:remote', function(){
         })
     );
 });
+
+/**
+ * Open the local page
+ */
+gulp.task('open:local', openLocal);
 
 /**
  * Run all build tasks
@@ -91,6 +90,21 @@ gulp.task('doc', function (done) {
 });
 
 // </editor-fold> Tasks
+// <editor-fold desc="Task Functions">
+
+function openLocal(){
+    var config = require('./jsdoc.config.json');
+
+    return gulp.src(
+        path.resolve(
+            path.resolve(config.opts.destination, 'index.html')
+        )
+    ).pipe(
+        openBrowser()
+    );
+}
+
+// </editor-fold> Task Functions
 // <editor-fold desc="Assertions">
 
 /**
