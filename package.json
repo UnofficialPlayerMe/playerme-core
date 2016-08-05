@@ -1,5 +1,17 @@
 {
   "name": "playerme-core-gh-pages",
+  "private": "true",
   "description": "The github project page for playerme-core",
-  "homepage": "https://unofficialplayerme.github.io/playerme-core"
+  "homepage": "https://unofficialplayerme.github.io/playerme-core",
+  "devDependencies": {
+    "del": "^2.2.1",
+    "gulp": "^3.9.1",
+    "gulp-jsdoc": "^0.1.5",
+    "gulp-jsdoc3": "^0.3.0",
+    "gulp-open": "^2.0.0",
+    "gulp-util": "^3.0.7"
+  },
+  "scripts": {
+    "build": "gulp"
+  }
 }
