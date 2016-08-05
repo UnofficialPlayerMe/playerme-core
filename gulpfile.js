@@ -14,11 +14,18 @@ var openBrowser = require('gulp-open');
 /**
  * Build and open the index
  */
-gulp.task('default', ['build'], function(){
+gulp.task('default', ['build']);
+
+/**
+ * Open the live page
+ */
+gulp.task('open:remote', function(){
     return gulp.src(
-        path.resolve('index.html')
+        __filename
     ).pipe(
-        openBrowser()
+        openBrowser({
+            uri: require('./package.json').homepage
+        })
     );
 });
 
