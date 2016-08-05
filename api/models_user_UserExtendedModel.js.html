@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>playerme-core 0.1.0 Source: models/user/UserExtendedModel.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.journal.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">playerme-core 0.1.0</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="AbstractRealTimeAPI.html">AbstractRealTimeAPI</a></li><li><a href="AbstractResponse.html">AbstractResponse</a></li><li><a href="ActivityModel.html">ActivityModel</a></li><li><a href="ActivityPostData.html">ActivityPostData</a></li><li><a href="ActivityPostMetaData.html">ActivityPostMetaData</a></li><li><a href="ActivityVideoData.html">ActivityVideoData</a></li><li><a href="APIService.html">APIService</a></li><li><a href="AuthService.html">AuthService</a></li><li><a href="CollectionResponse.html">CollectionResponse</a></li><li><a href="CommentMeta.html">CommentMeta</a></li><li><a href="CommentModel.html">CommentModel</a></li><li><a href="EntityResponse.html">EntityResponse</a></li><li><a href="FeedRealTime.html">FeedRealTime</a></li><li><a href="GameCompany.html">GameCompany</a></li><li><a href="GameExtendedModel.html">GameExtendedModel</a></li><li><a href="GameMetadataModel.html">GameMetadataModel</a></li><li><a href="GameModel.html">GameModel</a></li><li><a href="GamePlatform.html">GamePlatform</a></li><li><a href="JSONPRequestAdapter.html">JSONPRequestAdapter</a></li><li><a href="LoginResponse.html">LoginResponse</a></li><li><a href="NodeRequestAdapter.html">NodeRequestAdapter</a></li><li><a href="NotificationModel.html">NotificationModel</a></li><li><a href="NotificationsRealTime.html">NotificationsRealTime</a></li><li><a href="PagerData.html">PagerData</a></li><li><a href="RawResponse.html">RawResponse</a></li><li><a href="RealTimeResponse.html">RealTimeResponse</a></li><li><a href="RealTimeService.html">RealTimeService</a></li><li><a href="Sails.html">Sails</a></li><li><a href="UserCollectionResponse.html">UserCollectionResponse</a></li><li><a href="UserEntityResponse.html">UserEntityResponse</a></li><li><a href="UserExtendedModel.html">UserExtendedModel</a></li><li><a href="UserModel.html">UserModel</a></li><li><a href="UsersRepository.html">UsersRepository</a></li><li><a href="XMLHttpRequestAdapter.html">XMLHttpRequestAdapter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#_raw">_raw</a></li><li><a href="global.html#getHeadersFromXHR">getHeadersFromXHR</a></li><li><a href="global.html#getJSONFromXHR">getJSONFromXHR</a></li><li><a href="global.html#getRawResponse">getRawResponse</a></li><li><a href="global.html#parseUrl">parseUrl</a></li><li><a href="global.html#validateData">validateData</a></li><li><a href="global.html#validateURL">validateURL</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: models/user/UserExtendedModel.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">import UserModel from './UserModel';
+
+/**
+ * A model representing an extended data set for a Player.me User.
+ * @extends UserModel
+ */
+class UserExtendedModel extends UserModel{
+    /**
+     * Create a new extended User model.
+     * @param {Object} [obj] A player response object to initialise this model with.
+     */
+    constructor(obj=null)
+    {
+        var toDate = (str) => {
+            if (!str) return null;
+            return new Date(str);
+        };
+
+        super(obj);
+        var cover = obj &amp;&amp; obj.cover || null;
+        var avatar = obj &amp;&amp; obj.avatar || null;
+
+        this._shortDescription          = obj    &amp;&amp; obj   .short_description    || '';
+        this._description               = obj    &amp;&amp; obj   .description          || '';
+        this._descriptionHtml           = obj    &amp;&amp; obj   .descriptionHtml      || '';
+        this._coverOriginal             = cover  &amp;&amp; cover .original             || '';
+        this._coverCached               = cover  &amp;&amp; cover .cached               || '';
+        this._coverOriginalFilename     = cover  &amp;&amp; cover .original_filename    || '';
+        this._avatarOriginal            = avatar &amp;&amp; avatar.original             || '';
+        this._avatarCached              = avatar &amp;&amp; avatar.cached               || '';
+        this._avatarOriginalFilename    = avatar &amp;&amp; avatar.original_filename    || '';
+        this._createdAt                 = obj    &amp;&amp; toDate(obj.created_at)      || '';
+        this._generatedBy               = obj    &amp;&amp; obj   .generated_by         || null;
+        this._isCurrentUser             = obj    &amp;&amp; obj   .is_current_user      || false;
+        this._isFollowing               = obj    &amp;&amp; obj   .is_following         || false;
+        this._isFollowed                = obj    &amp;&amp; obj   .is_followed          || false;
+        this._isFriend                  = obj    &amp;&amp; obj   .is_friend            || false;
+        this._isBlocked                 = obj    &amp;&amp; obj   .is_blocked           || false;
+        this._canMessage                = obj    &amp;&amp; obj   .can_message          || false;
+        this._isOnline                  = obj    &amp;&amp; obj   .is_online            || false;
+        this._followingCount            = obj    &amp;&amp; obj   .following_count      || 0;
+
+        // Group specific
+        this._isConfirmedGroupMember = obj &amp;&amp; obj.is_confirmed_group_member || false;
+        this._canConfirmMembership   = obj &amp;&amp; obj.can_confirm_membership    || false;
+        this._canRemoveMembership    = obj &amp;&amp; obj.can_remove_membership     || false;
+
+        // Overrides
+        if (cover)  this._cover  = cover.cached;
+        if (avatar) this._avatar = avatar.cached;
+
+        //Convert ISO date strings to Dates
+        this._createdAt = (this._createdAt ? new Date(this._createdAt) : false) || null;
+    }
+
+    toString() {
+        var msg = '[UserExtendedModel';
+        if (this._id) msg += ' #'+this._id;
+        if (this._slug) msg += ' "'+this._slug+'"';
+        return msg +']';
+    }
+
+    /**
+     * The user's short bio.
+     * @readonly
+     * @member {string} UserExtendedModel#shortDescription
+     * @returns {string}
+     */
+    get shortDescription() {
+        return this._shortDescription;
+    }
+
+    /**
+     * The user's bio.
+     * @readonly
+     * @member {string} UserExtendedModel#description
+     * @returns {string}
+     */
+    get description() {
+        return this._description;
+    }
+
+    /**
+     * The user's bio in HTML.
+     * @readonly
+     * @member {string} UserExtendedModel#descriptionHtml
+     * @returns {string}
+     */
+    get descriptionHtml() {
+        return this._descriptionHtml;
+    }
+
+    /**
+     * The path to the original cover image.
+     * @readonly
+     * @member {string} UserExtendedModel#coverOriginal
+     * @returns {string}
+     */
+    get coverOriginal() {
+        return this._coverOriginal;
+    }
+
+    /**
+     * The original cover image's filename.
+     * @readonly
+     * @member {string} UserExtendedModel#coverOriginalFilename
+     * @returns {string}
+     */
+    get coverOriginalFilename() {
+        return this._coverOriginalFilename;
+    }
+
+    /**
+     * The path to the original avatar.
+     * @readonly
+     * @member {string} UserExtendedModel#avatarOriginal
+     * @returns {string}
+     */
+    get avatarOriginal() {
+        return this._avatarOriginal;
+    }
+
+    /**
+     * The original avatar's filename.
+     * @readonly
+     * @member {string} UserExtendedModel#avatarOriginalFilename
+     * @returns {string}
+     */
+    get avatarOriginalFilename() {
+        return this._avatarOriginalFilename;
+    }
+
+    /**
+     * The date and time the user was created on.
+     * @readonly
+     * @member {Date} UserExtendedModel#createdAt
+     * @returns {Date}
+     */
+    get createdAt() {
+        return this._createdAt;
+    }
+
+    /**
+     * TODO What is a user's generatedBy field?
+     * @readonly
+     * @member {string} UserExtendedModel#generatedBy
+     * @returns {string}
+     */
+    get generatedBy() {
+        return this._generatedBy;
+    }
+
+    /**
+     * Whether this is the logged in user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isCurrentUser
+     * @returns {boolean}
+     */
+    get isCurrentUser() {
+        return this._isCurrentUser;
+    }
+
+    /**
+     * Whether this user is following the logged in user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isFollowing
+     * @returns {boolean}
+     */
+    get isFollowing() {
+        return this._isFollowing;
+    }
+
+    /**
+     * Whether the logged in user has followed this user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isFollowed
+     * @returns {boolean}
+     */
+    get isFollowed() {
+        return this._isFollowed;
+    }
+
+    /**
+     * Whether this and the logged in user are following each other.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isFriend
+     * @returns {boolean}
+     */
+    get isFriend() {
+        return this._isFriend;
+    }
+
+    /**
+     * Whether the logged in user has blocked this user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isBlocked
+     * @returns {boolean}
+     */
+    get isBlocked() {
+        return this._isBlocked;
+    }
+
+    /**
+     * Whether the logged in user can message this user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#canMessage
+     * @returns {boolean}
+     */
+    get canMessage() {
+        return this._canMessage;
+    }
+
+    /**
+     * Whether the user is logged in.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isOnline
+     * @returns {boolean}
+     */
+    get isOnline() {
+        return this._isOnline;
+    }
+
+    /**
+     * The number of user's this user is following.
+     * @readonly
+     * @member {number} UserExtendedModel#followingCount
+     * @returns {number}
+     */
+    get followingCount() {
+        return this._followingCount;
+    }
+
+    /**
+     * Whether the logged in user is a member of this group.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isConfirmedGroupMember
+     * @returns {boolean}
+     */
+    get isConfirmedGroupMember() {
+        return this._isConfirmedGroupMember;
+    }
+
+    /**
+     * Whether the logged in user has rights to confirm memberships.
+     * TODO Confirm the description for canConfirmMembership() is correct
+     * @readonly
+     * @member {boolean} UserExtendedModel#canConfirmMembership
+     * @returns {boolean}
+     */
+    get canConfirmMembership() {
+        return this._canConfirmMembership;
+    }
+
+    /**
+     * Whether the logged in user has rights to remove memberships.
+     * TODO Confirm the description for canRemoveMembership() is correct
+     * @readonly
+     * @member {boolean} UserExtendedModel#canRemoveMembership
+     * @returns {boolean}
+     */
+    get canRemoveMembership() {
+        return this._canRemoveMembership;
+    }
+}
+
+export default UserExtendedModel;
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on August 5th 2016, 10:53:47 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>

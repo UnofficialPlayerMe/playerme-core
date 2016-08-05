@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>playerme-core 0.1.0 Source: api/request/adapter/AbstractRequestAdapter.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.journal.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">playerme-core 0.1.0</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="AbstractRealTimeAPI.html">AbstractRealTimeAPI</a></li><li><a href="AbstractResponse.html">AbstractResponse</a></li><li><a href="ActivityModel.html">ActivityModel</a></li><li><a href="ActivityPostData.html">ActivityPostData</a></li><li><a href="ActivityPostMetaData.html">ActivityPostMetaData</a></li><li><a href="ActivityVideoData.html">ActivityVideoData</a></li><li><a href="APIService.html">APIService</a></li><li><a href="AuthService.html">AuthService</a></li><li><a href="CollectionResponse.html">CollectionResponse</a></li><li><a href="CommentMeta.html">CommentMeta</a></li><li><a href="CommentModel.html">CommentModel</a></li><li><a href="EntityResponse.html">EntityResponse</a></li><li><a href="FeedRealTime.html">FeedRealTime</a></li><li><a href="GameCompany.html">GameCompany</a></li><li><a href="GameExtendedModel.html">GameExtendedModel</a></li><li><a href="GameMetadataModel.html">GameMetadataModel</a></li><li><a href="GameModel.html">GameModel</a></li><li><a href="GamePlatform.html">GamePlatform</a></li><li><a href="JSONPRequestAdapter.html">JSONPRequestAdapter</a></li><li><a href="LoginResponse.html">LoginResponse</a></li><li><a href="NodeRequestAdapter.html">NodeRequestAdapter</a></li><li><a href="NotificationModel.html">NotificationModel</a></li><li><a href="NotificationsRealTime.html">NotificationsRealTime</a></li><li><a href="PagerData.html">PagerData</a></li><li><a href="RawResponse.html">RawResponse</a></li><li><a href="RealTimeResponse.html">RealTimeResponse</a></li><li><a href="RealTimeService.html">RealTimeService</a></li><li><a href="Sails.html">Sails</a></li><li><a href="UserCollectionResponse.html">UserCollectionResponse</a></li><li><a href="UserEntityResponse.html">UserEntityResponse</a></li><li><a href="UserExtendedModel.html">UserExtendedModel</a></li><li><a href="UserModel.html">UserModel</a></li><li><a href="UsersRepository.html">UsersRepository</a></li><li><a href="XMLHttpRequestAdapter.html">XMLHttpRequestAdapter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#_raw">_raw</a></li><li><a href="global.html#getHeadersFromXHR">getHeadersFromXHR</a></li><li><a href="global.html#getJSONFromXHR">getJSONFromXHR</a></li><li><a href="global.html#getRawResponse">getRawResponse</a></li><li><a href="global.html#parseUrl">parseUrl</a></li><li><a href="global.html#validateData">validateData</a></li><li><a href="global.html#validateURL">validateURL</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: api/request/adapter/AbstractRequestAdapter.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">class AbstractRequestAdapter {
+    constructor()
+    {
+        var abstractClassName = 'AbstractRequestAdapter';
+        if (this.name === abstractClassName){
+            throw new Error(abstractClassName+' was not supposed to be instantiated.');
+        }
+    }
+
+    /**
+     * The adapter's name
+     * @returns {string}
+     */
+    get name(){
+        return this.constructor.name;
+    }
+
+    /**
+     * Submit request
+     * @param {string} method
+     * @param {string} url
+     * @param {object} data
+     * @return Promise
+     * @throws Error Error when not implemented
+     * TODO Create not-implemented error
+     */
+    request(method, url, data){
+        throw new Error("request() not implemented by "+this.name);
+    }
+
+    /**
+     * Submit a GET request
+     * @param {string} url
+     * @param {object} data
+     * @return Promise
+     * @throws Error Error when not implemented
+     * TODO Create not-implemented error
+     */
+    get(url, data){
+        throw new Error("GET not implemented by "+this.name);
+    }
+
+    /**
+     * Submit a POST request
+     * @param {string} url
+     * @param {object} data
+     * @return Promise
+     * @throws Error Error when not implemented
+     * TODO Create not-implemented error
+     */
+    post(url, data){
+        throw new Error("POST not implemented by "+this.name);
+    }
+
+    /**
+     * Submit a PUT request
+     * @param {string} url
+     * @param {object} data
+     * @return Promise
+     * @throws Error Error when not implemented
+     * TODO Create not-implemented error
+     */
+    put(url, data){
+        throw new Error("PUT not implemented by "+this.name);
+    }
+
+    /**
+     * Submit a DELETE request
+     * @param {string} url
+     * @param {object} data
+     * @return Promise
+     * @throws Error Error when not implemented
+     * TODO Create not-implemented error
+     */
+    del(url, data){
+        throw new Error("DEL not implemented by "+this.name);
+    }
+
+    /**
+     * Turn an object into a query string
+     * @param {string} url
+     * @param {object} obj
+     * @param {boolean} [keepExisting=true] When true, any keys in `obj` that are in the `url`'s query string will be ignored
+     * @returns {string}
+     */
+    addToQueryString(url, obj, keepExisting=true){
+        // Validation
+        if (!url){
+            throw new ReferenceError('URL not passed to addToQueryString()');
+        }
+        if (typeof url !== 'string'){
+            throw new TypeError('URL passed to addToQueryString() is not a string ('+typeof url+').');
+        }
+        if (typeof obj !== 'object'){
+            throw new TypeError('obj passed to addToQueryString() is not an object ('+typeof url+').');
+        }
+
+        var resultParts = [];
+        if (obj !== null) {
+
+            // Remove URL's query string and add to obj
+            var urlParts = url.split('?', 2);
+            if (urlParts.length > 1) {
+                url = urlParts[0]; // Remove query string from URL
+
+                // For each part of the query string...
+                var queryStringArr = urlParts[1].split('&amp;');
+                var queryStringLength = queryStringArr.length;
+
+                for (var i = 0; i &lt; queryStringLength; i++) {
+                    var queryStringItem = queryStringArr[i].split('=', 2);
+                    var queryStringKey = queryStringItem[0];
+
+                    // If this should override obj, or it doesn't exist on obj, then add it
+                    if (keepExisting || !obj.hasOwnProperty(queryStringKey)) {
+                        obj[queryStringKey] = queryStringItem[1];
+                    }
+                }
+            }
+
+            // Convert obj into uri component array
+            for (var objKey in obj) {
+                if (obj.hasOwnProperty(objKey)) {
+                    resultParts.push(objKey + '=' + encodeURIComponent(obj[objKey]));
+                }
+            }
+        }
+
+        // Return
+        var result = url;
+        if (resultParts.length){
+            result += '?'+resultParts.join('&amp;').replace(/%20/g, '+');
+        }
+        return result;
+    }
+}
+
+export default AbstractRequestAdapter;
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on August 5th 2016, 10:53:47 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>

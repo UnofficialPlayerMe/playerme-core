@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>playerme-core 0.1.0 Source: api/request/APIService.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.journal.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">playerme-core 0.1.0</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="AbstractRealTimeAPI.html">AbstractRealTimeAPI</a></li><li><a href="AbstractResponse.html">AbstractResponse</a></li><li><a href="ActivityModel.html">ActivityModel</a></li><li><a href="ActivityPostData.html">ActivityPostData</a></li><li><a href="ActivityPostMetaData.html">ActivityPostMetaData</a></li><li><a href="ActivityVideoData.html">ActivityVideoData</a></li><li><a href="APIService.html">APIService</a></li><li><a href="AuthService.html">AuthService</a></li><li><a href="CollectionResponse.html">CollectionResponse</a></li><li><a href="CommentMeta.html">CommentMeta</a></li><li><a href="CommentModel.html">CommentModel</a></li><li><a href="EntityResponse.html">EntityResponse</a></li><li><a href="FeedRealTime.html">FeedRealTime</a></li><li><a href="GameCompany.html">GameCompany</a></li><li><a href="GameExtendedModel.html">GameExtendedModel</a></li><li><a href="GameMetadataModel.html">GameMetadataModel</a></li><li><a href="GameModel.html">GameModel</a></li><li><a href="GamePlatform.html">GamePlatform</a></li><li><a href="JSONPRequestAdapter.html">JSONPRequestAdapter</a></li><li><a href="LoginResponse.html">LoginResponse</a></li><li><a href="NodeRequestAdapter.html">NodeRequestAdapter</a></li><li><a href="NotificationModel.html">NotificationModel</a></li><li><a href="NotificationsRealTime.html">NotificationsRealTime</a></li><li><a href="PagerData.html">PagerData</a></li><li><a href="RawResponse.html">RawResponse</a></li><li><a href="RealTimeResponse.html">RealTimeResponse</a></li><li><a href="RealTimeService.html">RealTimeService</a></li><li><a href="Sails.html">Sails</a></li><li><a href="UserCollectionResponse.html">UserCollectionResponse</a></li><li><a href="UserEntityResponse.html">UserEntityResponse</a></li><li><a href="UserExtendedModel.html">UserExtendedModel</a></li><li><a href="UserModel.html">UserModel</a></li><li><a href="UsersRepository.html">UsersRepository</a></li><li><a href="XMLHttpRequestAdapter.html">XMLHttpRequestAdapter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#_raw">_raw</a></li><li><a href="global.html#getHeadersFromXHR">getHeadersFromXHR</a></li><li><a href="global.html#getJSONFromXHR">getJSONFromXHR</a></li><li><a href="global.html#getRawResponse">getRawResponse</a></li><li><a href="global.html#parseUrl">parseUrl</a></li><li><a href="global.html#validateData">validateData</a></li><li><a href="global.html#validateURL">validateURL</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: api/request/APIService.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">import AbstractRequestAdapter from './adapter/AbstractRequestAdapter';
+
+/**
+ * A singleton wrapper for Request adapters
+ */
+class APIService extends AbstractRequestAdapter{
+
+    //
+    // Constructor
+    //
+
+    constructor()
+    {
+        super();
+
+        /**
+         * The URL that gets prepended to partial request URLs
+         * @member {string}
+         * @private
+         */
+        this._baseUrl = '';
+
+        /**
+         * The adapter used to make requests
+         * @member {object}
+         * @private
+         */
+        this._adapter = null;
+
+        // Set defaults
+        this.baseUrl = "https://player.me";
+    }
+
+    //
+    // Request Methods
+    //
+
+    // TODO Have success &amp; failure classes
+    _request(method, url, data){
+        var requestBodyRequired = false;
+        switch(method){
+            case 'get':  requestBodyRequired = false; break;
+            case 'post': requestBodyRequired = true;  break;
+            case 'put':  requestBodyRequired = true;  break;
+            case 'del':  requestBodyRequired = false; break;
+            default: throw new Error("Unhandled method ["+method+"] passed to APIService._request().");
+        }
+
+        validateURL(method, url);
+        validateData(method, data, requestBodyRequired);
+
+        var adapter = this.getAdapter(true);
+        url = this.prependBaseUrl(url);
+        return adapter[method](url, data);
+    }
+
+    get(url, data){
+        return this._request('get', url, data);
+    }
+
+    post(url, data){
+        return this._request('post', url, data);
+    }
+
+    put(url, data){
+        return this._request('put', url, data);
+    }
+
+    del(url, data){
+        return this._request('del', url, data);
+    }
+
+    //
+    // Base URL methods
+    //
+
+    /**
+     * @param {string} str
+     */
+    set baseUrl(str){
+        if (typeof str !== 'string'){
+            throw new TypeError("baseUrl passed to APIService is not a string");
+        }
+        if (str.length == 0){
+            throw new TypeError("baseUrl passed to APIService is empty");
+        }
+        // Must have '://' and at least one character before it
+        if (str.indexOf('://') &lt;= 0){
+            throw new TypeError("baseUrl is missing protocol");
+        }
+        this._baseUrl = str;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get baseUrl(){
+        return this._baseUrl;
+    }
+
+    /**
+     * Add the baseUrl to the start of the passed address
+     * @param {string} url
+     * @returns {string}
+     */
+    prependBaseUrl(url){
+        // Skip if passed url has a protocol
+        if (url.indexOf('://') == -1){
+            var baseUrl = this._baseUrl;
+
+            // Remove slash at end
+            if (baseUrl.charAt(baseUrl.length-1) === '/'){
+                baseUrl = baseUrl.substring(0, baseUrl.length-1);
+            }
+            // Remove slash at start
+            if (url.charAt(0) === '/'){
+                url = url.substring(1);
+            }
+
+            // Add base to url
+            url = baseUrl + '/' + url;
+        }
+        return url;
+    }
+
+    //
+    // Adapter Methods
+    //
+
+    /**
+     * Get the current adapter
+     * @param {boolean} [validate=false] Validate the adapter before returning it
+     * @returns {object} The adapter
+     * @throws {TypeError} If adapter is invalid
+     * @throws {ReferenceError} If no adapter is set
+     */
+    getAdapter(validate=false){
+        if (!this._adapter) {
+            throw new ReferenceError("APIService error: No adapter set");
+        }
+        if (validate){
+            this.validateAdapter(this._adapter);
+        }
+        return this._adapter;
+    }
+
+    /**
+     * Set the adapter
+     * @param {AbstractRequestAdapter} adapter Adapter instance or class
+     * @throws {TypeError} If adapter is invalid
+     */
+    setAdapter(adapter){
+        // Turn class into an instance
+        if (typeof adapter === 'function' &amp;&amp; adapter.constructor){
+            adapter = new adapter();
+        }
+
+        this.validateAdapter(adapter);
+        this._adapter = adapter;
+    }
+
+    /**
+     * Throws an error if the adapter is invalid
+     * @param {object} adapter The adapter to validate
+     * @throws {TypeError}
+     */
+    validateAdapter(adapter){
+        // Assert adapter is an object
+        if (typeof adapter !== 'object') {
+            throw new TypeError('Invalid APIRequest adapter: Not an object.');
+        }
+
+        // Assert adapter inherits from AbstractRequestAdapter
+        var adapterClass = adapter.constructor;
+        while (adapterClass){
+            if (adapterClass === AbstractRequestAdapter) return;
+            adapterClass = Object.getPrototypeOf(adapterClass);
+        }
+        throw new TypeError("Invalid APIRequest adapter: Doesn't inherit from AbstractRequestAdapter.");
+    }
+
+    /// End of APIService
+}
+
+//
+// Inaccessible Validation Methods
+//
+
+/**
+ * Validate that the URL is valid
+ * @param {string} method Name of the method this is being called in
+ * @param {string} url The request URL
+ * @throws {ReferenceError}
+ */
+function validateURL(method, url){
+    var msg;
+    if (!url){
+        msg = "No URL passed to APIService:"+method+".";
+        console.error(msg);
+        throw new ReferenceError(msg);
+    }
+    if (typeof url != 'string'){
+        msg = "Invalid URL passed to APIService:"+method+". Was ["+typeof url+"].";
+        console.error(msg);
+        throw new ReferenceError(msg);
+    }
+}
+
+/**
+ * Validate that the data object is valid
+ * @param {string} method Name of the method this is being called in
+ * @param {data} data The data to be used in the request
+ * @param {boolean} required If the request body should be truthy
+ * @throws {ReferenceError}
+ */
+function validateData(method, data, required){
+    var msg;
+    if (!required &amp;&amp; !data){
+        return;
+    }
+    if (typeof data != 'object'){
+        msg = "Invalid data passed to APIService:"+method+". Was ["+typeof data+"].";
+        console.error(msg);
+        throw new ReferenceError(msg);
+    }
+}
+
+// Export a singleton instance
+export default new APIService;
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on August 5th 2016, 10:53:47 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>

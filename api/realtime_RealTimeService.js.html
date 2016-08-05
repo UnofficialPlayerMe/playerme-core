@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>playerme-core 0.1.0 Source: realtime/RealTimeService.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.journal.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">playerme-core 0.1.0</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="AbstractRealTimeAPI.html">AbstractRealTimeAPI</a></li><li><a href="AbstractResponse.html">AbstractResponse</a></li><li><a href="ActivityModel.html">ActivityModel</a></li><li><a href="ActivityPostData.html">ActivityPostData</a></li><li><a href="ActivityPostMetaData.html">ActivityPostMetaData</a></li><li><a href="ActivityVideoData.html">ActivityVideoData</a></li><li><a href="APIService.html">APIService</a></li><li><a href="AuthService.html">AuthService</a></li><li><a href="CollectionResponse.html">CollectionResponse</a></li><li><a href="CommentMeta.html">CommentMeta</a></li><li><a href="CommentModel.html">CommentModel</a></li><li><a href="EntityResponse.html">EntityResponse</a></li><li><a href="FeedRealTime.html">FeedRealTime</a></li><li><a href="GameCompany.html">GameCompany</a></li><li><a href="GameExtendedModel.html">GameExtendedModel</a></li><li><a href="GameMetadataModel.html">GameMetadataModel</a></li><li><a href="GameModel.html">GameModel</a></li><li><a href="GamePlatform.html">GamePlatform</a></li><li><a href="JSONPRequestAdapter.html">JSONPRequestAdapter</a></li><li><a href="LoginResponse.html">LoginResponse</a></li><li><a href="NodeRequestAdapter.html">NodeRequestAdapter</a></li><li><a href="NotificationModel.html">NotificationModel</a></li><li><a href="NotificationsRealTime.html">NotificationsRealTime</a></li><li><a href="PagerData.html">PagerData</a></li><li><a href="RawResponse.html">RawResponse</a></li><li><a href="RealTimeResponse.html">RealTimeResponse</a></li><li><a href="RealTimeService.html">RealTimeService</a></li><li><a href="Sails.html">Sails</a></li><li><a href="UserCollectionResponse.html">UserCollectionResponse</a></li><li><a href="UserEntityResponse.html">UserEntityResponse</a></li><li><a href="UserExtendedModel.html">UserExtendedModel</a></li><li><a href="UserModel.html">UserModel</a></li><li><a href="UsersRepository.html">UsersRepository</a></li><li><a href="XMLHttpRequestAdapter.html">XMLHttpRequestAdapter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#_raw">_raw</a></li><li><a href="global.html#getHeadersFromXHR">getHeadersFromXHR</a></li><li><a href="global.html#getJSONFromXHR">getJSONFromXHR</a></li><li><a href="global.html#getRawResponse">getRawResponse</a></li><li><a href="global.html#parseUrl">parseUrl</a></li><li><a href="global.html#validateData">validateData</a></li><li><a href="global.html#validateURL">validateURL</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: realtime/RealTimeService.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">import Sails                 from './Sails';
+import FeedRealTime          from './api/feed/FeedRealTime';
+import NotificationsRealTime from './api/notifications/NotificationsRealTime';
+
+/**
+ * @class The core Sails.io.js wrapper for PlayerMe
+ */
+class RealTimeService extends Sails {
+    /**
+     * @param {string} url       Server to connect to
+     * @param {object} [options] Custom options to override the defaults
+     */
+    constructor(url, options) {
+        super(url, options);
+
+        this._verifiedUserId = 0;
+
+        this._defaultConnectionOptions = {
+            transports: ['websocket']
+        };
+
+        this._connect(url, options);
+
+        this.feed = new FeedRealTime(this);
+        this.notifications = new NotificationsRealTime(this);
+    }
+
+    // &lt;editor-fold desc="Verification">
+
+    /**
+     * This will link the Socket ID to the User ID,
+     * so that the Sails can send user-wide messages to the correct sockets.
+     * Send this immediately after connect.
+     * @see http://docs.playerme.apiary.io/#reference/RealTime/oauth/authenticate-+++
+     * @param {function} [callback]
+     * @returns {RealTimeService} Itself
+     */
+    verify(callback){
+        // Use super's post method to avoid verification check
+        super.post('/verify', null, (body, jwr)=>{
+            if(body &amp;&amp; body.id) {
+                this._verifiedUserId = body.id;
+            }
+            if (callback){
+                callback(body, jwr);
+            }
+        });
+        return this;
+    }
+
+    /**
+     * @param {string} accessToken
+     * @param {function} callback
+     * @returns {RealTimeService} Itself
+     */
+    verifyWithOAuth(accessToken, callback){
+        var params = { access_token: accessToken };
+        this.post('/verify', params, callback);
+        return this;
+    }
+
+    /**
+     * Whether the user has been verified
+     * @returns {boolean}
+     */
+    get isVerified(){
+        return this._verifiedUserId > 0;
+    }
+
+    /**
+     * The ID of the verified user, or 0
+     * @returns {int}
+     */
+    get verifiedUserId(){
+        return this._verifiedUserId;
+    }
+
+    /**
+     * Throw an error if the user isn't verified before calling the passed method name.
+     * @param {string} methodName
+     * @protected
+     */
+    _checkVerified(methodName){
+        if (!this.isVerified){
+            throw new Error(
+                "The user must be verified before calling "+
+                    this.constructor.name+"."+methodName+"."
+            );
+        }
+    }
+
+    // &lt;/editor-fold> Verification
+    // &lt;editor-fold desc="Debugging">
+
+    /**
+     * Send a message which will be picked up by onTest()
+     * @param {string} message The message to make the round-trip.
+     * @returns {RealTimeService}
+     */
+    postTest(message){
+        this.post('/test', {message: message});
+        return this;
+    }
+
+    /**
+     * @param {function} callback
+     * @return {Sails} Itself
+     */
+    onTest(callback){
+        this.on('test', (data)=>{
+            callback(data.message);
+        });
+        return this;
+    }
+
+    // &lt;/editor-fold> Debugging
+    // &lt;editor-fold desc="Request Methods">
+
+    /** @inheritdoc */
+    get(url, data, callback){
+        this._checkVerified('get()');
+        super.get(url, data, callback);
+    }
+
+    /** @inheritdoc */
+    post(url, data, callback){
+        this._checkVerified('post()');
+        super.post(url, data, callback);
+    }
+
+    /** @inheritdoc */
+    put(url, data, callback){
+        this._checkVerified('put()');
+        super.put(url, data, callback);
+    }
+
+    /** @inheritdoc */
+    del(url, data, callback){
+        this._checkVerified('del()');
+        super.del(url, data, callback);
+    }
+
+    // &lt;/editor-fold> Request Methods
+}
+
+export default RealTimeService;</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on August 5th 2016, 10:53:47 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>
