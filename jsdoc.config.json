@@ -9,19 +9,18 @@
     "destination": "./api"
   },
   "plugins": [
-    "plugins/markdown",
-    "plugins/summarize"
+    "plugins/markdown"
   ],
   "templates": {
     "cleverLinks": false,
     "monospaceLinks": false,
-    "default": {
-      "outputSourceFiles": true
-    },
     "path": "ink-docstrap",
-    "theme": "slate",
+    "theme": "journal",
     "navType": "vertical",
+    "inverseNav": true,
     "linenums": true,
-    "dateFormat": "MMMM Do YYYY, h:mm:ss a"
+    "dateFormat": "MMMM Do YYYY, h:mm:ss a",
+    "outputSourceFiles": true,
+    "outputSourcePath": true
   }
 }
