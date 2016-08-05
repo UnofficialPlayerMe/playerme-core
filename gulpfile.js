@@ -5,13 +5,14 @@ var path = require('path');
 var argv = require('yargs').argv;
 
 var webpackStream = require('webpack-stream');
+var openBrowser   = require('gulp-open');
 
 var Log           = require('./gulp/Log');
 var WebpackConfig = require('./gulp/WebpackConfig');
 
 // </editor-fold> Dependencies
 
-gulp.task('default', ['doc', 'build']);
+gulp.task('default', ['build']);
 
 // <editor-fold desc="Build Tasks">
 
@@ -73,3 +74,15 @@ gulp.task('build:custom', function(){
 });
 
 // </editor-fold> Build Tasks
+// <editor-fold desc="Open Tasks">
+
+
+gulp.task('demo:web', function(){
+    return gulp.src(
+        './demo/web/TestPage/index.html'
+    ).pipe(
+        openBrowser()
+    );
+});
+
+// </editor-fold> Open Tasks
