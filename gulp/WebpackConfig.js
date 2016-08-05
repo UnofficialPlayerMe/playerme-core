@@ -1,9 +1,9 @@
 var path = require('path');
 var webpack = require('webpack');
 
-function make(entry, outputFileName){
+function make(entryFileName, outputFileName){
     return {
-        entry: entry,
+        entry: path.resolve('./entry', entryFileName),
         output: {
             filename:      outputFileName || "playerme-core-[name].js",
             chunkFilename: "playerme-core-chunk-[name].js",
@@ -17,12 +17,12 @@ function make(entry, outputFileName){
     };
 }
 
-function makeWeb(){
-    return make('./entry/web-full.js', 'playerme-core.js');
+function makeWeb(entryFileName, outputFileName){
+    return make(entryFileName, outputFileName);
 }
 
-function makeNode(){
-    return make('./entry/node.js', 'playerme-core.node.js');
+function makeNode(entryFileName, outputFileName){
+    return make(entryFileName, outputFileName);
 }
 
 module.exports = {

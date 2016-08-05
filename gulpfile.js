@@ -23,7 +23,7 @@ gulp.task('build', ['build:web', 'build:node']);
 gulp.task('build:web', function(){
     return gulp.src('').pipe(
         webpackStream(
-            WebpackConfig.makeWeb()
+            WebpackConfig.makeWeb('web-full.js', 'playerme-core.js')
         )
     ).pipe(
         gulp.dest('dist/web')
@@ -31,10 +31,16 @@ gulp.task('build:web', function(){
 });
 
 /**
- * TODO Build with a node entry file and settings
+ * Build with the node entry point and settings
  */
 gulp.task('build:node', function(){
-    Log.red('build:node - Not implemented');
+    return gulp.src('').pipe(
+        webpackStream(
+            WebpackConfig.makeWeb('node.js', 'playerme-core.node.js')
+        )
+    ).pipe(
+        gulp.dest('dist/web')
+    );
 });
 
 /**
