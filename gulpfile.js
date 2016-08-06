@@ -12,9 +12,21 @@ var Log           = require('./gulp/Log');
 var WebpackConfig = require('./gulp/WebpackConfig');
 
 // </editor-fold> Dependencies
+// <editor-fold desc="Environment Settings">
+
+var env = require('./env.example');
+try{
+    env = require('./env');
+}catch(e){
+    Log.yellow("Warning: No env.js exists. Running with env.example.js.");
+}
+
+// </editor-fold> Environment Settings
+// <editor-fold desc="Common Tasks">
 
 gulp.task('default', ['build']);
 
+// </editor-fold> Common Settings
 // <editor-fold desc="Build Tasks">
 
 gulp.task('build', ['build:web', 'build:node']);
@@ -87,7 +99,8 @@ gulp.task('demo:web', function(){
 
 gulp.task('demo:node', function(done){
     exec('node ' + path.resolve('./demo/node/auth/index.js'), {
-        cwd: __dirname
+        cwd: __dirname,
+        env: env
     }, function (err, stdout, stderr) {
         Log.magenta("Demo script output >>\n"+stdout);
         Log.red(stderr);
