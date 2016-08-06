@@ -116,7 +116,7 @@ gulp.task('build:custom:node', function(){
 });
 
 // </editor-fold> Build Tasks
-// <editor-fold desc="Open Tasks">
+// <editor-fold desc="Demo Web Tasks">
 
 gulp.task('demo:web', function(){
     return gulp.src(
@@ -126,15 +126,27 @@ gulp.task('demo:web', function(){
     );
 });
 
-gulp.task('demo:node', function(done){
-    exec('node ' + path.resolve('./demo/node/auth/index.js'), {
+// </editor-fold>
+// <editor-fold desc="Demo Node Tasks">
+
+gulp.task('demo:node:auth', function(done){
+    demoNode('auth/index.js', done);
+});
+
+gulp.task('demo:node:user', function(done){
+    demoNode('user/index.js', done);
+});
+
+function demoNode(indexFile, callback){
+    var joinedPath = path.join('demo/node', indexFile);
+    exec('node ' + path.resolve(joinedPath), {
         cwd: __dirname,
         env: env
     }, function (err, stdout, stderr) {
-        Log.magenta("Demo script output >>\n"+stdout);
+        Log.magenta(joinedPath, "output >>>\n"+stdout);
         Log.red(stderr);
-        done(err);
+        callback(err);
     });
-});
+}
 
-// </editor-fold> Open Tasks
+// </editor-fold>

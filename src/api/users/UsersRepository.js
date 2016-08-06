@@ -7,18 +7,23 @@ import UserEntityResponse from './UserEntityResponse';
  */
 class UsersRepository {
     /**
-     *
-     * @param {number|string} id The user's ID
+     * Fetches the user with the requested ID
+     * @param {int|string} id The user's ID
      * @return Promise
      */
     get(id)
     {
         var idType = typeof id;
+        var validStrings = ['me', 'default']; // String values that are OK
 
         if (idType === 'string'){
-            id = parseInt(id, 10);
-            if (isNaN(id)){
-                throw new TypeError("id string passed to UsersRepository:get() is NaN. Was ['"+idType+"'].");
+            // Check if this is a valid string, or number string
+            var isValidString = validStrings.indexOf(id.toLowerCase()) >= 0;
+            if (!isValidString) {
+                id = parseInt(id, 10);
+                if (isNaN(id)) {
+                    throw new TypeError("id string passed to UsersRepository:get() isn't a number ['" + id + "'].");
+                }
             }
         }else if (idType !== 'number'){
             throw new TypeError("id passed to UsersRepository:get() isn't a number. Was ["+idType+"].");
@@ -42,6 +47,15 @@ class UsersRepository {
                 }
             });
         });
+    }
+
+    /**
+     * Fetches the currently logged in user
+     * @return Promise
+     */
+    getSelf()
+    {
+       return this.get('me');
     }
 
     list()
