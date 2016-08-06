@@ -47,11 +47,12 @@ gulp.task('doc', function (done) {
     var config = require('./jsdoc.config.json');
 
     // Get paths
-    var rootDir     = path.resolve('../playerme-core');
-    var srcDir      = path.resolve('../playerme-core/src');
-    var readmePath  = path.resolve('../playerme-core/README.md');
-    var packagePath = path.resolve('../playerme-core/package.json');
-    var targetDir   = path.resolve(config.opts.destination);
+    var rootDir      = path.resolve('../playerme-core');
+    var srcDir       = path.resolve('../playerme-core/src');
+    var tutorialsDir = path.resolve('../playerme-core/tutorials');
+    var readmePath   = path.resolve('../playerme-core/README.md');
+    var packagePath  = path.resolve('../playerme-core/package.json');
+    var targetDir    = path.resolve(config.opts.destination);
 
     // Assert files & directories
     if (
@@ -77,6 +78,9 @@ gulp.task('doc', function (done) {
     del.sync(
         path.join(targetDir, '*.*')
     );
+
+    // Edit config
+    config.opts.tutorials = tutorialsDir;
 
     // Create Doc
     gulp.src([
