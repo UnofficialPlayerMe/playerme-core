@@ -1,5 +1,6 @@
 /**
  * A model representing a Player.me User.
+ * @memberOf module:models/user
  */
 class UserModel {
     /**

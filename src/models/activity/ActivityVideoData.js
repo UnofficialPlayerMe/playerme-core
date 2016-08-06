@@ -1,5 +1,6 @@
 /**
  * The main contents of an ActivityModel of type "video".
+ * @memberOf module:models/activity
  */
 class ActivityVideoData {
     /**

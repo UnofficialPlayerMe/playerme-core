@@ -3,6 +3,7 @@ import LoginResponse from './LoginResponse';
 
 /**
  *
+ * @memberOf module:api/auth
  */
 class AuthService {
     /**

@@ -3,6 +3,7 @@ import NotificationModel   from '../../../models/notification/NotificationModel'
 
 /**
  * @class Description of FeedRealTime
+ * @memberOf module:realtime/api/notifications
  */
 class NotificationsRealTime extends AbstractRealTimeAPI {
 

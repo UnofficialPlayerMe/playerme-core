@@ -1,5 +1,6 @@
 /**
  * A class representing a game linked to ActivityPostData
+ * @memberOf module:models/game
  */
 class GameMetadataModel {
     /**

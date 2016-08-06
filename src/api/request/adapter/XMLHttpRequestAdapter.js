@@ -5,6 +5,12 @@ import Cookie from 'cookie';
 
 var cookieJar = [];
 
+/**
+ *
+ * @param {string} hostname
+ * @returns {string|null}
+ * @ignore
+ */
 function getSessionCookie(hostname){
     var cookies = cookieJar[hostname] || [];
 
@@ -24,6 +30,7 @@ function getSessionCookie(hostname){
  *
  * @param {string} url
  * @returns {{protocol:string, host:string, path:string, query:string}}
+ * @ignore
  */
 function parseUrl(url){
     var response = {};
@@ -59,6 +66,7 @@ function parseUrl(url){
  * Takes a XMLHttpRequest and returns the headers in key-value pairs.
  * @param {XMLHttpRequest} XHR
  * @returns {Object.<string,string>}
+ * @ignore
  */
 function getHeadersFromXHR(XHR){
     var result = {};
@@ -77,6 +85,7 @@ function getHeadersFromXHR(XHR){
  * Returns the XHR's response in JSON form, or null if invalid
  * @param {XMLHttpRequest} XHR
  * @returns {Object|null}
+ * @ignore
  */
 function getJSONFromXHR(XHR) {
     try {
@@ -90,6 +99,7 @@ function getJSONFromXHR(XHR) {
  *
  * @param {XMLHttpRequest} XHR
  * @returns {RawResponse|null}
+ * @ignore
  */
 function getRawResponse(XHR) {
     try {
@@ -103,6 +113,12 @@ function getRawResponse(XHR) {
         return null;
     }
 }
+/**
+ *
+ * @param XHR
+ * @returns {RawResponse}
+ * @ignore
+ */
 function getErrorResponse(XHR) {
     return new ErrorResponse(
         XHR.responseText,
@@ -115,6 +131,8 @@ function getErrorResponse(XHR) {
 /**
  * Process requests using JSONP.
  * Browsers allow this method for cross-domain calls, but only GET requests.
+ * @extends AbstractRequestAdapter
+ * @memberOf module:api/request/adapter
  */
 class XMLHttpRequestAdapter extends AbstractRequestAdapter {
     /**

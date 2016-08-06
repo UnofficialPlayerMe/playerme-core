@@ -4,6 +4,8 @@ import NotificationsRealTime from './api/notifications/NotificationsRealTime';
 
 /**
  * @class The core Sails.io.js wrapper for PlayerMe
+ * @extemds Sails
+ * @memberOf module:realtime
  */
 class RealTimeService extends Sails {
     /**

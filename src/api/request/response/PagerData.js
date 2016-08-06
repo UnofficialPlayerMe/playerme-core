@@ -1,7 +1,8 @@
 /**
  * The paging status of a request
+ * @memberOf module:api/request/response
  */
-class PagerData{
+class PagerData {
     /**
      * @param {object} rawPager The paging data in a RawResponse body.
      */

@@ -1,5 +1,6 @@
 /**
  * A class representing a Player.me Comment's assets.
+ * @memberOf module:models/activity/comment
  */
 class CommentMeta {
     /**

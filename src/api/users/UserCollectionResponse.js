@@ -3,6 +3,8 @@ import UserExtendedModel from '../../models/user/UserExtendedModel';
 
 /**
  * Response containing a collection of users
+ * @extends CollectionResponse
+ * @memberOf module:api/users
  */
 class UserCollectionResponse extends CollectionResponse {
     constructor(rawResponse)

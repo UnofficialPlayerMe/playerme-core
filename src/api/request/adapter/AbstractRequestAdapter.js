@@ -1,3 +1,7 @@
+/**
+ *
+ * @memberOf module:api/request/adapter
+ */
 class AbstractRequestAdapter {
     constructor()
     {

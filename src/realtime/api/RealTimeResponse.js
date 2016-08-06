@@ -1,5 +1,6 @@
 /**
  * @class The standard result for most Player responses
+ * @memberOf module:realtime/api
  */
 class RealTimeResponse {
     constructor(rawObject) {

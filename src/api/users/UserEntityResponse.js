@@ -3,6 +3,8 @@ import UserExtendedModel from '../../models/user/UserExtendedModel';
 
 /**
  * Response containing a single user
+ * @extends EntityResponse
+ * @memberOf module:api/users
  */
 class UserEntityResponse extends EntityResponse {
     constructor(rawResponse)

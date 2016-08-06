@@ -5,6 +5,7 @@ import ActivityVideoData from './ActivityVideoData';
 
 /**
  * A model representing a Player.me Activity.
+ * @memberOf module:models/activity
  */
 class ActivityModel {
     /**

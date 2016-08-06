@@ -1,5 +1,6 @@
 /**
  * A model representing a Player.me Game.
+ * @memberOf module:models/game
  */
 class GameModel {
     /**

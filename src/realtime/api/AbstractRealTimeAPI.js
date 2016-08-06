@@ -1,5 +1,6 @@
 /**
  * @class Description of RealTimeService
+ * @memberOf module:realtime/api
  */
 class AbstractRealTimeAPI {
     /**

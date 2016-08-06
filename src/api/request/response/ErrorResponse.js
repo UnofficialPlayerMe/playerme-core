@@ -1,5 +1,6 @@
 /**
  * A class representing the raw output from player.
+ * @memberOf module:api/request/response
  */
 class RawResponse {
     /**

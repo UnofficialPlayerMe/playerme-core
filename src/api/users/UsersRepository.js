@@ -2,7 +2,8 @@ import APIService from '../request/APIService';
 import UserEntityResponse from './UserEntityResponse';
 
 /**
- *
+ * A repository for accessing Player Users
+ * @memberOf module:api/users
  */
 class UsersRepository {
     /**

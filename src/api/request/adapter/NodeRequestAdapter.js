@@ -25,6 +25,8 @@ function getSessionCookie(hostname){
 /**
  * Process requests using https://www.npmjs.com/package/request
  * For use in environments where cross-domain requests isn't an issue (i.e. Node.js, Cordova, etc)
+ * @extends AbstractRequestAdapter
+ * @memberOf module:api/request/adapter
  */
 class NodeRequestAdapter extends AbstractRequestAdapter{
     /**

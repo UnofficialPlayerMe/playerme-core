@@ -5,6 +5,7 @@ import CommentModel        from '../../../models/activity/comment/CommentModel';
 
 /**
  * @class Description of FeedRealTime
+ * @memberOf module:realtime/api/feed
  */
 class FeedRealTime extends AbstractRealTimeAPI {
 

@@ -3,6 +3,7 @@ import UserModel from './UserModel';
 /**
  * A model representing an extended data set for a Player.me User.
  * @extends UserModel
+ * @memberOf module:models/user
  */
 class UserExtendedModel extends UserModel{
     /**

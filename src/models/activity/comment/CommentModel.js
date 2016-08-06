@@ -3,6 +3,7 @@ import UserModel from './../../user/UserModel';
 
 /**
  * A model representing a Player.me Comment.
+ * @memberOf module:models/activity/comment
  */
 class CommentModel {
     /**

@@ -3,6 +3,8 @@ import AbstractResponse from './AbstractResponse';
 /**
  * This is an abstract wrapper around a RawResponse for an entity.
  * Sub-classes should be tailored to specific APIs.
+ * @extends AbstractResponse
+ * @memberOf module:api/request/response
  */
 class EntityResponse extends AbstractResponse {
     /**

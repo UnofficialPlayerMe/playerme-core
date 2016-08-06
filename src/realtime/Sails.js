@@ -6,6 +6,7 @@ io.sails.autoConnect = false;
 
 /**
  * @class The base wrapper class for sails.io.js
+ * @memberOf module:realtime
  */
 class Sails {
     constructor() {

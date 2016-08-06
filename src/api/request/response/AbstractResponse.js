@@ -1,6 +1,7 @@
 /**
  * This is an abstract wrapper around a RawResponse.
  * Sub-classes should be tailored to specific APIs.
+ * @memberOf module:api/request/response
  */
 class AbstractResponse {
     /**
@@ -36,7 +37,7 @@ class AbstractResponse {
 
         /**
          * The raw request this wraps around
-         * @member {RawResponse} raw
+         * @member {RawResponse}
          */
         this.raw = rawResponse;
     }

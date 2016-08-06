@@ -4,8 +4,10 @@ import RawResponse from '../response/RawResponse';
 /**
  * Process requests using JSONP.
  * Browsers allow this method for cross-domain calls, but only GET requests.
+ * @extends AbstractRequestAdapter
+ * @memberOf module:api/request/adapter
  */
-class JSONPRequestAdapter extends AbstractRequestAdapter{
+class JSONPRequestAdapter extends AbstractRequestAdapter {
     constructor()
     {
         super();

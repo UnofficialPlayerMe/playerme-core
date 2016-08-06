@@ -2,8 +2,10 @@ import AbstractRequestAdapter from './adapter/AbstractRequestAdapter';
 
 /**
  * A singleton wrapper for Request adapters
+ * @extends AbstractRequestAdapter
+ * @memberOf module:api/request
  */
-class APIService extends AbstractRequestAdapter{
+class APIService extends AbstractRequestAdapter {
 
     //
     // Constructor
@@ -191,6 +193,7 @@ class APIService extends AbstractRequestAdapter{
  * @param {string} method Name of the method this is being called in
  * @param {string} url The request URL
  * @throws {ReferenceError}
+ * @ignore
  */
 function validateURL(method, url){
     var msg;
@@ -212,6 +215,7 @@ function validateURL(method, url){
  * @param {data} data The data to be used in the request
  * @param {boolean} required If the request body should be truthy
  * @throws {ReferenceError}
+ * @ignore
  */
 function validateData(method, data, required){
     var msg;

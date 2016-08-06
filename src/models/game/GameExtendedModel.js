@@ -2,6 +2,8 @@ import GameModel from './GameModel';
 
 /**
  * A model representing an extended Player.me Game.
+ * @extends GameModel
+ * @memberOf module:models/game
  */
 class GameExtendedModel extends GameModel {
     /**
@@ -310,6 +312,7 @@ class GameExtendedModel extends GameModel {
 
 /**
  * A model representing a platform games may be on.
+ * @memberOf module:models/game
  */
 class GamePlatform {
     /**
@@ -385,6 +388,7 @@ class GamePlatform {
 
 /**
  * A model representing a game publisher or developer.
+ * @memberOf module:models/game
  */
 class GameCompany {
     /**

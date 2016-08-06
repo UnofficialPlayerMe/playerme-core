@@ -2,6 +2,7 @@ import UserModel from './../user/UserModel';
 
 /**
  * A model representing a Player.me Notification.
+ * @memberOf module:models/notification
  */
 class NotificationModel {
     /**

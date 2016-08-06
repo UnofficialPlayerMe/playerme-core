@@ -2,6 +2,7 @@ import GameMetadataModel from './../game/GameMetadataModel';
 
 /**
  * The main contents of an ActivityModel of type "post".
+ * @memberOf module:models/activity
  */
 class ActivityPostData {
     /**
@@ -81,6 +82,7 @@ class ActivityPostData {
 
 /**
  * Metadata associated with a Post.
+ * @memberOf module:models/activity
  */
 class ActivityPostMetaData {
     /**
