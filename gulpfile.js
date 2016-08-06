@@ -1,6 +1,7 @@
 // <editor-fold desc="Dependencies">
 
 var gulp = require('gulp');
+var exec = require('child_process').exec;
 var path = require('path');
 var argv = require('yargs').argv;
 
@@ -37,10 +38,10 @@ gulp.task('build:web', function(){
 gulp.task('build:node', function(){
     return gulp.src('').pipe(
         webpackStream(
-            WebpackConfig.makeWeb('node.js', 'playerme-core.node.js')
+            WebpackConfig.makeNode('node.js', 'playerme-core.node.js')
         )
     ).pipe(
-        gulp.dest('dist/web')
+        gulp.dest('dist/node')
     );
 });
 
@@ -76,13 +77,22 @@ gulp.task('build:custom', function(){
 // </editor-fold> Build Tasks
 // <editor-fold desc="Open Tasks">
 
-
 gulp.task('demo:web', function(){
     return gulp.src(
         './demo/web/TestPage/index.html'
     ).pipe(
         openBrowser()
     );
+});
+
+gulp.task('demo:node', function(done){
+    exec('node ' + path.resolve('./demo/node/auth/index.js'), {
+        cwd: __dirname
+    }, function (err, stdout, stderr) {
+        Log.magenta("Demo script output >>\n"+stdout);
+        Log.red(stderr);
+        done(err);
+    });
 });
 
 // </editor-fold> Open Tasks

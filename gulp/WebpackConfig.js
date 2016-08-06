@@ -22,7 +22,11 @@ function makeWeb(entryFileName, outputFileName){
 }
 
 function makeNode(entryFileName, outputFileName){
-    return make(entryFileName, outputFileName);
+    var config = make(entryFileName, outputFileName);
+    config.target = 'node';
+    config.output.libraryTarget = 'umd';
+    config.output.umdNamedDefine = true;
+    return config;
 }
 
 module.exports = {
