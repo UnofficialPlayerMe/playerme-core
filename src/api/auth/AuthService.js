@@ -7,8 +7,7 @@ import LoginResponse from './LoginResponse';
 class AuthService {
     /**
      * This method of login is the regular one, also used in the official front-end app.
-     * This will return a cookie named playerme_session,
-     * make sure you keep that cookie and send it on consequent requests.
+     * This will return a cookie named playerme_session.
      * @param {string} login The login (username OR email)
      * @param {string} password The password
      * @param {boolean} [remember=false] Remember me
@@ -44,9 +43,14 @@ class AuthService {
             }
 
             promise.then((rawResponse)=>{
-                resolve(
-                    new LoginResponse(rawResponse)
-                );
+                var response = new LoginResponse(rawResponse);
+                if (response.success) {
+                    resolve(response);
+                } else {
+                    reject(
+                        new Error(response.raw.results)
+                    );
+                }
             });
         });
     }

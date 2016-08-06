@@ -36,9 +36,9 @@ class AbstractResponse {
 
         /**
          * The raw request this wraps around
-         * @member {RawResponse} _raw
+         * @member {RawResponse} raw
          */
-        this._raw = rawResponse;
+        this.raw = rawResponse;
     }
 
     /**
@@ -68,7 +68,7 @@ class AbstractResponse {
      * @readonly
      */
     get success(){
-        return this._raw.success;
+        return this.raw.success;
     }
 
     /**
@@ -77,7 +77,7 @@ class AbstractResponse {
      * @readonly
      */
     get statusCode(){
-        return this._raw.statusCode;
+        return this.raw.statusCode;
     }
 
     /**
@@ -86,7 +86,7 @@ class AbstractResponse {
      * @readonly
      */
     get statusMessage(){
-        return this._raw.statusMessage;
+        return this.raw.statusMessage;
     }
 
     /**
@@ -95,7 +95,7 @@ class AbstractResponse {
      * @readonly
      */
     get headers(){
-        return this._raw.headers;
+        return this.raw.headers;
     }
 
     /**
@@ -104,7 +104,7 @@ class AbstractResponse {
      * @readonly
      */
     get method(){
-        return this._raw.method;
+        return this.raw.method;
     }
 
     /**
@@ -113,7 +113,7 @@ class AbstractResponse {
      * @readonly
      */
     get uri(){
-        return this._raw.uri;
+        return this.raw.uri;
     }
 }
 
