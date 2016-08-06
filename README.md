@@ -1,5 +1,6 @@
 # playerme-core
 The core stand-alone library for interacting with the official API.
+See our [Github Project Page](https://unofficialplayerme.github.io/playerme-core) for full documentation.
 
 # Adding as a dependency to another project
 Run `npm install UnofficialPlayerMe/playerme-core`
