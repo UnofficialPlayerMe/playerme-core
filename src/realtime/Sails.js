@@ -6,9 +6,22 @@ io.sails.autoConnect = false;
 
 /**
  * @class The base wrapper class for sails.io.js
+ * @see http://sailsjs.org/
  * @memberOf module:realtime
  */
 class Sails {
+    // <editor-fold desc="Static Methods">
+
+    /**
+     * @returns {object}
+     */
+    static getSailsIO(){
+        return io.sails;
+    }
+
+    // </editor-fold>
+    // <editor-fold desc="Setup">
+
     constructor() {
         /**
          * The socket connection
@@ -40,6 +53,7 @@ class Sails {
         this._options = null;
     }
 
+    // </editor-fold>
     // <editor-fold desc="Connection">
 
     /**

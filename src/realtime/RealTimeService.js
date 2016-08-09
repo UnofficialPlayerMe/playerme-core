@@ -4,16 +4,28 @@ import NotificationsRealTime from './api/notifications/NotificationsRealTime';
 
 /**
  * @class The core Sails.io.js wrapper for PlayerMe
- * @extemds Sails
+ * @extends Sails
  * @memberOf module:realtime
  */
 class RealTimeService extends Sails {
+    // <editor-fold desc="Static Methods">
+
+    /**
+     * @returns {object}
+     */
+    static getSailsIO(){
+        return Sails.getSailsIO();
+    }
+
+    // </editor-fold>
+    // <editor-fold desc="Setup">
+
     /**
      * @param {string} url       Server to connect to
      * @param {object} [options] Custom options to override the defaults
      */
     constructor(url, options) {
-        super(url, options);
+        super();
 
         this._verifiedUserId = 0;
 
@@ -27,6 +39,7 @@ class RealTimeService extends Sails {
         this.notifications = new NotificationsRealTime(this);
     }
 
+    // </editor-fold>
     // <editor-fold desc="Verification">
 
     /**
@@ -38,8 +51,19 @@ class RealTimeService extends Sails {
      * @returns {RealTimeService} Itself
      */
     verify(callback){
+        return this.verifyWithOAuth(null, callback);
+    }
+
+    /**
+     * @param {string} [accessToken]
+     * @param {function} callback
+     * @returns {RealTimeService} Itself
+     */
+    verifyWithOAuth(accessToken, callback){
+        var params = accessToken ? { access_token: accessToken } : null;
+
         // Use super's post method to avoid verification check
-        super.post('/verify', null, (body, jwr)=>{
+        super.post('/verify', params, (body, jwr)=>{
             if(body && body.id) {
                 this._verifiedUserId = body.id;
             }
@@ -47,17 +71,6 @@ class RealTimeService extends Sails {
                 callback(body, jwr);
             }
         });
-        return this;
-    }
-
-    /**
-     * @param {string} accessToken
-     * @param {function} callback
-     * @returns {RealTimeService} Itself
-     */
-    verifyWithOAuth(accessToken, callback){
-        var params = { access_token: accessToken };
-        this.post('/verify', params, callback);
         return this;
     }
 
