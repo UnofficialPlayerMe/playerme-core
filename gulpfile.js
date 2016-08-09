@@ -1,9 +1,8 @@
 // <editor-fold desc="Dependencies">
 
-var gulp = require('gulp');
-var exec = require('child_process').exec;
-var path = require('path');
-var argv = require('yargs').argv;
+var gulp  = require('gulp');
+var path  = require('path');
+var argv  = require('yargs').argv;
 
 var webpackStream = require('webpack-stream');
 var openBrowser   = require('gulp-open');
@@ -137,15 +136,31 @@ gulp.task('demo:node:user', function(done){
     demoNode('user/index.js', done);
 });
 
+gulp.task('demo:node:realtime', function(done){
+    demoNode('realtime/index.js', done);
+});
+
 function demoNode(indexFile, callback){
+    var spawn = require('child_process').spawn;
     var joinedPath = path.join('demo/node', indexFile);
-    exec('node ' + path.resolve(joinedPath), {
+    var absolutePath = path.resolve(joinedPath);
+
+    var spawned = spawn(env.NODE_COMMAND, [
+        absolutePath
+    ],{
         cwd: __dirname,
         env: env
-    }, function (err, stdout, stderr) {
-        Log.magenta(joinedPath, "output >>>\n"+stdout);
-        Log.red(stderr);
-        callback(err);
+    });
+
+    spawned.stdout.on('data', function (data) {
+        Log.magenta(data.toString());
+    });
+    spawned.stderr.on('data', function (data) {
+        Log.red(data.toString());
+    });
+    spawned.on('exit', function (code) {
+        Log.cyan('Demo exited with return code ' + code.toString());
+        callback();
     });
 }
 
