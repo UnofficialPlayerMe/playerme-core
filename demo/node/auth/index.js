@@ -1,7 +1,7 @@
 // <editor-fold desc="Dependencies">
 
 var path = require('path');
-var logObject = require('./scripts/logObject');
+var logObject = require('../../helpers/logObject');
 
 // </editor-fold>
 // <editor-fold desc="Initialise Data">
