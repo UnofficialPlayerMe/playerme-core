@@ -1,5 +1,6 @@
 import AbstractRequestAdapter from './AbstractRequestAdapter';
 import RawResponse from '../response/RawResponse';
+import AuthService from '../../../api/auth/AuthService';
 
 import URL from 'url';
 import HTTPS from 'https';
@@ -54,6 +55,10 @@ class NodeRequestAdapter extends AbstractRequestAdapter{
         var sessionCookie = getSessionCookie(urlObject.hostname);
         if (sessionCookie){
             options.headers['Cookie'] = sessionCookie;
+        }
+
+        if (AuthService.oauthSession){
+            options.headers['Authorization'] = AuthService.oauthSession.toHeaderString();
         }
 
         return new Promise((resolve, reject)=>{ // TODO Reject errors

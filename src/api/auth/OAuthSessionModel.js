@@ -49,7 +49,8 @@ class OAuthSessionModel {
     }
 
     /**
-     * The OAuth session's token type,
+     * The OAuth session's token type.
+     * i.e. "bearer"
      * @readonly
      * @member {string} OAuthSessionModel#tokenType
      * @returns {string}
@@ -76,6 +77,16 @@ class OAuthSessionModel {
      */
     get expiresIn(){
         return this._expiresIn;
+    }
+
+    /**
+     * Returns the string we're expected to pass to Player in a header.
+     * @returns {string}
+     *
+     * @see http://docs.playerme.apiary.io/#reference/general/example-authenticated-requests/with-request-headers-oauth-only
+     */
+    toHeaderString(){
+        return this.tokenType+" "+this.accessToken;
     }
 }
 

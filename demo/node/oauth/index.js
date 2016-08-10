@@ -52,11 +52,26 @@ function refresh(){
         /** @param {OAuthTokenResponse} response */
         function(response){
             console.log("Refreshed", response);
-            console.log("PlayerMe.API.AuthService.oauthSession", PlayerMe.API.AuthService.oauthSession);
+            getSelf();
         },
         /** @param {Error} error */
         function(error){
             console.log("[REFRESH ERROR]", error);
+        }
+    );
+}
+
+function getSelf(){
+    console.log("Getting logged in user...");
+
+    PlayerMe.API.UsersRepository.getSelf().then(
+        /** @param {UserEntityResponse} response */
+        function(response){
+            console.log("Welcome back, " + response.result.username);
+        },
+        /** @param {Error} error */
+        function(error){
+            console.log("[GET SELF ERROR]", error);
         }
     );
 }

@@ -1,5 +1,6 @@
 import AbstractRequestAdapter from './AbstractRequestAdapter';
 import RawResponse from '../response/RawResponse';
+import AuthService from '../../../api/auth/AuthService';
 import ErrorResponse from '../response/ErrorResponse';
 import Cookie from 'cookie';
 
@@ -182,6 +183,10 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
                 var sessionCookie = getSessionCookie(urlObject.host);
                 if (sessionCookie){
                     XHR.setRequestHeader("Cookie", sessionCookie);
+                }
+                if (AuthService.oauthSession){
+                    //TODO Test
+                    XHR.setRequestHeader("Authorization", AuthService.oauthSession.toHeaderString());
                 }
                 XHR.send(data ? JSON.stringify(data) : null);
             }catch(e){
