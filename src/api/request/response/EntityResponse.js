@@ -14,8 +14,22 @@ class EntityResponse extends AbstractResponse {
      */
     constructor(modelClass, rawResponse)
     {
-        super(modelClass, rawResponse);
+        super(rawResponse);
         this._assertNotInstanceOfAbstract(EntityResponse);
+
+        // Validate modelClass
+        if (!modelClass){
+            throw new ReferenceError('No modelClass defined by '+this.className);
+        }
+        if (typeof modelClass !== 'function'){
+            throw new ReferenceError('Invalid modelClass defined by '+this.className);
+        }
+
+        /**
+         * The class used to construct the result
+         * @type {Function}
+         */
+        this._modelClass = modelClass;
 
         /**
          * The result object, instantiated with it's model class

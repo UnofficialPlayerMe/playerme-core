@@ -15,8 +15,22 @@ class CollectionResponse extends AbstractResponse {
      */
     constructor(modelClass, rawResponse)
     {
-        super(modelClass, rawResponse);
+        super(rawResponse);
         this._assertNotInstanceOfAbstract(CollectionResponse);
+
+        // Validate modelClass
+        if (!modelClass){
+            throw new ReferenceError('No modelClass defined by '+this.className);
+        }
+        if (typeof modelClass !== 'function'){
+            throw new ReferenceError('Invalid modelClass defined by '+this.className);
+        }
+
+        /**
+         * The class used to construct the result
+         * @type {Function}
+         */
+        this._modelClass = modelClass;
 
         /**
          * Array of results, instantiated with their model class

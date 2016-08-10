@@ -5,21 +5,12 @@
  */
 class AbstractResponse {
     /**
-     * @param {function} modelClass
      * @param {RawResponse} rawResponse
      * @abstract
      */
-    constructor(modelClass, rawResponse)
+    constructor(rawResponse)
     {
         this._assertNotInstanceOfAbstract(AbstractResponse);
-
-        // Validate modelClass
-        if (!modelClass){
-            throw new ReferenceError('No modelClass defined by '+this.className);
-        }
-        if (typeof modelClass !== 'function'){
-            throw new ReferenceError('Invalid modelClass defined by '+this.className);
-        }
 
         // Validate rawResponse
         if (!rawResponse){
@@ -28,12 +19,6 @@ class AbstractResponse {
         if (typeof rawResponse !== 'object' || rawResponse.constructor.name !== 'RawResponse'){
             throw new ReferenceError('Invalid raw defined by '+this.className);
         }
-
-        /**
-         * The class used to construct the result
-         * @type {Function}
-         */
-        this._modelClass = modelClass;
 
         /**
          * The raw request this wraps around
