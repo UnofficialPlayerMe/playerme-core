@@ -16,7 +16,12 @@ node_modules
 .idea
 
 # Environment settings
-env.js
+## Ignore all except examples
+env/*
+!env/*.example.js
+!env/*.example.json
+!env/*.default.js
+!env/*.default.json
 
 # Distributables
 # TODO Remove this rule when nearing public-ready state

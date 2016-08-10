@@ -7,17 +7,37 @@ var argv  = require('yargs').argv;
 var webpackStream = require('webpack-stream');
 var openBrowser   = require('gulp-open');
 
+var Env           = require('./gulp/Env');
 var Log           = require('./gulp/Log');
 var WebpackConfig = require('./gulp/WebpackConfig');
 
 // </editor-fold> Dependencies
 // <editor-fold desc="Environment Settings">
 
-var env = require('./env.example');
+// BUILD
+var buildConfig = require('./env/build.default');
 try{
-    env = require('./env');
+    buildConfig = Env.combine(buildConfig, require('./env/build'));
+}catch(e){}
+
+// DEMO
+var demoEnv = require('./env/demo.example');
+try{
+    demoEnv =  require('./env/demo');
 }catch(e){
-    Log.yellow("Warning: No env.js exists. Running with env.example.js.");
+    Log.yellow("Warning: No demo.js exists. Running with demo.example.js.");
+}
+
+// OAUTH
+var oauthEnv = {};
+try{
+    oauthEnv =  require('./env/oauth');
+}catch(e){
+    Log.yellow(
+        "Warning: No oauth.js exists.\n"+
+        "You'll be unable to build an app that requires users to login with OAuth.\n"+
+        "Create an empty file to suppress this warning."
+    );
 }
 
 // </editor-fold> Environment Settings
@@ -145,11 +165,11 @@ function demoNode(indexFile, callback){
     var joinedPath = path.join('demo/node', indexFile);
     var absolutePath = path.resolve(joinedPath);
 
-    var spawned = spawn(env.NODE_COMMAND, [
+    var spawned = spawn(buildConfig.NODE_COMMAND, [
         absolutePath
     ],{
         cwd: __dirname,
-        env: env
+        env: Env.combine(demoEnv, oauthEnv)
     });
 
     spawned.stdout.on('data', function (data) {
