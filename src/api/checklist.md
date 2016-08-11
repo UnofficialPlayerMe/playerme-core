@@ -3,11 +3,11 @@ API TO-DO LIST
 http://docs.playerme.apiary.io
 
 #  General
-## General / OAuth Stuff
-*  General / OAuth Stuff / Get the tokens from login
-*  General / OAuth Stuff / Refresh the tokens
-## General / Regular Login
-*  General / Regular Login / Login
+## ~~General / OAuth Stuff~~
+*  ~~General / OAuth Stuff / Get the tokens from login~~
+*  ~~General / OAuth Stuff / Refresh the tokens~~
+## ~~General / Regular Login~~
+*  ~~General / Regular Login / Login~~
 ## General / Pre-login
 *  General / Pre-login / Prelogin
 #  Auth related
@@ -23,8 +23,8 @@ http://docs.playerme.apiary.io
 #  Users
 ## Users / Users Collection
 *  Users / Users Collection / List/Query all users
-## Users / User Entity
-*  Users / User Entity / Get user
+## ~~Users / User Entity~~
+*  ~~Users / User Entity / Get user~~
 ## Users / Online users
 *  Users / Online users / List online users
 ## Users / Change user's attributes
