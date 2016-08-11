@@ -36,6 +36,7 @@ login(env.PLAYER_USERNAME, env.PLAYER_PASSWORD);
  * @param {string} password
  */
 function login(username, password) {
+    console.log("Log "+username+" into "+PlayerMe.API.APIService.baseUrl+"...");
     try {
         PlayerMe.API.AuthService.oauthLogin(
             username,
@@ -61,11 +62,18 @@ function login(username, password) {
  * @param {OAuthSessionModel} oauthSession
  */
 function onLogin(oauthSession) {
-    console.log("Welcome back. Connecting to real-time service...");
+    console.log("Logged in. Connecting to real-time service...");
     service = new RealTimeService(env.PLAYER_REALTIME_URL, false);
 
     service.onConnect(onConnected);
     service.onDisconnect(onDisconnected);
+    service.onTest(onTest);
+
+    service.feed.onActivityAdded(onActivityAdded);
+    service.feed.onActivityEdited(onActivityEdited);
+    service.feed.onCommentAdded(onCommentAdded);
+    service.feed.onCommentEdited(onCommentEdited);
+    service.feed.onCommentDeleted(onCommentDeleted);
 }
 
 function onConnected(){
@@ -77,19 +85,56 @@ function onConnected(){
 
 function onVerified(body, jwr){
     console.log("Verified", jwr);
+    console.log("\nPRESS CTRL+C TO EXIT\n");
 
-    console.log("Send test...");
-    service.postTest("Hello World").onTest(function(data){
-        console.log("On test:", data);
-        service.disconnect();
-    });
+    var msg = "Hello World";
+    console.log("postTest >>", msg);
+    service.postTest(msg);
+
+    var feeds = ['discover'];
+    console.log("subscribeToFeed >>", feeds);
+    service.feed.subscribeToFeed(feeds);
 }
+
 
 // </editor-fold>
 // <editor-fold desc="Events">
 
 function onDisconnected() {
-    console.log("Disconnected");
+    console.log("Disconnected", arguments);
+}
+
+function onError() {
+    console.log("Error", arguments);
+}
+
+function onTest(message){
+    console.log("onTest <<", message);
+}
+
+// Feed
+function onActivityAdded(response, activity){
+    console.log("onActivityAdded <<");
+    console.log(response);
+    console.log(activity);
+
+    console.log("subscribeToActivity >>", activity.id);
+    service.feed.subscribeToActivity(activity.id);
+}
+function onActivityEdited(response, activity){
+    console.log("onActivityEdited <<", arguments);
+}
+function onActivityDeleted(response, activity){
+    console.log("onActivityDeleted <<", arguments);
+}
+function onCommentAdded(response, activity, comment){
+    console.log("onCommentAdded <<", arguments);
+}
+function onCommentEdited(response, activity, comment){
+    console.log("onCommentEdited <<", arguments);
+}
+function onCommentDeleted(response, activity, comment){
+    console.log("onCommentDeleted <<", arguments);
 }
 
 // </editor-fold>
