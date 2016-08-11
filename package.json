@@ -1,6 +1,6 @@
 {
   "name": "playerme-core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The core stand-alone library for interacting with the official API.",
   "private": true,
   "main": "dist/playerme-core.js",
