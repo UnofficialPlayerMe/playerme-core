@@ -21,11 +21,14 @@ class RealTimeService extends Sails {
     // <editor-fold desc="Setup">
 
     /**
-     * @param {string} url       Server to connect to
-     * @param {object} [options] Custom options to override the defaults
+     * @param {string}  url                  Server to connect to
+     * @param {boolean} [autoGetCookie=true] Set to false if running outside of a browser and use `verifyWithOAuth`
+     * @param {object}  [options]            Custom options to override the defaults
      */
-    constructor(url, options) {
+    constructor(url, autoGetCookie=true, options) {
         super();
+
+        Sails.getSailsIO().useCORSRouteToGetCookie = autoGetCookie;
 
         this._verifiedUserId = 0;
 
@@ -51,7 +54,16 @@ class RealTimeService extends Sails {
      * @returns {RealTimeService} Itself
      */
     verify(callback){
-        return this.verifyWithOAuth(null, callback);
+        // Use super's post method to avoid verification check
+        super.post('/verify', null, (body, jwr)=>{
+            if(body && body.id) {
+                this._verifiedUserId = body.id;
+            }
+            if (callback){
+                callback(body, jwr);
+            }
+        });
+        return this;
     }
 
     /**
@@ -63,7 +75,7 @@ class RealTimeService extends Sails {
         var params = accessToken ? { access_token: accessToken } : null;
 
         // Use super's post method to avoid verification check
-        super.post('/verify', params, (body, jwr)=>{
+        super.post('/oauth', params, (body, jwr)=>{
             if(body && body.id) {
                 this._verifiedUserId = body.id;
             }

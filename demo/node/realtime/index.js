@@ -5,6 +5,8 @@ if (!env.PLAYER_USERNAME) throw new Error("No PLAYER_USERNAME in environment set
 if (!env.PLAYER_PASSWORD) throw new Error("No PLAYER_PASSWORD in environment settings.");
 if (!env.PLAYER_BASE_URL) throw new Error("No PLAYER_BASE_URL in environment settings.");
 if (!env.PLAYER_REALTIME_URL) throw new Error("No PLAYER_REALTIME_URL in environment settings.");
+if (!env.OAUTH_CLIENT_ID) throw new Error("No OAUTH_CLIENT_ID in environment settings.");
+if (!env.OAUTH_CLIENT_SECRET) throw new Error("No OAUTH_CLIENT_SECRET in environment settings.");
 
 // </editor-fold>
 // <editor-fold desc="Imports">
@@ -35,11 +37,15 @@ login(env.PLAYER_USERNAME, env.PLAYER_PASSWORD);
  */
 function login(username, password) {
     try {
-        PlayerMe.API.AuthService.login(username, password, false).then(
-            /** @param {LoginResponse} response */
+        PlayerMe.API.AuthService.oauthLogin(
+            username,
+            password,
+            env.OAUTH_CLIENT_ID,
+            env.OAUTH_CLIENT_SECRET
+        ).then(
+            /** @param {OAuthSessionResponse} response */
             function (response) {
-                // logObject("RawResponse", response.raw);
-                onLogin(response.result, response);
+                onLogin(response.result);
             },
             /** @param {Error} error */
             function (error) {
@@ -52,12 +58,11 @@ function login(username, password) {
 }
 
 /**
- * @param {UserModel} user
+ * @param {OAuthSessionModel} oauthSession
  */
-function onLogin(user) {
-    console.log("Welcome back, " + user.username + ". Connecting to real-time service.");
-    service = new RealTimeService(env.PLAYER_REALTIME_URL);
-    RealTimeService.getSailsIO().useCORSRouteToGetCookie = false;
+function onLogin(oauthSession) {
+    console.log("Welcome back. Connecting to real-time service...");
+    service = new RealTimeService(env.PLAYER_REALTIME_URL, false);
 
     service.onConnect(onConnected);
     service.onDisconnect(onDisconnected);
@@ -66,13 +71,18 @@ function onLogin(user) {
 function onConnected(){
     console.log("Connected");
 
-    var accessToken = null; //TODO Set access_token
+    var accessToken = PlayerMe.API.AuthService.oauthSession.accessToken;
     service.verifyWithOAuth(accessToken, onVerified);
 }
 
 function onVerified(body, jwr){
     console.log("Verified", jwr);
-    service.disconnect();
+
+    console.log("Send test...");
+    service.postTest("Hello World").onTest(function(data){
+        console.log("On test:", data);
+        service.disconnect();
+    });
 }
 
 // </editor-fold>
