@@ -65,6 +65,7 @@ Checklist based on [official docs](http://docs.playerme.apiary.io).
 *   User's Covers / Covers Collection / List
 *   User's Covers / Covers Collection / Upload
 *   User's Covers / Covers Collection / Set as active
+
 ### User's Covers / Cover Entity
 *   User's Covers / Cover Entity / Get Active
 *   User's Covers / Cover Entity / Delete
