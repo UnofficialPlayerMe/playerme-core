@@ -2,6 +2,24 @@ API TO-DO LIST
 ==============================
 http://docs.playerme.apiary.io
 
+#  General
+## General / OAuth Stuff
+*  General / OAuth Stuff / Get the tokens from login
+*  General / OAuth Stuff / Refresh the tokens
+## General / Regular Login
+*  General / Regular Login / Login
+## General / Pre-login
+*  General / Pre-login / Prelogin
+#  Auth related
+## Auth related / Register
+*  Auth related / Register / Register
+## Auth related / Forgot Password
+*  Auth related / Forgot Password / Forgot Password
+## Auth related / Reset Password
+*  Auth related / Reset Password / Reset
+## Auth related / Get Invite Link
+*  Auth related / Get Invite Link / Get Invite Link
+
 #  Users
 ## Users / Users Collection
 *  Users / Users Collection / List/Query all users
