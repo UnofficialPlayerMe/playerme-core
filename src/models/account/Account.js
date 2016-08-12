@@ -184,7 +184,7 @@ class Account {
     toString() {
         var msg = '[Account';
         if (this.id) msg += ' id="'+this.id+'"';
-        if (this.username) msg += ' username="'+this.username+'"';
+        if (this.slug) msg += ' slug="'+this.slug+'"';
         return msg +']';
     }
 }

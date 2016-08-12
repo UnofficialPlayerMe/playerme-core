@@ -1,5 +1,6 @@
 import APIService from '../request/APIService';
 import UserEntityResponse from './UserEntityResponse';
+import UsersGraphQL from './UsersGraphQL';
 
 /**
  * A repository for accessing Player Users
@@ -31,7 +32,9 @@ class UsersRepository {
 
         return new Promise((resolve, reject)=>{
             try {
-                var promise = APIService.get('api/v1/users/' + id, null);
+                var promise = APIService.get('api/graphql', {
+                    query: UsersGraphQL.getFromID(id, )
+                });
             }catch(e){
                 reject(e);
                 return;
