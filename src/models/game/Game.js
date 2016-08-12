@@ -1,4 +1,5 @@
 import FactoryHelper from '../FactoryHelper';
+import Searchable from '../search/Searchable';
 import ImageData from '../media/ImageData';
 import Platform from './Platform';
 import Company from '../account/Company';
@@ -11,7 +12,7 @@ import VideoConnection from '../media/VideoConnection';
 /**
  * @memberOf module:models/game
  */
-class Game {
+class Game extends Searchable {
     /**
      * @param {Object} [obj]
      */

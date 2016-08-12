@@ -1,11 +1,12 @@
 import FactoryHelper from '../FactoryHelper';
+import Searchable from '../search/Searchable';
 import ImageData from '../media/ImageData';
 import Avatar from '../media/Avatar';
 
 /**
  * @memberOf module:models/account
  */
-class Account {
+class Account extends Searchable {
     /**
      * @param {Object} [obj]
      */
