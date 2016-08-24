@@ -53,4 +53,4 @@ class GroupNetworkPivot {
     }
 }
 
-export default Group;
+export default GroupNetworkPivot;
