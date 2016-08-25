@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unofficial PlayerMe Core</title>
+
+    <script src="../../../dist/web/playerme-core.js"></script>
+    <script src="../../helpers/logLibrary.js"></script>
+    <script src="./scripts/redirectLogin.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+
+    <script>
+        window.onload = function() {
+            logLibrary('PlayerMe', PlayerMe);
+            logLibrary('PlayerMe.API.AuthService', PlayerMe.API.AuthService);
+
+            checkRedirectLogin();
+        };
+    </script>
+</head>
+<body>
+<h1>Demo: Auth</h1>
+<p>Test the auth methods</p>
+
+<h3>Redirect Login</h3>
+<form>
+    <p>Client ID:       <input type="text" name="clientId"></p>
+    <p>Redirect URL:    <input type="text" name="redirectUrl"></p>
+    <p>State:           <input type="text" name="state"></p>
+    <input type="button" value="Go"  onClick="redirectLogin(this.form)">
+</form>
+
+</body>
+</html>

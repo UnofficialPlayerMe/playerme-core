@@ -1,6 +1,29 @@
 import AbstractResponse from '../request/response/AbstractResponse';
 import OAuthSessionModel from './OAuthSessionModel';
 
+/*
+201
+{
+  "access_token":  "$ACCESS_TOKEN",
+  "token_type":    "bearer",
+  "expires":       $EXPIRATION_TIME,
+  "expires_in":    $EXPIRATION_TIME_FROM_NOW,
+  "refresh_token": "$REFRESH_TOKEN"
+}
+
+400
+{
+  "error":             "invalid_request",
+  "error_description": "The user credentials were incorrect."
+}
+
+401
+{
+  "error":             "access_denied",
+  "error_description": "You have enabled 2-Factor authentication. Please click your link in the email."
+}
+ */
+
 /**
  * Response containing OAuth tokens
  * @extends AbstractResponse
@@ -10,12 +33,12 @@ class OAuthSessionResponse extends AbstractResponse {
     constructor(rawResponse)
     {
         super(rawResponse);
-        this._assertNotInstanceOfAbstract(AbstractResponse);
 
         var session = new OAuthSessionModel(rawResponse.body);
         this._result = null;
 
-        if (this.statusCode == 200 && session.accessToken){
+        this._success = this.statusCode >= 200 && this.statusCode < 300 && session.accessToken;
+        if (this._success){
             this._result = session;
         }
     }
@@ -34,7 +57,7 @@ class OAuthSessionResponse extends AbstractResponse {
      * @readonly
      */
     get success(){
-        return this._result !== null;
+        return this._success;
     }
 }
 

@@ -1,6 +1,11 @@
 import APIService from '../request/APIService';
-import LoginResponse from './LoginResponse';
 import OAuthSessionResponse from './OAuthSessionResponse';
+
+function getQueryString(field, url) {
+    var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+    var string = reg.exec(url || window.location.href);
+    return string ? string[1] : undefined;
+}
 
 /**
  *
@@ -20,31 +25,140 @@ class AuthService {
     }
 
     /**
-     * This method of login is the regular one, also used in the official front-end app.
-     * This will return a cookie named playerme_session.
+     *
+     * @param {string} clientId
+     * @param {string} redirectUrl
+     * @param {string} [state] A string that is passed back to the redirect URL
+     *
+     * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-player.me
+     * @example AuthService.redirectLogin(clientId, "https://example.com/foo", "bar");
+     */
+    redirectLogin(clientId, redirectUrl, state=''){
+        // Validation
+        this._validateParameter("AuthService.redirectLogin()", 'client id', clientId);
+        this._validateParameter("AuthService.redirectLogin()", 'redirect url', redirectUrl);
+
+        // Build URL
+        var url = APIService.baseUrl + "/o/auth?response_type=code";
+        url += "&client_id="+clientId;
+        url += "&redirect_uri="+encodeURIComponent(redirectUrl);
+        if (state) {
+            url += "&state="+state;
+        }
+
+        // TODO Redirect
+        window.location = url;
+    }
+
+    /**
+     * Returns an object if the passed or current URL looks like it was a login redirect
+     * @param {string} [url]
+     * @returns {{code, state}|null}
+     */
+    didRedirectLogin(url){
+        var code = getQueryString('code', url);
+        var state = getQueryString('state', url);
+
+        if (typeof code != 'undefined' && typeof state != 'undefined'){
+            return {
+                code:code,
+                state:state
+            };
+        }
+        return null;
+    }
+
+    /**
+     * Returns an objecy if the passed or current URL looks like it was a failed login redirect
+     * @param {string} [url]
+     * @returns {{error, description}|null}
+     */
+    failedRedirectLogin(url){
+        var error = getQueryString('error', url);
+        var errorDescription = getQueryString('error_description', url);
+        var state = getQueryString('state', url);
+        if (typeof error != 'undefined' && typeof errorDescription != 'undefined' && typeof state != 'undefined'){
+            return {
+                error: error,
+                description: decodeURIComponent(errorDescription).replace(/\+/g, ' '),
+                state: state
+            };
+        }
+        return null;
+    }
+
+    /**
+     * @param {string} clientId The OAuth client ID
+     * @param {string} clientSecret The OAuth client secret
+     * @param {string} redirectUrl The URL used in AuthService.redirectLogin()
+     *
+     * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-your-site
+     * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-authorization-code-for-an-access-token/exchange-authorization-code-for-an-access-token
+     * @see AuthService.redirectLogin()
+     */
+    processRedirectedLogin(clientId, clientSecret, redirectUrl){
+        // <editor-fold desc="Prepare">
+
+        if (!this.didRedirectLogin()){
+            return false;
+        }
+
+        // Validation
+        this._validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
+        this._validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
+        this._validateParameter("AuthService.processRedirectedLogin()", 'redirect url', redirectUrl);
+
+        var authCode = getQueryString('code');
+        var passedState = getQueryString('state');
+
+        // </editor-fold>
+
+        // TODO exchange the Authorization Code for an access_token
+
+
+    }
+
+    /**
+     *
+     * @param {string} clientId The OAuth client ID
+     * @param {string} clientSecret The OAuth client secret
+     * @param {string} refreshToken
+     */
+    refreshLogin(clientId, clientSecret, refreshToken){
+        // TODO Refresh login
+        this._validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
+        this._validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
+        this._validateParameter("AuthService.processRedirectedLogin()", 'refresh token', refreshToken);
+    }
+
+    /**
+     * This is for mobile app developers only!
+     * This will return a cookie named playerme_session. TODO Confirm this is still true
+     *
      * @param {string} login The login (username OR email)
      * @param {string} password The password
-     * @param {boolean} [remember=false] Remember me
-     * @returns {Promise}
+     * @param {string} clientId The OAuth client ID
+     * @param {string} clientSecret The OAuth client secret
+     * @returns {Promise} Resolve: OAuthSessionResponse | Reject: Error|OAuthSessionResponse
+     *
+     * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-login-for-an-access-token/exchange-login-for-an-access-token
+     * @example
+     * AuthService.appLogin(login, password, clientId, clientSecret).then({
+     *     function(response){
+     *         console.log("Welcome back, "+login+"!", response);
+     *     },
+     *     function(error){
+     *         console.error(error);
+     *     }
+     * );
      */
-    login(login, password, remember=false){
-        // <editor-fold desc="Validation">
+    appLogin(login, password, clientId, clientSecret){
+        // <editor-fold desc="Prepare">
 
-        // Validate login
-        if (!login){
-            throw new ReferenceError("No user login passed to AuthService:login().");
-        }
-        if (typeof login !== 'string'){
-            throw new TypeError("Login passed to AuthService:login() isn't a string. Was ["+(typeof login)+"].");
-        }
-
-        // Validate password
-        if (!password){
-            throw new ReferenceError("No password passed to AuthService:login().");
-        }
-        if (typeof password !== 'string'){
-            throw new TypeError("Password passed to AuthService:login() isn't a string. Was ["+(typeof password)+"].");
-        }
+        this._validateParameter("AuthService.appLogin()", 'login', login);
+        this._validateParameter("AuthService.appLogin()", 'password', password);
+        this._validateParameter("AuthService.appLogin()", 'client id', clientId);
+        this._validateParameter("AuthService.appLogin()", 'client secret', clientSecret);
 
         // </editor-fold>
 
@@ -52,93 +166,12 @@ class AuthService {
             // <editor-fold desc="Request">
 
             try {
-                var promise = APIService.post('api/v1/auth/login', {
-                    login: login,
-                    password: password,
-                    remember: remember
-                });
-            }catch(e){
-                reject(e);
-                return;
-            }
-
-            // </editor-fold>
-            // <editor-fold desc="Response">
-
-            promise.then((rawResponse)=>{
-                var response = new LoginResponse(rawResponse);
-                if (response.success) {
-                    resolve(response);
-                } else {
-                    reject(
-                        new Error(response.raw.results)
-                    );
-                }
-            }, function(error){
-                reject(error);
-            });
-
-            // </editor-fold>
-        });
-    }
-
-    /**
-     * Use OAuth to log the user in and keep them logged in with tokens
-     *
-     * @param {string} username          The user's username.
-     * @param {string} password          The user's password.
-     * @param {string} oauthClientId     Your client ID.
-     * @param {string} oauthClientSecret Your client secret.
-     *
-     * @see http://docs.playerme.apiary.io/#reference/general/oauth-stuff/get-the-tokens-from-login
-     */
-    oauthLogin(username, password, oauthClientId, oauthClientSecret){
-        // <editor-fold desc="Validation">
-
-        // Validate login
-        if (!username){
-            throw new ReferenceError("No username passed to AuthService:oauthLogin().");
-        }
-        if (typeof username !== 'string'){
-            throw new TypeError("Username passed to AuthService:oauthLogin() isn't a string. Was ["+(typeof username)+"].");
-        }
-
-        // Validate password
-        if (!password){
-            throw new ReferenceError("No password passed to AuthService:oauthLogin().");
-        }
-        if (typeof password !== 'string'){
-            throw new TypeError("Password passed to AuthService:oauthLogin() isn't a string. Was ["+(typeof password)+"].");
-        }
-
-        // Validate client ID
-        if (!oauthClientId){
-            throw new ReferenceError("No client ID passed to AuthService:oauthLogin().");
-        }
-        if (typeof oauthClientId !== 'string'){
-            throw new TypeError("Client ID passed to AuthService:oauthLogin() isn't a string. Was ["+(typeof oauthClientId)+"].");
-        }
-
-        // Validate client secret
-        if (!oauthClientSecret){
-            throw new ReferenceError("No client secret passed to AuthService:oauthLogin().");
-        }
-        if (typeof oauthClientSecret !== 'string'){
-            throw new TypeError("Client secret passed to AuthService:oauthLogin() isn't a string. Was ["+(typeof oauthClientSecret)+"].");
-        }
-
-        // </editor-fold>
-
-        return new Promise((resolve, reject)=>{
-            // <editor-fold desc="Request">
-
-            try {
-                var promise = APIService.post('api/oauth/access_token', {
-                    username: username,
-                    password: password,
-                    client_id: oauthClientId,
-                    client_secret: oauthClientSecret,
-                    grant_type: 'password'
+                var promise = APIService.post('api/oauth/access_token?grant_type=password', {
+                    grant_type: "password",
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    username: login,
+                    password: password
                 });
             }catch(e){
                 reject(e);
@@ -150,13 +183,12 @@ class AuthService {
 
             promise.then((rawResponse)=>{
                 var response = new OAuthSessionResponse(rawResponse);
+
                 if (response.success) {
-                    this._oauthSession = response.result;
                     resolve(response);
                 } else {
-                    reject(
-                        new Error(response.raw.results)
-                    );
+                    // TODO Better rejection
+                    reject(response);
                 }
             }, function(error){
                 reject(error);
@@ -167,69 +199,42 @@ class AuthService {
     }
 
     /**
-     * Refresh the user's OAuth session
-     * TODO Auto-refresh
      *
-     * @param {string} oauthClientId     Your client ID.
-     * @param {string} oauthClientSecret Your client secret.
+     * @param {string} clientId The OAuth client ID
+     * @param {string} clientSecret The OAuth client secret
+     * @param {string} twoFactorToken
      *
-     * @see http://docs.playerme.apiary.io/#reference/general/oauth-stuff/refresh-the-tokens
+     * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-two-factor-tokens-for-an-access-token/exchange-two-factor-tokens-for-an-access-token
      */
-    oauthRefresh(oauthClientId, oauthClientSecret){
-        // <editor-fold desc="Validation">
+    twoFactorAppLogin(clientId, clientSecret, twoFactorToken){
+        // <editor-fold desc="Prepare">
 
-        // Validate client ID
-        if (!oauthClientId){
-            throw new ReferenceError("No client ID passed to AuthService:oauthRefresh().");
-        }
-        if (typeof oauthClientId !== 'string'){
-            throw new TypeError("Client ID passed to AuthService:oauthRefresh() isn't a string. Was ["+(typeof oauthClientId)+"].");
-        }
-
-        // Validate client secret
-        if (!oauthClientSecret){
-            throw new ReferenceError("No client secret passed to AuthService:oauthRefresh().");
-        }
-        if (typeof oauthClientSecret !== 'string'){
-            throw new TypeError("Client secret passed to AuthService:oauthRefresh() isn't a string. Was ["+(typeof oauthClientSecret)+"].");
-        }
+        this._validateParameter("AuthService.twoFactorAppLogin()", 'client id', clientId);
+        this._validateParameter("AuthService.twoFactorAppLogin()", 'client secret', clientSecret);
+        this._validateParameter("AuthService.twoFactorAppLogin()", 'two-factor-access token', twoFactorToken);
 
         // </editor-fold>
 
-        return new Promise((resolve, reject)=>{
-            // <editor-fold desc="Request">
+        // TODO Two factor auth
+    }
 
-            try {
-                var promise = APIService.post('api/oauth/access_token', {
-                    refresh_token: this.oauthSession.refreshToken,
-                    client_id: oauthClientId,
-                    client_secret: oauthClientSecret,
-                    grant_type: 'refresh_token'
-                });
-            }catch(e){
-                reject(e);
-                return;
-            }
-
-            // </editor-fold>
-            // <editor-fold desc="Response">
-
-            promise.then((rawResponse)=>{
-                var response = new OAuthSessionResponse(rawResponse);
-                if (response.success) {
-                    this._oauthSession = response.result;
-                    resolve(response);
-                } else {
-                    reject(
-                        new Error(response.raw.results)
-                    );
-                }
-            }, function(error){
-                reject(error);
-            });
-
-            // </editor-fold>
-        });
+    /**
+     * Throw an exception if the parameter isn't set or the correct type
+     * @param {string} methodName Name of the method to display in an error
+     * @param {string} name Name of the parameter to display in an error
+     * @param {*} value Parameter to be tested
+     * @param {string} [expectedType='string'] Expected `typeof` for the parameter
+     * @protected
+     * @throws {ReferenceError}
+     * @throws {TypeError}
+     */
+    _validateParameter(methodName, name, value, expectedType='string'){
+        if (!value){
+            throw new ReferenceError("No "+name+" passed to "+methodName+".");
+        }
+        if (expectedType && typeof value !== expectedType){
+            throw new TypeError("The "+name+" passed to "+methodName+" isn't a "+expectedType+". Was ["+(typeof value)+"].");
+        }
     }
 }
 
