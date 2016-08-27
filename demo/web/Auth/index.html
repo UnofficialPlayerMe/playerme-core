@@ -14,21 +14,44 @@
         window.onload = function() {
             logLibrary('PlayerMe', PlayerMe);
             logLibrary('PlayerMe.API.AuthService', PlayerMe.API.AuthService);
+            PlayerMe.API.APIService.setAdapter(PlayerMe.API.adapters.XMLHttpRequestAdapter);
 
-            checkRedirectLogin();
         };
+
+        function testSelf(){
+            PlayerMe.API.UsersRepository.getSelf().then(
+                function(result){
+                    alert("Success");
+                    console.log("Success", result);
+                },
+                function(failure){
+                    alert("Failure");
+                    console.log("Failure", failure);
+                }
+            );
+        }
     </script>
 </head>
 <body>
 <h1>Demo: Auth</h1>
 <p>Test the auth methods</p>
 
+<h3>Authenticated Test</h3>
+<input type="button" value="Get self" onClick="testSelf()">
+
 <h3>Redirect Login</h3>
 <form>
     <p>Client ID:       <input type="text" name="clientId"></p>
     <p>Redirect URL:    <input type="text" name="redirectUrl"></p>
     <p>State:           <input type="text" name="state"></p>
-    <input type="button" value="Go"  onClick="redirectLogin(this.form)">
+    <input type="button" value="Go" onClick="redirectLogin(this.form)">
+</form>
+<h4>Exchange Redirect Code for Auth Token</h4>
+<form>
+    <p>Client ID:       <input type="text" name="clientId"></p>
+    <p>Client Secret:   <input type="text" name="clientSecret"></p>
+    <p>Redirect URL:    <input type="text" name="redirectUrl"></p>
+    <input type="button" value="Go" onClick="exchangeToken(this.form)">
 </form>
 
 </body>

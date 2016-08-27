@@ -25,12 +25,18 @@ class AuthService {
     }
 
     /**
+     * Redirects the user to player.me to authenticate your app.
+     * Once the user has accepted, they will then be redirected to the passed `redirectUrl` with whatever `state` you pass.
+     * The user will also be sent to the `redirectUrl` if they decline.
      *
-     * @param {string} clientId
-     * @param {string} redirectUrl
-     * @param {string} [state] A string that is passed back to the redirect URL
+     * @param {string} clientId     Your app's OAuth client ID
+     * @param {string} redirectUrl  The URL the user will be redirected to from player.me, once they've accepted/declined
+     * @param {string} [state]      A string that is passed back to the redirect URL
      *
      * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-player.me
+     * @see AuthService::didRedirectLogin()
+     * @see AuthService::failedRedirectLogin()
+     * @see AuthService::processRedirectedLogin()
      * @example AuthService.redirectLogin(clientId, "https://example.com/foo", "bar");
      */
     redirectLogin(clientId, redirectUrl, state=''){
@@ -46,14 +52,21 @@ class AuthService {
             url += "&state="+state;
         }
 
-        // TODO Redirect
+        // Redirect to url
         window.location = url;
     }
 
     /**
-     * Returns an object if the passed or current URL looks like it was a login redirect
+     * Returns an object if the passed or current URL looks like it was a login redirect.
+     * You can use this to get the `state` originally passed to `AuthService::redirectLogin()`.
      * @param {string} [url]
-     * @returns {{code, state}|null}
+     * @returns {{code:string, state:string}|null}
+     *
+     * @see AuthService::redirectLogin()
+     * @see AuthService::failedRedirectLogin()
+     * @see AuthService::processRedirectedLogin()
+     *
+     * @example if (AuthService.didRedirectLogin()) {...}
      */
     didRedirectLogin(url){
         var code = getQueryString('code', url);
@@ -69,9 +82,18 @@ class AuthService {
     }
 
     /**
-     * Returns an objecy if the passed or current URL looks like it was a failed login redirect
+     * Returns an object if the passed or current URL looks like it was a failed login redirect.
      * @param {string} [url]
-     * @returns {{error, description}|null}
+     * @returns {{error:string, description:string, state:string}|null}
+     *
+     * @see AuthService::redirectLogin()
+     * @see AuthService::didRedirectLogin()
+     * @see AuthService::processRedirectedLogin()
+     *
+     * @example var authFail = AuthService.failedRedirectLogin();
+     * if (authFail) {
+     *      console.error("Failed to login:", authFail.description);
+     * }
      */
     failedRedirectLogin(url){
         var error = getQueryString('error', url);
@@ -88,34 +110,97 @@ class AuthService {
     }
 
     /**
+     * If the user was redirected here via `AuthService::redirectLogin()` and the user accepted, then
+     *
      * @param {string} clientId The OAuth client ID
      * @param {string} clientSecret The OAuth client secret
      * @param {string} redirectUrl The URL used in AuthService.redirectLogin()
+     * @returns {Promise} Resolve: OAuthSessionResponse, state:string | Reject: Error|OAuthSessionResponse, state:string
+     * @throws {Error} If the user wasn't redirected here.
      *
      * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-your-site
      * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-authorization-code-for-an-access-token/exchange-authorization-code-for-an-access-token
      * @see AuthService.redirectLogin()
+     *
+     * @see AuthService::redirectLogin()
+     * @see AuthService::didRedirectLogin()
+     * @see AuthService::failedRedirectLogin()
+     *
+     * @example
+     * AuthService.processRedirectedLogin(
+     *  function(){
+     *      console.log("Authenticated", response.result.accessToken);
+     *  },
+     *  function(response, state){
+     *      console.log("Failed to authenticate", response);
+     *  }
+     * );
      */
     processRedirectedLogin(clientId, clientSecret, redirectUrl){
         // <editor-fold desc="Prepare">
-
-        if (!this.didRedirectLogin()){
-            return false;
-        }
 
         // Validation
         this._validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
         this._validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
         this._validateParameter("AuthService.processRedirectedLogin()", 'redirect url', redirectUrl);
 
-        var authCode = getQueryString('code');
-        var passedState = getQueryString('state');
-
         // </editor-fold>
 
         // TODO exchange the Authorization Code for an access_token
 
+        return new Promise((resolve, reject)=>{
+            // <editor-fold desc="Redirect check">
 
+            var didRedirect = this.didRedirectLogin();
+
+            if (!didRedirect){
+                var failedRedirect = this.failedRedirectLogin();
+                if (failedRedirect){
+                    return reject(
+                        new Error("Failed to get auth code: "+failedRedirect.description),
+                        failedRedirect.state
+                    );
+                }
+                return reject(
+                    new Error("AuthService.processRedirectedLogin() wasn't redirected to here."),
+                    null
+                );
+            }
+
+            // </editor-fold>
+            // <editor-fold desc="Request">
+
+            try {
+                var promise = APIService.post('api/oauth/access_token?grant_type=authorization_code', {
+                    grant_type: "authorization_code",
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    code: didRedirect.code,
+                    redirect_uri: redirectUrl
+                });
+            }catch(e){
+                reject(e);
+                return;
+            }
+
+            // </editor-fold>
+            // <editor-fold desc="Response">
+
+            promise.then((rawResponse)=>{
+                var response = new OAuthSessionResponse(rawResponse);
+
+                if (response.success) {
+                    resolve(response, didRedirect.state);
+                } else {
+                    // TODO Better rejection
+                    reject(response, didRedirect.state);
+                }
+            }, function(error){
+                reject(error, didRedirect.state);
+            });
+
+            // </editor-fold>
+        });
     }
 
     /**
