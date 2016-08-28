@@ -6,6 +6,7 @@
 
     <script src="../../../dist/web/playerme-core.js"></script>
     <script src="../../helpers/logLibrary.js"></script>
+    <script src="../../vendor/require.js"></script>
     <script src="./scripts/redirectLogin.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./styles.css">
@@ -15,9 +16,39 @@
             logLibrary('PlayerMe', PlayerMe);
             logLibrary('PlayerMe.API.AuthService', PlayerMe.API.AuthService);
 
-            PlayerMe.API.APIService.baseUrl = 'https://staging.player.me';
             PlayerMe.API.APIService.setAdapter(PlayerMe.API.adapters.XMLHttpRequestAdapter);
             PlayerMe.API.AuthService.rememberMe = true;
+
+            requirejs(['../../../env/demo.js'],
+                function(demoEnv){
+                    var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID       || false;
+                    var clientSecret = demoEnv && demoEnv.OAUTH_CLIENT_SECRET   || false;
+                    var redirectUrl  = demoEnv && demoEnv.OAUTH_CLIENT_REDIRECT || window.location.href.split('?')[0];
+                    var baseUrl      = demoEnv && demoEnv.PLAYER_BASE_URL       || null;
+
+                    if (clientId){
+                        document.querySelectorAll('[name=clientId]').forEach(function(field){
+                            field.value = clientId;
+                        });
+                    }
+                    if (clientSecret){
+                        document.querySelectorAll('[name=clientSecret]').forEach(function(field){
+                            field.value = clientSecret;
+                        });
+                    }
+                    if (redirectUrl){
+                        document.querySelectorAll('[name=redirectUrl]').forEach(function(field){
+                            field.value = redirectUrl;
+                        });
+                    }
+                    if (baseUrl) {
+                        PlayerMe.API.APIService.baseUrl = baseUrl;
+                    }
+                },
+                function(err){
+                    console.error("Failed to load custom demo presets in " + err.requireModules[0]);
+                }
+            );
         };
 
         function testSelf(){
@@ -36,7 +67,8 @@
 </head>
 <body>
 <h1>Demo: Auth</h1>
-<p>Test the auth methods</p>
+<p>Test the auth methods.</p>
+<p>Fields are pre-populated based on the contents of <em>env/demo.js</em>.</p>
 
 <h3>Authenticated Test</h3>
 <input type="button" value="Get self" onClick="testSelf()">
