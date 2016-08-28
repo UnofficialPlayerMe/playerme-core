@@ -31,12 +31,14 @@ class AuthService {
         return this._oauthSession;
     }
     /**
-     * @param {OAuthSessionModel|null} oauthSessionModel
+     * @param {OAuthSessionModel|null} model
      */
-    set oauthSession(oauthSessionModel){
-        this._oauthSession = oauthSessionModel;
-        if (oauthSessionModel && this.rememberMe) {
-            oauthSessionModel.addToLocalStorage();
+    set oauthSession(model){
+        this._oauthSession = model;
+        if (model && this.rememberMe) {
+            model.addToLocalStorage();
+        } else {
+            OAuthSessionModel.removeFromLocalStorage();
         }
     }
 
@@ -56,6 +58,14 @@ class AuthService {
     }
 
     // </editor-fold>
+
+    /**
+     * Clear the current session
+     */
+    logout(){
+       this.oauthSession = null;
+        localStorage.removeItem(LOCAL_STORAGE_KEY_REMEMBER_ME);
+    }
 
     /**
      * Redirects the user to player.me to authenticate your app.

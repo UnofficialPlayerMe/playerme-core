@@ -101,17 +101,20 @@ class OAuthSessionModel {
 
     /**
      * Get a model from local storage
-     * @returns {OAuthSessionModel|null}
+     * @returns {OAuthSessionModel}
      */
     static getFromLocalStorage(){
         var json = localStorage.getItem(LOCAL_STORAGE_KEY);
-        try{
-            return new OAuthSessionModel(
-                JSON.parse(json)
-            );
-        }catch(e){
-            return null;
-        }
+        var parsed = JSON.parse(json);
+
+        return parsed ? new OAuthSessionModel(parsed) : null;
+    }
+
+    /**
+     * Remove a modal from local storage
+     */
+    static removeFromLocalStorage(){
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
 }
 

@@ -42,7 +42,8 @@ class EntityResponse extends AbstractResponse {
      * @readonly
      */
     get success(){
-        return this.raw.statusCode >= 200 && this.raw.statusCode < 300 && this.raw.body;
+        if (this.statusCode < 200 || this.statusCode >= 300) return false;
+        return this.raw.body && this.raw.body.success;
     }
 
     /**

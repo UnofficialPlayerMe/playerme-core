@@ -63,6 +63,12 @@
                 }
             );
         }
+
+        function logout(){
+            PlayerMe.API.AuthService.logout();
+            alert("Logged out");
+        }
+
     </script>
 </head>
 <body>
@@ -72,6 +78,7 @@
 
 <h3>Authenticated Test</h3>
 <input type="button" value="Get self" onClick="testSelf()">
+<input type="button" value="Logout" onClick="logout()">
 
 <h3>Redirect Login</h3>
 <form>
