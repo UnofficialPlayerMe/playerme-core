@@ -85,7 +85,6 @@ class OAuthSessionModel {
      *
      * @see http://docs.playerme.apiary.io/#reference/general/example-authenticated-requests/with-request-headers-oauth-only
      */
-    // TODO Remove?
     toHeaderString(){
         return this.tokenType+" "+this.accessToken;
     }

@@ -13,6 +13,7 @@ function getQueryString(field, url) {
  */
 class AuthService {
     constructor(){
+        // TODO Have a session map, OAuth can be switched without re-authenticating
         this._oauthSession = null;
     }
 
@@ -190,6 +191,7 @@ class AuthService {
                 var response = new OAuthSessionResponse(rawResponse);
 
                 if (response.success) {
+                    this._oauthSession = response.result;
                     resolve(response, didRedirect.state);
                 } else {
                     // TODO Better rejection

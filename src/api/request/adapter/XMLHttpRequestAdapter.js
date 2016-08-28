@@ -2,30 +2,6 @@ import AbstractRequestAdapter from './AbstractRequestAdapter';
 import RawResponse from '../response/RawResponse';
 import AuthService from '../../../api/auth/AuthService';
 import ErrorResponse from '../response/ErrorResponse';
-import Cookie from 'cookie';
-
-var cookieJar = [];
-
-/**
- *
- * @param {string} hostname
- * @returns {string|null}
- * @ignore
- */
-function getSessionCookie(hostname){
-    var cookies = cookieJar[hostname] || [];
-
-    for (var i in cookies){
-        var cookie = cookies[i];
-
-        for (var key in cookie) {
-            if (key === 'playerme_session' || key === 'staging_playerme_session') {
-                return key+"="+cookie[key];
-            }
-        }
-    }
-    return null;
-}
 
 /**
  *
@@ -83,20 +59,6 @@ function getHeadersFromXHR(XHR){
 }
 
 /**
- * Returns the XHR's response in JSON form, or null if invalid
- * @param {XMLHttpRequest} XHR
- * @returns {Object|null}
- * @ignore
- */
-function getJSONFromXHR(XHR) {
-    try {
-        return JSON.parse(XHR.responseText);
-    } catch (e) {
-        return null;
-    }
-}
-
-/**
  *
  * @param {XMLHttpRequest} XHR
  * @returns {RawResponse|null}
@@ -117,7 +79,7 @@ function getRawResponse(XHR) {
 /**
  *
  * @param XHR
- * @returns {RawResponse}
+ * @returns {ErrorResponse}
  * @ignore
  */
 function getErrorResponse(XHR) {
@@ -146,16 +108,9 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
     request(method, url, data=null){
         return new Promise((resolve, reject)=>{
             var XHR = new XMLHttpRequest();
-            var urlObject = parseUrl(url);
 
             XHR.addEventListener('load', function(){
                 var response = getRawResponse(XHR);
-                var headers = getHeadersFromXHR(XHR);
-                var setCookie = headers['set-cookie'];
-
-                if (setCookie) {
-                    cookieJar[urlObject.host] = setCookie.map((current) => Cookie.parse(current));
-                }
 
                 if (response) {
                     resolve(response);
@@ -180,12 +135,8 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
             try {
                 XHR.open(method, url);
                 XHR.setRequestHeader("Content-Type", "application/json");
-                var sessionCookie = getSessionCookie(urlObject.host);
-                if (sessionCookie){
-                    XHR.setRequestHeader("Cookie", sessionCookie);
-                }
                 if (AuthService.oauthSession){
-                    //TODO Test
+                    //TODO Add refresh
                     XHR.setRequestHeader("Authorization", AuthService.oauthSession.toHeaderString());
                 }
                 XHR.send(data ? JSON.stringify(data) : null);

@@ -15,7 +15,6 @@ class EntityResponse extends AbstractResponse {
     constructor(modelClass, rawResponse)
     {
         super(rawResponse);
-        this._assertNotInstanceOfAbstract(EntityResponse);
 
         // Validate modelClass
         if (!modelClass){
@@ -35,6 +34,15 @@ class EntityResponse extends AbstractResponse {
          * The result object, instantiated with it's model class
          */
         this._result = new modelClass(rawResponse.results);
+    }
+
+    /**
+     * Whether the response was successful
+     * @returns {boolean}
+     * @readonly
+     */
+    get success(){
+        return this.raw.statusCode >= 200 && this.raw.statusCode < 300 && this.raw.body;
     }
 
     /**

@@ -61,7 +61,7 @@ function exchangeToken(form){
             console.log("exchangeToken Success", {response:response, state:passedState});
         },
         function(error, passedState){
-            console.log("exchangeToken Faulure", {error:error, state:passedState});
+            console.log("exchangeToken Failure", {error:error, state:passedState});
         }
     );
 }
