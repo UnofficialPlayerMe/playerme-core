@@ -7,6 +7,7 @@
     <script src="../../../dist/web/playerme-core.js"></script>
     <script src="../../helpers/logLibrary.js"></script>
     <script src="../../vendor/require.js"></script>
+    <script src="./scripts/setupClient.js"></script>
     <script src="./scripts/redirectLogin.js"></script>
     <script src="./scripts/refreshToken.js"></script>
 
@@ -46,6 +47,10 @@
                     if (baseUrl) {
                         PlayerMe.API.APIService.baseUrl = baseUrl;
                     }
+
+                    if (clientId && clientSecret){
+                        setupClient(clientId, clientSecret)
+                    }
                 },
                 function(err){
                     console.error("Failed to load custom demo presets in " + err.requireModules[0]);
@@ -80,30 +85,31 @@
 <p>Test the auth methods.</p>
 <p>Fields are pre-populated based on the contents of <em>env/demo.js</em>.</p>
 
+<h3>Setup Client</h3>
+<form>
+    <p>Client ID:     <input type="text" name="clientId"></p>
+    <p>Client Secret: <input type="text" name="clientSecret"></p>
+    <input type="button" value="Go" onClick="setupClientFromForm(this.form)">
+</form>
+
 <h3>Authenticated Test</h3>
 <input type="button" value="Get self" onClick="testSelf()">
-<input type="button" value="Logout" onClick="logout()">
+<input type="button" value="Logout"   onClick="logout()">
 
 <h3>Redirect Login</h3>
 <form>
-    <p>Client ID:       <input type="text" name="clientId"></p>
-    <p>Redirect URL:    <input type="text" name="redirectUrl"></p>
-    <p>State:           <input type="text" name="state"></p>
+    <p>Redirect URL: <input type="text" name="redirectUrl"></p>
+    <p>State:        <input type="text" name="state"></p>
     <input type="button" value="Go" onClick="redirectLogin(this.form)">
 </form>
-<h4>Exchange Redirect Code for Auth Token</h4>
+<h5>Exchange Redirect Code for Auth Token</h5>
 <form>
-    <p>Client ID:       <input type="text" name="clientId"></p>
-    <p>Client Secret:   <input type="text" name="clientSecret"></p>
-    <p>Redirect URL:    <input type="text" name="redirectUrl"></p>
+    <p>Redirect URL: <input type="text" name="redirectUrl"></p>
     <input type="button" value="Go" onClick="exchangeToken(this.form)">
 </form>
 
-
 <h3>Refresh Login</h3>
 <form>
-    <p>Client ID:       <input type="text" name="clientId"></p>
-    <p>Client Secret:   <input type="text" name="clientSecret"></p>
     <input type="button" value="Go" onClick="refreshToken(this.form)">
 </form>
 

@@ -1,19 +1,17 @@
 function redirectLogin(form){
     var AuthService = window.PlayerMe.API.AuthService;
 
-    var clientIdField = form.querySelectorAll('[name=clientId]')[0];
     var redirectUrlField = form.querySelectorAll('[name=redirectUrl]')[0];
     var stateField = form.querySelectorAll('[name=state]')[0];
 
-    var clientId = clientIdField.value;
     var redirectUrl = redirectUrlField.value;
     var state = stateField.value;
 
-    if (clientId && redirectUrl) {
+    if (redirectUrl) {
         console.log("Redirecting...");
-        AuthService.redirectLogin(clientId, redirectUrl, state);
+        AuthService.redirectLogin(redirectUrl, state);
     } else {
-        alert("clientId and redirectUrl required");
+        alert("redirectUrl required");
     }
 }
 
@@ -38,15 +36,10 @@ function checkRedirectLogin(){
 function exchangeToken(form){
     if (!checkRedirectLogin()) return;
 
-    var clientIdField = form.querySelectorAll('[name=clientId]')[0];
-    var clientSecretField = form.querySelectorAll('[name=clientSecret]')[0];
     var redirectUrlField = form.querySelectorAll('[name=redirectUrl]')[0];
-
-    var clientId = clientIdField.value;
-    var clientSecret = clientSecretField.value;
     var redirectUrl = redirectUrlField.value;
 
-    PlayerMe.API.AuthService.processRedirectedLogin(clientId, clientSecret, redirectUrl).then(
+    PlayerMe.API.AuthService.processRedirectedLogin(redirectUrl).then(
         function(response, passedState){
             console.log("exchangeToken Success", {response:response, state:passedState});
         },

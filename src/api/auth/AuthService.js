@@ -13,8 +13,37 @@ class AuthService {
         // TODO Have a session map, OAuth can be switched without re-authenticating
         this._oauthSession = OAuthSessionModel.getFromLocalStorage();
         this._rememberMe = localStorage.getItem(LOCAL_STORAGE_KEY_REMEMBER_ME) == 'true';
+
+        this._clientId = null;
+        this._clientSecret = null;
     }
 
+    // <editor-fold desc="Setup Client">
+
+    /**
+     * Setup the OAuth client for login requests
+     * @param {string} clientId
+     * @param {string} clientSecret
+     */
+    setupClient(clientId, clientSecret){
+        this._clientId = clientId;
+        this._clientSecret = clientSecret;
+    }
+
+    /**
+     * Throws an error if the client wasn't set up.
+     * @throws {ReferenceError}
+     */
+    assertClientValid(){
+        if (!this._clientId || typeof this._clientId !== 'string'){
+            throw ReferenceError("AuthService client not set up. No clientId found. Call AuthService.setupClient().");
+        }
+        if (!this._clientSecret || typeof this._clientSecret !== 'string'){
+            throw ReferenceError("AuthService client not set up. No clientSecret found. Call AuthService.setupClient().");
+        }
+    }
+
+    // </editor-fold>
     // <editor-fold desc="OAuthSession">
 
     /**
@@ -69,7 +98,6 @@ class AuthService {
      * Once the user has accepted, they will then be redirected to the passed `redirectUrl` with whatever `state` you pass.
      * The user will also be sent to the `redirectUrl` if they decline.
      *
-     * @param {string} clientId     Your app's OAuth client ID
      * @param {string} redirectUrl  The URL the user will be redirected to from player.me, once they've accepted/declined
      * @param {string} [state]      A string that is passed back to the redirect URL
      *
@@ -79,14 +107,14 @@ class AuthService {
      * @see AuthService::processRedirectedLogin()
      * @example AuthService.redirectLogin(clientId, "https://example.com/foo", "bar");
      */
-    redirectLogin(clientId, redirectUrl, state=''){
+    redirectLogin(redirectUrl, state=''){
         // Validation
-        validateParameter("AuthService.redirectLogin()", 'client id', clientId);
         validateParameter("AuthService.redirectLogin()", 'redirect url', redirectUrl);
+        this.assertClientValid();
 
         // Build URL
         var url = APIService.baseUrl + "/o/auth?response_type=code";
-        url += "&client_id="+clientId;
+        url += "&client_id="+this._clientId;
         url += "&redirect_uri="+encodeURIComponent(redirectUrl);
         if (state) {
             url += "&state="+state;
@@ -152,8 +180,6 @@ class AuthService {
     /**
      * If the user was redirected here via `AuthService::redirectLogin()` and the user accepted, then
      *
-     * @param {string} clientId The OAuth client ID
-     * @param {string} clientSecret The OAuth client secret
      * @param {string} redirectUrl The URL used in AuthService.redirectLogin()
      * @returns {Promise} Resolve: OAuthSessionResponse, state:string | Reject: Error|OAuthSessionResponse, state:string
      * @throws {Error} If the user wasn't redirected here.
@@ -176,13 +202,12 @@ class AuthService {
      *  }
      * );
      */
-    processRedirectedLogin(clientId, clientSecret, redirectUrl){
+    processRedirectedLogin(redirectUrl){
         // <editor-fold desc="Prepare">
 
         // Validation
-        validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
-        validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
         validateParameter("AuthService.processRedirectedLogin()", 'redirect url', redirectUrl);
+        this.assertClientValid();
 
         // </editor-fold>
 
@@ -211,8 +236,8 @@ class AuthService {
             try {
                 var promise = APIService.post('api/oauth/access_token?grant_type=authorization_code', {
                     grant_type: "authorization_code",
-                    client_id: clientId,
-                    client_secret: clientSecret,
+                    client_id: this._clientId,
+                    client_secret: this._clientSecret,
                     code: didRedirect.code,
                     redirect_uri: redirectUrl
                 });
@@ -251,8 +276,6 @@ class AuthService {
      *
      * @param {string} login The login (username OR email)
      * @param {string} password The password
-     * @param {string} clientId The OAuth client ID
-     * @param {string} clientSecret The OAuth client secret
      * @returns {Promise} Resolve: OAuthSessionResponse | Reject: Error|OAuthSessionResponse
      *
      * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-login-for-an-access-token/exchange-login-for-an-access-token
@@ -266,13 +289,12 @@ class AuthService {
      *     }
      * );
      */
-    appLogin(login, password, clientId, clientSecret){
+    appLogin(login, password){
         // <editor-fold desc="Prepare">
 
         validateParameter("AuthService.appLogin()", 'login', login);
         validateParameter("AuthService.appLogin()", 'password', password);
-        validateParameter("AuthService.appLogin()", 'client id', clientId);
-        validateParameter("AuthService.appLogin()", 'client secret', clientSecret);
+        this.assertClientValid();
 
         // </editor-fold>
 
@@ -282,8 +304,8 @@ class AuthService {
             try {
                 var promise = APIService.post('api/oauth/access_token?grant_type=password', {
                     grant_type: "password",
-                    client_id: clientId,
-                    client_secret: clientSecret,
+                    client_id: this._clientId,
+                    client_secret: this._clientSecret,
                     username: login,
                     password: password
                 });
@@ -317,17 +339,13 @@ class AuthService {
 
     /**
      *
-     * @param {string} clientId The OAuth client ID
-     * @param {string} clientSecret The OAuth client secret
      * @param {string} twoFactorToken
      *
      * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-two-factor-tokens-for-an-access-token/exchange-two-factor-tokens-for-an-access-token
      */
-    twoFactorAppLogin(clientId, clientSecret, twoFactorToken){
+    twoFactorAppLogin(twoFactorToken){
         // <editor-fold desc="Prepare">
 
-        validateParameter("AuthService.twoFactorAppLogin()", 'client id', clientId);
-        validateParameter("AuthService.twoFactorAppLogin()", 'client secret', clientSecret);
         validateParameter("AuthService.twoFactorAppLogin()", 'two-factor-access token', twoFactorToken);
 
         // </editor-fold>
@@ -340,20 +358,20 @@ class AuthService {
 
     /**
      * Get a new token based on the old one
-     * @param {string} clientId The OAuth client ID
-     * @param {string} clientSecret The OAuth client secret
      * @returns {Promise}
      *
      * @throws {Error} If there's no refresh token
      */
-    refreshLogin(clientId, clientSecret){
-        validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
-        validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
+    refreshLogin(){
+        // <editor-fold desc="Validate">
 
         var refreshToken = this.oauthSession && this.oauthSession.refreshToken || false;
         if (!refreshToken){
             throw new Error("No refresh token");
         }
+        this.assertClientValid();
+
+        // </editor-fold>
 
         return new Promise((resolve, reject)=>{
 
@@ -362,8 +380,8 @@ class AuthService {
             try {
                 var promise = APIService.post('api/oauth/access_token?grant_type=refresh_token', {
                     grant_type: "refresh_token",
-                    client_id: clientId,
-                    client_secret: clientSecret,
+                    client_id: this._clientId,
+                    client_secret: this._clientSecret,
                     refresh_token: refreshToken
                 });
             }catch(e){
@@ -394,7 +412,6 @@ class AuthService {
 
     // </editor-fold>
 }
-
 
 // <editor-fold desc="Helpers">
 
