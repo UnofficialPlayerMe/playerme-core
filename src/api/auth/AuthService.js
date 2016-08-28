@@ -1,11 +1,14 @@
 import APIService from '../request/APIService';
 import OAuthSessionResponse from './OAuthSessionResponse';
+import OAuthSessionModel from './OAuthSessionModel';
 
 function getQueryString(field, url) {
     var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
     var string = reg.exec(url || window.location.href);
     return string ? string[1] : undefined;
 }
+
+const LOCAL_STORAGE_KEY_REMEMBER_ME = 'AuthService:rememberMe';
 
 /**
  *
@@ -14,8 +17,11 @@ function getQueryString(field, url) {
 class AuthService {
     constructor(){
         // TODO Have a session map, OAuth can be switched without re-authenticating
-        this._oauthSession = null;
+        this._oauthSession = OAuthSessionModel.getFromLocalStorage();
+        this._rememberMe = localStorage.getItem(LOCAL_STORAGE_KEY_REMEMBER_ME) == 'true';
     }
+
+    // <editor-fold desc="OAuthSession">
 
     /**
      * The current OAuth session's tokens
@@ -24,6 +30,32 @@ class AuthService {
     get oauthSession(){
         return this._oauthSession;
     }
+    /**
+     * @param {OAuthSessionModel|null} oauthSessionModel
+     */
+    set oauthSession(oauthSessionModel){
+        this._oauthSession = oauthSessionModel;
+        if (oauthSessionModel && this.rememberMe) {
+            oauthSessionModel.addToLocalStorage();
+        }
+    }
+
+    /**
+     * Whether the OAuth session should be kept in local storage.
+     * @returns {boolean}
+     */
+    get rememberMe(){
+        return this._rememberMe;
+    }
+
+    /** @param {boolean} bool */
+    set rememberMe(bool){
+        this._rememberMe = bool;
+        localStorage.setItem(LOCAL_STORAGE_KEY_REMEMBER_ME, this._rememberMe);
+        this.oauthSession = this.oauthSession; // Reset with new rememberMe
+    }
+
+    // </editor-fold>
 
     /**
      * Redirects the user to player.me to authenticate your app.
@@ -191,7 +223,7 @@ class AuthService {
                 var response = new OAuthSessionResponse(rawResponse);
 
                 if (response.success) {
-                    this._oauthSession = response.result;
+                    this.oauthSession = response.result;
                     resolve(response, didRedirect.state);
                 } else {
                     // TODO Better rejection
