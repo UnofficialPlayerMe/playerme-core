@@ -11,8 +11,13 @@ const LOCAL_STORAGE_KEY_REMEMBER_ME = 'AuthService:rememberMe';
 class AuthService {
     constructor(){
         // TODO Have a session map, OAuth can be switched without re-authenticating
-        this._oauthSession = OAuthSessionModel.getFromLocalStorage();
-        this._rememberMe = localStorage.getItem(LOCAL_STORAGE_KEY_REMEMBER_ME) == 'true';
+        this._oauthSession = null;
+        this._rememberMe = null;
+
+        if (typeof localStorage != 'undefined'){
+            this._oauthSession = OAuthSessionModel.getFromLocalStorage();
+            this._rememberMe = localStorage.getItem(LOCAL_STORAGE_KEY_REMEMBER_ME) == 'true';
+        }
 
         this._clientId = null;
         this._clientSecret = null;
@@ -75,7 +80,9 @@ class AuthService {
     /** @param {boolean} bool */
     set rememberMe(bool){
         this._rememberMe = bool;
-        localStorage.setItem(LOCAL_STORAGE_KEY_REMEMBER_ME, this._rememberMe);
+        if (typeof localStorage != 'undefined') {
+            localStorage.setItem(LOCAL_STORAGE_KEY_REMEMBER_ME, this._rememberMe);
+        }
         this.oauthSession = this.oauthSession; // Reset with new rememberMe
     }
 
@@ -87,7 +94,9 @@ class AuthService {
      */
     logout(){
        this.oauthSession = null;
-        localStorage.removeItem(LOCAL_STORAGE_KEY_REMEMBER_ME);
+        if (typeof localStorage != 'undefined') {
+            localStorage.removeItem(LOCAL_STORAGE_KEY_REMEMBER_ME);
+        }
     }
 
     // </editor-fold>
@@ -321,6 +330,7 @@ class AuthService {
                 var response = new OAuthSessionResponse(rawResponse);
 
                 if (response.success) {
+                    this.oauthSession = response.result;
                     resolve(response);
                 } else {
                     // TODO Better rejection

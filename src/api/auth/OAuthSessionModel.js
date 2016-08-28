@@ -88,7 +88,12 @@ class OAuthSessionModel {
      * @see http://docs.playerme.apiary.io/#reference/general/example-authenticated-requests/with-request-headers-oauth-only
      */
     toHeaderString(){
-        return this.tokenType+" "+this.accessToken;
+        if (this.tokenType && this.accessToken) {
+            // Capitalise first letter of tokenType
+            var tokenType = this.tokenType.charAt(0).toUpperCase() + this.tokenType.slice(1);
+            return tokenType + " " + this.accessToken;
+        }
+        return "";
     }
 
     /**
@@ -96,6 +101,7 @@ class OAuthSessionModel {
      * TODO Cookie fallback
      */
     addToLocalStorage(){
+        if (typeof localStorage == 'undefined') return;
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this._raw));
     }
 
@@ -104,6 +110,7 @@ class OAuthSessionModel {
      * @returns {OAuthSessionModel}
      */
     static getFromLocalStorage(){
+        if (typeof localStorage == 'undefined') return null;
         var json = localStorage.getItem(LOCAL_STORAGE_KEY);
         var parsed = JSON.parse(json);
 
@@ -114,6 +121,7 @@ class OAuthSessionModel {
      * Remove a modal from local storage
      */
     static removeFromLocalStorage(){
+        if (typeof localStorage == 'undefined') return;
         localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
 }

@@ -3,6 +3,8 @@ import RawResponse from '../response/RawResponse';
 import AuthService from '../../../api/auth/AuthService';
 import ErrorResponse from '../response/ErrorResponse';
 
+// <editor-fold desc="Login: Helpers">
+
 /**
  *
  * @param {string} url
@@ -91,6 +93,8 @@ function getErrorResponse(XHR) {
     );
 }
 
+// </editor-fold>
+
 /**
  * Process requests using JSONP.
  * Browsers allow this method for cross-domain calls, but only GET requests.
@@ -109,9 +113,8 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
         return new Promise((resolve, reject)=>{
             var XHR = new XMLHttpRequest();
 
-            XHR.addEventListener('load', function(){
+            XHR.addEventListener('load', ()=>{
                 var response = getRawResponse(XHR);
-
                 if (response) {
                     resolve(response);
                 } else {
@@ -119,15 +122,15 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
                 }
             });
 
-            XHR.addEventListener('error', function(event) {
+            XHR.addEventListener('error', (event)=>{
                 console.log('XMLHttpRequestAdapter error', event, XHR);
                 reject(event); // TODO Handle
             });
-            XHR.addEventListener('timeout', function(event) {
+            XHR.addEventListener('timeout', (event)=>{
                 console.log('XMLHttpRequestAdapter timeout', event, XHR);
                 reject(event); // TODO Handle
             });
-            // XHR.addEventListener('abort', function(event) {
+            // XHR.addEventListener('abort', (event)=>{
             //     console.log('XMLHttpRequestAdapter abort', event, XHR);
             //     reject(event);
             // });
@@ -146,6 +149,8 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
             }
         });
     }
+
+    // <editor-fold desc="Wrapped Requests">
 
     /**
      * Submit a GET request
@@ -186,6 +191,8 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
     del(url, data){
         return this.request('DELETE', url, data);
     }
+
+    // </editor-fold>
 }
 
 // Return single instance, making it a singleton

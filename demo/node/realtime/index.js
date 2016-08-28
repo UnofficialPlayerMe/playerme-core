@@ -29,6 +29,7 @@ var service = null;
 // <editor-fold desc="Startup">
 
 PlayerMe.API.APIService.baseUrl = env.PLAYER_BASE_URL;
+PlayerMe.API.AuthService.setupClient(env.OAUTH_CLIENT_ID, env.OAUTH_CLIENT_SECRET);
 login(env.PLAYER_USERNAME, env.PLAYER_PASSWORD);
 
 /**
@@ -38,12 +39,7 @@ login(env.PLAYER_USERNAME, env.PLAYER_PASSWORD);
 function login(username, password) {
     console.log("Log "+username+" into "+PlayerMe.API.APIService.baseUrl+"...");
     try {
-        PlayerMe.API.AuthService.oauthLogin(
-            username,
-            password,
-            env.OAUTH_CLIENT_ID,
-            env.OAUTH_CLIENT_SECRET
-        ).then(
+        PlayerMe.API.AuthService.passwordLogin(username, password).then(
             /** @param {OAuthSessionResponse} response */
             function (response) {
                 onLogin(response.result);
