@@ -2,12 +2,6 @@ import APIService from '../request/APIService';
 import OAuthSessionResponse from './OAuthSessionResponse';
 import OAuthSessionModel from './OAuthSessionModel';
 
-function getQueryString(field, url) {
-    var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
-    var string = reg.exec(url || window.location.href);
-    return string ? string[1] : undefined;
-}
-
 const LOCAL_STORAGE_KEY_REMEMBER_ME = 'AuthService:rememberMe';
 
 /**
@@ -49,7 +43,6 @@ class AuthService {
     get rememberMe(){
         return this._rememberMe;
     }
-
     /** @param {boolean} bool */
     set rememberMe(bool){
         this._rememberMe = bool;
@@ -58,6 +51,7 @@ class AuthService {
     }
 
     // </editor-fold>
+    // <editor-fold desc="Logout">
 
     /**
      * Clear the current session
@@ -66,6 +60,9 @@ class AuthService {
        this.oauthSession = null;
         localStorage.removeItem(LOCAL_STORAGE_KEY_REMEMBER_ME);
     }
+
+    // </editor-fold>
+    // <editor-fold desc="Login: Redirect">
 
     /**
      * Redirects the user to player.me to authenticate your app.
@@ -84,8 +81,8 @@ class AuthService {
      */
     redirectLogin(clientId, redirectUrl, state=''){
         // Validation
-        this._validateParameter("AuthService.redirectLogin()", 'client id', clientId);
-        this._validateParameter("AuthService.redirectLogin()", 'redirect url', redirectUrl);
+        validateParameter("AuthService.redirectLogin()", 'client id', clientId);
+        validateParameter("AuthService.redirectLogin()", 'redirect url', redirectUrl);
 
         // Build URL
         var url = APIService.baseUrl + "/o/auth?response_type=code";
@@ -183,13 +180,11 @@ class AuthService {
         // <editor-fold desc="Prepare">
 
         // Validation
-        this._validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
-        this._validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
-        this._validateParameter("AuthService.processRedirectedLogin()", 'redirect url', redirectUrl);
+        validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
+        validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
+        validateParameter("AuthService.processRedirectedLogin()", 'redirect url', redirectUrl);
 
         // </editor-fold>
-
-        // TODO exchange the Authorization Code for an access_token
 
         return new Promise((resolve, reject)=>{
             // <editor-fold desc="Redirect check">
@@ -247,18 +242,8 @@ class AuthService {
         });
     }
 
-    /**
-     *
-     * @param {string} clientId The OAuth client ID
-     * @param {string} clientSecret The OAuth client secret
-     * @param {string} refreshToken
-     */
-    refreshLogin(clientId, clientSecret, refreshToken){
-        // TODO Refresh login
-        this._validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
-        this._validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
-        this._validateParameter("AuthService.processRedirectedLogin()", 'refresh token', refreshToken);
-    }
+    // </editor-fold>
+    // <editor-fold desc="Login: App">
 
     /**
      * This is for mobile app developers only!
@@ -284,10 +269,10 @@ class AuthService {
     appLogin(login, password, clientId, clientSecret){
         // <editor-fold desc="Prepare">
 
-        this._validateParameter("AuthService.appLogin()", 'login', login);
-        this._validateParameter("AuthService.appLogin()", 'password', password);
-        this._validateParameter("AuthService.appLogin()", 'client id', clientId);
-        this._validateParameter("AuthService.appLogin()", 'client secret', clientSecret);
+        validateParameter("AuthService.appLogin()", 'login', login);
+        validateParameter("AuthService.appLogin()", 'password', password);
+        validateParameter("AuthService.appLogin()", 'client id', clientId);
+        validateParameter("AuthService.appLogin()", 'client secret', clientSecret);
 
         // </editor-fold>
 
@@ -327,6 +312,9 @@ class AuthService {
         });
     }
 
+    // </editor-fold>
+    // <editor-fold desc="Login: Two-Factor">
+
     /**
      *
      * @param {string} clientId The OAuth client ID
@@ -338,34 +326,110 @@ class AuthService {
     twoFactorAppLogin(clientId, clientSecret, twoFactorToken){
         // <editor-fold desc="Prepare">
 
-        this._validateParameter("AuthService.twoFactorAppLogin()", 'client id', clientId);
-        this._validateParameter("AuthService.twoFactorAppLogin()", 'client secret', clientSecret);
-        this._validateParameter("AuthService.twoFactorAppLogin()", 'two-factor-access token', twoFactorToken);
+        validateParameter("AuthService.twoFactorAppLogin()", 'client id', clientId);
+        validateParameter("AuthService.twoFactorAppLogin()", 'client secret', clientSecret);
+        validateParameter("AuthService.twoFactorAppLogin()", 'two-factor-access token', twoFactorToken);
 
         // </editor-fold>
 
         // TODO Two factor auth
     }
 
+    // </editor-fold>
+    // <editor-fold desc="Login: Refresh">
+
     /**
-     * Throw an exception if the parameter isn't set or the correct type
-     * @param {string} methodName Name of the method to display in an error
-     * @param {string} name Name of the parameter to display in an error
-     * @param {*} value Parameter to be tested
-     * @param {string} [expectedType='string'] Expected `typeof` for the parameter
-     * @protected
-     * @throws {ReferenceError}
-     * @throws {TypeError}
+     * Get a new token based on the old one
+     * @param {string} clientId The OAuth client ID
+     * @param {string} clientSecret The OAuth client secret
+     * @returns {Promise}
+     *
+     * @throws {Error} If there's no refresh token
      */
-    _validateParameter(methodName, name, value, expectedType='string'){
-        if (!value){
-            throw new ReferenceError("No "+name+" passed to "+methodName+".");
+    refreshLogin(clientId, clientSecret){
+        validateParameter("AuthService.processRedirectedLogin()", 'client id', clientId);
+        validateParameter("AuthService.processRedirectedLogin()", 'client secret', clientSecret);
+
+        var refreshToken = this.oauthSession && this.oauthSession.refreshToken || false;
+        if (!refreshToken){
+            throw new Error("No refresh token");
         }
-        if (expectedType && typeof value !== expectedType){
-            throw new TypeError("The "+name+" passed to "+methodName+" isn't a "+expectedType+". Was ["+(typeof value)+"].");
-        }
+
+        return new Promise((resolve, reject)=>{
+
+            // <editor-fold desc="Request">
+
+            try {
+                var promise = APIService.post('api/oauth/access_token?grant_type=refresh_token', {
+                    grant_type: "refresh_token",
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    refresh_token: refreshToken
+                });
+            }catch(e){
+                reject(e);
+                return;
+            }
+
+            // </editor-fold>
+            // <editor-fold desc="Response">
+
+            promise.then((rawResponse)=>{
+                var response = new OAuthSessionResponse(rawResponse);
+
+                if (response.success) {
+                    this.oauthSession = response.result;
+                    resolve(response);
+                } else {
+                    // TODO Better rejection
+                    reject(response);
+                }
+            }, function(error){
+                reject(error);
+            });
+
+            // </editor-fold>
+        });
+    }
+
+    // </editor-fold>
+}
+
+
+// <editor-fold desc="Helpers">
+
+/**
+ * Get the query string parameter from the URL
+ * @param {string} field The name of the parameter
+ * @param {string} [url] Defaults to the current URL
+ * @returns {string|undefined} The field's value
+ */
+function getQueryString(field, url) {
+    var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+    var string = reg.exec(url || window.location.href);
+    return string ? string[1] : undefined;
+}
+
+/**
+ * Throw an exception if the parameter isn't set or the correct type
+ * @param {string} methodName Name of the method to display in an error
+ * @param {string} name Name of the parameter to display in an error
+ * @param {*} value Parameter to be tested
+ * @param {string} [expectedType='string'] Expected `typeof` for the parameter
+ * @protected
+ * @throws {ReferenceError}
+ * @throws {TypeError}
+ */
+function validateParameter(methodName, name, value, expectedType='string'){
+    if (!value){
+        throw new ReferenceError("No "+name+" passed to "+methodName+".");
+    }
+    if (expectedType && typeof value !== expectedType){
+        throw new TypeError("The "+name+" passed to "+methodName+" isn't a "+expectedType+". Was ["+(typeof value)+"].");
     }
 }
+
+// </editor-fold>
 
 // Return instance, making this a singleton
 export default new AuthService();

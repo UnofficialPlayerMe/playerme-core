@@ -8,6 +8,7 @@
     <script src="../../helpers/logLibrary.js"></script>
     <script src="../../vendor/require.js"></script>
     <script src="./scripts/redirectLogin.js"></script>
+    <script src="./scripts/refreshToken.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./styles.css">
 
@@ -19,6 +20,7 @@
             PlayerMe.API.APIService.setAdapter(PlayerMe.API.adapters.XMLHttpRequestAdapter);
             PlayerMe.API.AuthService.rememberMe = true;
 
+            // <editor-fold desc="Pre-populate from env file">
             requirejs(['../../../env/demo.js'],
                 function(demoEnv){
                     var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID       || false;
@@ -49,6 +51,8 @@
                     console.error("Failed to load custom demo presets in " + err.requireModules[0]);
                 }
             );
+            // </editor-fold>
+
         };
 
         function testSelf(){
@@ -93,6 +97,14 @@
     <p>Client Secret:   <input type="text" name="clientSecret"></p>
     <p>Redirect URL:    <input type="text" name="redirectUrl"></p>
     <input type="button" value="Go" onClick="exchangeToken(this.form)">
+</form>
+
+
+<h3>Refresh Login</h3>
+<form>
+    <p>Client ID:       <input type="text" name="clientId"></p>
+    <p>Client Secret:   <input type="text" name="clientSecret"></p>
+    <input type="button" value="Go" onClick="refreshToken(this.form)">
 </form>
 
 </body>

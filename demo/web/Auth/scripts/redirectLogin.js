@@ -21,8 +21,6 @@ function checkRedirectLogin(){
     var didRedirectLogin = PlayerMe.API.AuthService.didRedirectLogin();
     var failedRedirectLogin = PlayerMe.API.AuthService.failedRedirectLogin();
 
-    console.log("checkRedirectLogin", didRedirectLogin, failedRedirectLogin);
-
     if (didRedirectLogin){
         console.log("didRedirectLogin", didRedirectLogin);
         return true;
@@ -38,9 +36,7 @@ function checkRedirectLogin(){
 }
 
 function exchangeToken(form){
-    console.log("exchangeToken");
     if (!checkRedirectLogin()) return;
-    console.log("exchangeToken 2");
 
     var clientIdField = form.querySelectorAll('[name=clientId]')[0];
     var clientSecretField = form.querySelectorAll('[name=clientSecret]')[0];
@@ -49,12 +45,6 @@ function exchangeToken(form){
     var clientId = clientIdField.value;
     var clientSecret = clientSecretField.value;
     var redirectUrl = redirectUrlField.value;
-
-    console.log("exchangeToken", {
-        clientId:clientId,
-        clientSecret:clientSecret,
-        redirectUrl:redirectUrl
-    });
 
     PlayerMe.API.AuthService.processRedirectedLogin(clientId, clientSecret, redirectUrl).then(
         function(response, passedState){
