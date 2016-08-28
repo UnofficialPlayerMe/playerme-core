@@ -10,6 +10,7 @@
     <script src="./scripts/setupClient.js"></script>
     <script src="./scripts/redirectLogin.js"></script>
     <script src="./scripts/refreshToken.js"></script>
+    <script src="./scripts/passwordLogin.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./styles.css">
 
@@ -24,10 +25,12 @@
             // <editor-fold desc="Pre-populate from env file">
             requirejs(['../../../env/demo.js'],
                 function(demoEnv){
-                    var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID       || false;
-                    var clientSecret = demoEnv && demoEnv.OAUTH_CLIENT_SECRET   || false;
-                    var redirectUrl  = demoEnv && demoEnv.OAUTH_CLIENT_REDIRECT || window.location.href.split('?')[0];
+                    var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID       || null;
+                    var clientSecret = demoEnv && demoEnv.OAUTH_CLIENT_SECRET   || null;
+                    var username     = demoEnv && demoEnv.PLAYER_USERNAME       || null;
+                    var password     = demoEnv && demoEnv.PLAYER_PASSWORD       || null;
                     var baseUrl      = demoEnv && demoEnv.PLAYER_BASE_URL       || null;
+                    var redirectUrl  = window.location.href.split('?')[0];
 
                     if (clientId){
                         document.querySelectorAll('[name=clientId]').forEach(function(field){
@@ -44,6 +47,17 @@
                             field.value = redirectUrl;
                         });
                     }
+                    if (username){
+                        document.querySelectorAll('[name=username]').forEach(function(field){
+                            field.value = username;
+                        });
+                    }
+                    if (password){
+                        document.querySelectorAll('[name=password]').forEach(function(field){
+                            field.value = password;
+                        });
+                    }
+
                     if (baseUrl) {
                         PlayerMe.API.APIService.baseUrl = baseUrl;
                     }
@@ -106,6 +120,13 @@
 <form>
     <p>Redirect URL: <input type="text" name="redirectUrl"></p>
     <input type="button" value="Go" onClick="exchangeToken(this.form)">
+</form>
+
+<h3>Password Login</h3>
+<form>
+    <p>Username: <input type="text"     name="username"></p>
+    <p>Password: <input type="password" name="password"></p>
+    <input type="button" value="Go" onClick="passwordLogin(this.form)">
 </form>
 
 <h3>Refresh Login</h3>

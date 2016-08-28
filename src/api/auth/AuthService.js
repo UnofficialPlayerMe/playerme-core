@@ -268,7 +268,7 @@ class AuthService {
     }
 
     // </editor-fold>
-    // <editor-fold desc="Login: App">
+    // <editor-fold desc="Login: Password">
 
     /**
      * This is for mobile app developers only!
@@ -280,7 +280,7 @@ class AuthService {
      *
      * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-login-for-an-access-token/exchange-login-for-an-access-token
      * @example
-     * AuthService.appLogin(login, password, clientId, clientSecret).then({
+     * AuthService.passwordLogin(login, password, clientId, clientSecret).then({
      *     function(response){
      *         console.log("Welcome back, "+login+"!", response);
      *     },
@@ -289,7 +289,7 @@ class AuthService {
      *     }
      * );
      */
-    appLogin(login, password){
+    passwordLogin(login, password){
         // <editor-fold desc="Prepare">
 
         validateParameter("AuthService.appLogin()", 'login', login);
