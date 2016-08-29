@@ -2,15 +2,28 @@ playerme-core: API
 ==============================
 
 # Developer Checklist
-Checklist based on [official docs](http://docs.playerme.apiary.io).
+Checklist based on official docs [v1](http://docs.playerme.apiary.io) and [v2](http://docs.playermev2.apiary.io). 
+
+# [V2](http://docs.playermev2.apiary.io)
+
+## [Auth redirect](http://docs.playermev2.apiary.io/#introduction/authentication)
+* ~~Redirect the user to Player.me~~
+* ~~Redirect the user to your site~~
+
+## [OAuth2](http://docs.playermev2.apiary.io/#reference/oauth2)
+* ~~Exchange Authorization Code for an Access Token~~
+* ~~Exchange Refresh Token for an Access Token~~
+* ~~Exchange Login for an Access Token~~
+* Exchange Two-Factor Tokens for an Access Token
+* ~~Making an authenticated request~~
+
+## [GraphQL](http://docs.playermev2.apiary.io/#reference/graphql)
+
+## [Real-time system](http://docs.playermev2.apiary.io/#reference/real-time-system)
+
+# [V1](http://docs.playerme.apiary.io)
 
 ##  General
-### ~~General / OAuth Stuff~~
-*   ~~General / OAuth Stuff / Get the tokens from login~~
-*   ~~General / OAuth Stuff / Refresh the tokens~~
-
-### ~~General / Regular Login~~
-*   ~~General / Regular Login / Login~~
 
 ### General / Pre-login
 *   General / Pre-login / Prelogin
