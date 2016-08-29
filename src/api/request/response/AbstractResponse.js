@@ -2,6 +2,8 @@
  * This is an abstract wrapper around a RawResponse.
  * Sub-classes should be tailored to specific APIs.
  * @memberOf module:api/request/response
+ *
+ * @TODO Add method to create new ResponseError from this instance
  */
 class AbstractResponse {
     /**

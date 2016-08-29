@@ -49,7 +49,7 @@ class RealTimeService extends Sails {
      * This will link the Socket ID to the User ID,
      * so that the Sails can send user-wide messages to the correct sockets.
      * Send this immediately after connect.
-     * @see http://docs.playerme.apiary.io/#reference/RealTime/oauth/authenticate-+++
+     * http://docs.playerme.apiary.io/#reference/RealTime/oauth/authenticate-+++
      * @param {function} [callback]
      * @returns {RealTimeService} Itself
      */

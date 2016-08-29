@@ -2,33 +2,76 @@ import APIService from '../request/APIService';
 import OAuthSessionResponse from './OAuthSessionResponse';
 import OAuthSessionModel from './OAuthSessionModel';
 
+/**
+ * A const string specifying the key for rememberMe in local storage,
+ * @type {string}
+ * @see {@link AuthService#rememberMe}
+ */
 const LOCAL_STORAGE_KEY_REMEMBER_ME = 'AuthService:rememberMe';
 
 /**
- *
+ * This class is responsible for logging the user in and managing an OAuth session.
+ * The `oauthSession` member variable is used by request adapters that can make authenticated requests.
  * @memberOf module:api/auth
  */
 class AuthService {
     constructor(){
-        // TODO Have a session map, OAuth can be switched without re-authenticating
-        this._oauthSession = null;
-        this._rememberMe = null;
+        // TODO Have a session map so OAuth can be switched without re-authenticating
 
+        // <editor-fold desc="Define member variables">
+        /**
+         * The current OAuth session
+         * @type {OAuthSessionModel}
+         * @private
+         */
+        this._oauthSession = null;
+
+        /**
+         * Whether the OAuth session should be stored for next time
+         * @type {boolean}
+         * @private
+         */
+        this._rememberMe = false;
+
+        /**
+         * The client ID to be used in authentication requests
+         * @type {int}
+         * @private
+         *
+         * @see {@link AuthService#setupClient}
+         */
+        this._clientId = 0;
+
+        /**
+         * The client secret to be used in authentication requests
+         * @type {int}
+         * @private
+         *
+         * @see {@link AuthService#setupClient}
+         */
+        this._clientSecret = null;
+
+        // </editor-fold>
+        // <editor-fold desc="Process member variables">
+
+        // Restore OAuth session
         if (typeof localStorage != 'undefined'){
             this._oauthSession = OAuthSessionModel.getFromLocalStorage();
             this._rememberMe = localStorage.getItem(LOCAL_STORAGE_KEY_REMEMBER_ME) == 'true';
         }
 
-        this._clientId = null;
-        this._clientSecret = null;
+        // </editor-fold>
     }
 
     // <editor-fold desc="Setup Client">
 
     /**
-     * Setup the OAuth client for login requests
-     * @param {string} clientId
-     * @param {string} clientSecret
+     * Setup the OAuth client for login requests.
+     * @param {string} clientId - The ID of your OAuth client
+     * @param {string} clientSecret - The 'secret' for your OAuth client
+     *
+     * @see http://docs.playermev2.apiary.io/#introduction/authentication/create-an-application
+     * @see https://player.me/me/dev
      */
     setupClient(clientId, clientSecret){
         this._clientId = clientId;
@@ -38,6 +81,7 @@ class AuthService {
     /**
      * Throws an error if the client wasn't set up.
      * @throws {ReferenceError}
+     * @see {@link AuthService#setupClient}
      */
     assertClientValid(){
         if (!this._clientId || typeof this._clientId !== 'string'){
@@ -52,15 +96,13 @@ class AuthService {
     // <editor-fold desc="OAuthSession">
 
     /**
-     * The current OAuth session's tokens
-     * @returns {OAuthSessionModel|null}
+     * The current OAuth session's tokens.
+     * @type {?OAuthSessionModel}
      */
     get oauthSession(){
         return this._oauthSession;
     }
-    /**
-     * @param {OAuthSessionModel|null} model
-     */
+    /** @type {?OAuthSessionModel} */
     set oauthSession(model){
         this._oauthSession = model;
         if (model && this.rememberMe) {
@@ -71,13 +113,13 @@ class AuthService {
     }
 
     /**
-     * Whether the OAuth session should be kept in local storage.
-     * @returns {boolean}
+     * Whether {@link AuthService#oauthSession} should be kept in local storage.
+     * @type {boolean}
      */
     get rememberMe(){
         return this._rememberMe;
     }
-    /** @param {boolean} bool */
+    /** @type {boolean} */
     set rememberMe(bool){
         this._rememberMe = bool;
         if (typeof localStorage != 'undefined') {
@@ -90,7 +132,7 @@ class AuthService {
     // <editor-fold desc="Logout">
 
     /**
-     * Clear the current session
+     * Clear the current session.
      */
     logout(){
        this.oauthSession = null;
@@ -107,15 +149,18 @@ class AuthService {
      * Once the user has accepted, they will then be redirected to the passed `redirectUrl` with whatever `state` you pass.
      * The user will also be sent to the `redirectUrl` if they decline.
      *
-     * @param {string} redirectUrl  The URL the user will be redirected to from player.me, once they've accepted/declined
-     * @param {string} [state]      A string that is passed back to the redirect URL
-     * @return {string} The URL we're attempting to redirect to - in case automatic redirect fails
+     * @param {string} redirectUrl - The URL the user will be redirected to from player.me, once they've accepted/declined.
+     * @param {string} [state]     - A string that is passed back to the redirect URL.
+     * @return {string} The URL we're attempting to redirect to - in case automatic redirect fails.
      *
      * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-player.me
-     * @see AuthService::didRedirectLogin()
-     * @see AuthService::failedRedirectLogin()
-     * @see AuthService::processRedirectedLogin()
-     * @example AuthService.redirectLogin(clientId, "https://example.com/foo", "bar");
+     * @see {@link AuthService#didRedirectLogin}
+     * @see {@link AuthService#failedRedirectLogin}
+     * @see {@link AuthService#processRedirectedLogin}
+     *
+     * @example
+     *  var url = AuthService.redirectLogin(clientId, "https://example.com/foo", "bar");
+     *  document.getElementById("redirect").setAttribute('href', url); // Backup link
      */
     redirectLogin(redirectUrl, state=''){
         // Validation
@@ -136,19 +181,21 @@ class AuthService {
 
     /**
      * Returns an object if the passed or current URL looks like it was a login redirect.
-     * You can use this to get the `state` originally passed to `AuthService::redirectLogin()`.
-     * @param {string} [url]
-     * @returns {{code:string, state:string}|null}
+     * You can use this to get the `state` originally passed to {@link AuthService#redirectLogin}.
+     * @returns {?object}
+     * @property {string} code - The code that {@link AuthService#processRedirectedLogin} will use.
+     * @property {string} state - The string passed to {@link AuthService#redirectLogin}
      *
-     * @see AuthService::redirectLogin()
-     * @see AuthService::failedRedirectLogin()
-     * @see AuthService::processRedirectedLogin()
+     * @see {@link AuthService#redirectLogin}
+     * @see {@link AuthService#failedRedirectLogin}
+     * @see {@link AuthService#processRedirectedLogin}
      *
-     * @example if (AuthService.didRedirectLogin()) {...}
+     * @example
+     *  if (AuthService.didRedirectLogin()) {...}
      */
-    didRedirectLogin(url){
-        var code = getQueryString('code', url);
-        var state = getQueryString('state', url);
+    didRedirectLogin(){
+        var code = getQueryString('code');
+        var state = getQueryString('state');
 
         if (typeof code != 'undefined' && typeof state != 'undefined'){
             return {
@@ -161,22 +208,25 @@ class AuthService {
 
     /**
      * Returns an object if the passed or current URL looks like it was a failed login redirect.
-     * @param {string} [url]
-     * @returns {{error:string, description:string, state:string}|null}
+     * @returns {?object}
+     * @property {string} error - The type of error. (i.e. 'access_denied')
+     * @property {string} description - User-friendly message (i.e. "The resource owner or authorization server denied the request.")
+     * @property {string} state - The string passed to {@link AuthService#redirectLogin}
      *
-     * @see AuthService::redirectLogin()
-     * @see AuthService::didRedirectLogin()
-     * @see AuthService::processRedirectedLogin()
+     * @see {@link AuthService#redirectLogin}
+     * @see {@link AuthService#didRedirectLogin}
+     * @see {@link AuthService#processRedirectedLogin}
      *
-     * @example var authFail = AuthService.failedRedirectLogin();
-     * if (authFail) {
-     *      console.error("Failed to login:", authFail.description);
-     * }
+     * @example
+     *  var authFail = AuthService.failedRedirectLogin();
+     *  if (authFail) {
+     *      throw new Error("Failed to login: " + authFail.description);
+     *  }
      */
-    failedRedirectLogin(url){
-        var error = getQueryString('error', url);
-        var errorDescription = getQueryString('error_description', url);
-        var state = getQueryString('state', url);
+    failedRedirectLogin(){
+        var error = getQueryString('error');
+        var errorDescription = getQueryString('error_description');
+        var state = getQueryString('state');
         if (typeof error != 'undefined' && typeof errorDescription != 'undefined' && typeof state != 'undefined'){
             return {
                 error: error,
@@ -188,29 +238,30 @@ class AuthService {
     }
 
     /**
-     * If the user was redirected here via `AuthService::redirectLogin()` and the user accepted, then
+     * If the user was redirected here via {@link AuthService#redirectLogin} and the user accepted,
+     * then exchange the access code it retrieved and exchange it for an OAuth token - finalising the login process.
      *
-     * @param {string} redirectUrl The URL used in AuthService.redirectLogin()
-     * @returns {Promise} Resolve: OAuthSessionResponse, state:string | Reject: Error|OAuthSessionResponse, state:string
+     * @param {string} redirectUrl - The URL used in AuthService.redirectLogin()
+     * @returns {Promise<OAuthSessionResponse, Error>}
      * @throws {Error} If the user wasn't redirected here.
      *
      * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-your-site
      * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-authorization-code-for-an-access-token/exchange-authorization-code-for-an-access-token
      * @see AuthService.redirectLogin()
      *
-     * @see AuthService::redirectLogin()
-     * @see AuthService::didRedirectLogin()
-     * @see AuthService::failedRedirectLogin()
+     * @see {@link AuthService#redirectLogin}
+     * @see {@link AuthService#didRedirectLogin}
+     * @see {@link AuthService#failedRedirectLogin}
      *
      * @example
-     * AuthService.processRedirectedLogin(
-     *  function(){
-     *      console.log("Authenticated", response.result.accessToken);
-     *  },
-     *  function(response, state){
-     *      console.log("Failed to authenticate", response);
-     *  }
-     * );
+     *  AuthService.processRedirectedLogin(redirectUrl).then(
+     *      function(response){
+     *          console.log("Authenticated", response.result.accessToken);
+     *      },
+     *      function(error){
+     *          console.error("Failed to authenticate", error);
+     *      }
+     *  );
      */
     processRedirectedLogin(redirectUrl){
         // <editor-fold desc="Prepare">
@@ -230,13 +281,11 @@ class AuthService {
                 var failedRedirect = this.failedRedirectLogin();
                 if (failedRedirect){
                     return reject(
-                        new Error("Failed to get auth code: "+failedRedirect.description),
-                        failedRedirect.state
+                        new Error("Failed to get auth code: "+failedRedirect.description)
                     );
                 }
                 return reject(
-                    new Error("AuthService.processRedirectedLogin() wasn't redirected to here."),
-                    null
+                    new Error("AuthService.processRedirectedLogin() wasn't redirected to here.")
                 );
             }
 
@@ -266,8 +315,7 @@ class AuthService {
                     this.oauthSession = response.result;
                     resolve(response, didRedirect.state);
                 } else {
-                    // TODO Better rejection
-                    reject(response, didRedirect.state);
+                    reject(new Error(response.errorMessage));
                 }
             }, function(error){
                 reject(error, didRedirect.state);
@@ -282,22 +330,21 @@ class AuthService {
 
     /**
      * This is for mobile app developers only!
-     * This will return a cookie named playerme_session. TODO Confirm this is still true
      *
-     * @param {string} login The login (username OR email)
-     * @param {string} password The password
-     * @returns {Promise} Resolve: OAuthSessionResponse | Reject: Error|OAuthSessionResponse
+     * @param {string} login - The login (username OR email)
+     * @param {string} password - The password
+     * @returns {Promise<OAuthSessionResponse, Error>}
      *
      * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-login-for-an-access-token/exchange-login-for-an-access-token
      * @example
-     * AuthService.passwordLogin(login, password, clientId, clientSecret).then({
-     *     function(response){
-     *         console.log("Welcome back, "+login+"!", response);
-     *     },
-     *     function(error){
-     *         console.error(error);
-     *     }
-     * );
+     *  AuthService.passwordLogin(login, password).then(
+     *      function(response){
+     *          console.log("Welcome back, "+login+"!", response);
+     *      },
+     *      function(error){
+     *          console.error(error);
+     *      }
+     *  );
      */
     passwordLogin(login, password){
         // <editor-fold desc="Prepare">
@@ -334,8 +381,7 @@ class AuthService {
                     this.oauthSession = response.result;
                     resolve(response);
                 } else {
-                    // TODO Better rejection
-                    reject(response);
+                    reject(new Error(response.errorMessage));
                 }
             }, function(error){
                 reject(error);
@@ -349,6 +395,7 @@ class AuthService {
     // <editor-fold desc="Login: Two-Factor">
 
     /**
+     * @TODO twoFactorAppLogin
      *
      * @param {string} twoFactorToken
      *
@@ -360,8 +407,6 @@ class AuthService {
         validateParameter("AuthService.twoFactorAppLogin()", 'two-factor-access token', twoFactorToken);
 
         // </editor-fold>
-
-        // TODO Two factor auth
     }
 
     // </editor-fold>
@@ -369,9 +414,20 @@ class AuthService {
 
     /**
      * Get a new token based on the old one
-     * @returns {Promise}
+     * @returns {Promise<OAuthSessionResponse, Error>}
      *
      * @throws {Error} If there's no refresh token
+     *
+     * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-refresh-token-for-an-access-token/exchange-authorization-code-for-an-access-token
+     * @example
+     *  AuthService.refreshLogin().then(
+     *      function(response){
+     *          console.log("Got refreshed token", response.result.access_token);
+     *      },
+     *      function(error){
+     *          console.error(error);
+     *      }
+     *  );
      */
     refreshLogin(){
         // <editor-fold desc="Validate">
@@ -410,8 +466,7 @@ class AuthService {
                     this.oauthSession = response.result;
                     resolve(response);
                 } else {
-                    // TODO Better rejection
-                    reject(response);
+                    reject(new Error(response.errorMessage));
                 }
             }, function(error){
                 reject(error);
@@ -427,26 +482,28 @@ class AuthService {
 // <editor-fold desc="Helpers">
 
 /**
- * Get the query string parameter from the URL
- * @param {string} field The name of the parameter
- * @param {string} [url] Defaults to the current URL
+ * Get the query string parameter from the URL.
+ * @param {string} field - The name of the parameter
  * @returns {string|undefined} The field's value
  */
-function getQueryString(field, url) {
+function getQueryString(field) {
     var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
-    var string = reg.exec(url || window.location.href);
+    var string = reg.exec(window.location.href);
     return string ? string[1] : undefined;
 }
 
 /**
- * Throw an exception if the parameter isn't set or the correct type
- * @param {string} methodName Name of the method to display in an error
- * @param {string} name Name of the parameter to display in an error
- * @param {*} value Parameter to be tested
- * @param {string} [expectedType='string'] Expected `typeof` for the parameter
- * @protected
- * @throws {ReferenceError}
- * @throws {TypeError}
+ * Throw an exception if the parameter isn't set or the correct type.
+ * @param {string} methodName              - Name of the method to display in an error.
+ * @param {string} name                    - Name of the parameter to display in an error.
+ * @param {*} value                        - Parameter to be tested.
+ * @param {string} [expectedType='string'] - Expected `typeof` for the parameter.
+ *
+ * @throws {ReferenceError} If value is equivalent to false.
+ * @throws {TypeError}      If the value isn't the passed expectedType.
+ *
+ * @example
+ *  validateParameter('Foo.bar()', 'baz', baz, 'string');
  */
 function validateParameter(methodName, name, value, expectedType='string'){
     if (!value){
