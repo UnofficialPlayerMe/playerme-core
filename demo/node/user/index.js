@@ -9,10 +9,13 @@ var PlayerMe = require(libPath);
 if (!env.PLAYER_USERNAME) throw new Error("No PLAYER_USERNAME in environment settings.");
 if (!env.PLAYER_PASSWORD) throw new Error("No PLAYER_PASSWORD in environment settings.");
 if (!env.PLAYER_BASE_URL) throw new Error("No PLAYER_BASE_URL in environment settings.");
+if (!env.OAUTH_CLIENT_ID)     throw new Error("No OAUTH_CLIENT_ID in environment settings.");
+if (!env.OAUTH_CLIENT_SECRET) throw new Error("No OAUTH_CLIENT_SECRET in environment settings.");
 
 // </editor-fold>
 
 PlayerMe.API.APIService.baseUrl = env.PLAYER_BASE_URL;
+PlayerMe.API.AuthService.setupClient(env.OAUTH_CLIENT_ID, env.OAUTH_CLIENT_SECRET);
 login(env.PLAYER_USERNAME, env.PLAYER_PASSWORD);
 
 /**
@@ -21,10 +24,10 @@ login(env.PLAYER_USERNAME, env.PLAYER_PASSWORD);
  */
 function login(username, password) {
     try {
-        PlayerMe.API.AuthService.login(username, password, false).then(
+        PlayerMe.API.AuthService.passwordLogin(username, password, false).then(
             /** @param {LoginResponse} response */
             function (response) {
-                onLogin(response.result);
+                onLogin();
             },
             /** @param {Error} error */
             function (error) {
@@ -36,11 +39,8 @@ function login(username, password) {
     }
 }
 
-/**
- * @param {UserModel} user
- */
-function onLogin(user) {
-    console.log("Welcome back, " + user.username + ".");
+function onLogin() {
+    console.log("Welcome back.");
     getUser(1);
     getSelf();
 }

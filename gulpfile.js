@@ -152,10 +152,6 @@ gulp.task('demo:node:auth', function(done){
     demoNode('auth/index.js', done);
 });
 
-gulp.task('demo:node:oauth', function(done){
-    demoNode('oauth/index.js', done);
-});
-
 gulp.task('demo:node:user', function(done){
     demoNode('user/index.js', done);
 });
@@ -173,7 +169,7 @@ function demoNode(indexFile, callback){
         absolutePath
     ],{
         cwd: __dirname,
-        env: Env.combine(demoEnv, oauthEnv)
+        env: Env.combine(demoEnv)
     });
 
     spawned.stdout.on('data', function (data) {

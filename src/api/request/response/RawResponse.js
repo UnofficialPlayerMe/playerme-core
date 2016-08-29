@@ -5,7 +5,7 @@
 class RawResponse {
     /**
      *
-     * @param {Object}                  body           The raw response body
+     * @param {Object|string}           body           The raw response body
      * @param {int}                     statusCode     The status code
      * @param {string}                  statusMessage  The status code's message
      * @param {Object.<string,string>}  headers        Result headers
@@ -17,7 +17,6 @@ class RawResponse {
         this._statusCode    = statusCode;
         this._statusMessage = statusMessage;
         this._headers       = headers;
-        this._success       = Boolean(body && body.success);
     }
 
     /**
@@ -36,15 +35,6 @@ class RawResponse {
      */
     get results(){
         return this._results;
-    }
-
-    /**
-     * Whether this response was successful
-     * @returns {boolean}
-     * @readonly
-     */
-    get success(){
-        return this._success;
     }
 
     /**

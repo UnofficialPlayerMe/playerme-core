@@ -10,8 +10,6 @@ class AbstractResponse {
      */
     constructor(rawResponse)
     {
-        this._assertNotInstanceOfAbstract(AbstractResponse);
-
         // Validate rawResponse
         if (!rawResponse){
             throw new ReferenceError('No raw defined by '+this.className);
@@ -25,18 +23,6 @@ class AbstractResponse {
          * @member {RawResponse}
          */
         this.raw = rawResponse;
-    }
-
-    /**
-     * Throw an error if the passed class is at the top of this instance's inheritance chain
-     * @param {function} abstractClass
-     * @throws Error
-     */
-    _assertNotInstanceOfAbstract(abstractClass){
-        if (this.constructor === abstractClass){
-            //TODO Custom AbstractClassError
-            throw new Error(abstractClass.name+' is abstract and not supposed to be instantiated');
-        }
     }
 
     /**
@@ -54,7 +40,16 @@ class AbstractResponse {
      * @readonly
      */
     get success(){
-        return this.raw.success;
+        return this.raw.statusCode >= 200 && this.raw.statusCode < 300;
+    }
+
+    /**
+     * Returns an error message if success is false
+     * @returns {string}
+     * @readonly
+     */
+    get errorMessage(){
+        return this.success ? '' : String(this.raw.body) || this.raw.statusMessage;
     }
 
     /**

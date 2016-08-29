@@ -2,30 +2,8 @@ import AbstractRequestAdapter from './AbstractRequestAdapter';
 import RawResponse from '../response/RawResponse';
 import AuthService from '../../../api/auth/AuthService';
 import ErrorResponse from '../response/ErrorResponse';
-import Cookie from 'cookie';
 
-var cookieJar = [];
-
-/**
- *
- * @param {string} hostname
- * @returns {string|null}
- * @ignore
- */
-function getSessionCookie(hostname){
-    var cookies = cookieJar[hostname] || [];
-
-    for (var i in cookies){
-        var cookie = cookies[i];
-
-        for (var key in cookie) {
-            if (key === 'playerme_session' || key === 'staging_playerme_session') {
-                return key+"="+cookie[key];
-            }
-        }
-    }
-    return null;
-}
+// <editor-fold desc="Login: Helpers">
 
 /**
  *
@@ -83,20 +61,6 @@ function getHeadersFromXHR(XHR){
 }
 
 /**
- * Returns the XHR's response in JSON form, or null if invalid
- * @param {XMLHttpRequest} XHR
- * @returns {Object|null}
- * @ignore
- */
-function getJSONFromXHR(XHR) {
-    try {
-        return JSON.parse(XHR.responseText);
-    } catch (e) {
-        return null;
-    }
-}
-
-/**
  *
  * @param {XMLHttpRequest} XHR
  * @returns {RawResponse|null}
@@ -117,7 +81,7 @@ function getRawResponse(XHR) {
 /**
  *
  * @param XHR
- * @returns {RawResponse}
+ * @returns {ErrorResponse}
  * @ignore
  */
 function getErrorResponse(XHR) {
@@ -128,6 +92,8 @@ function getErrorResponse(XHR) {
         getHeadersFromXHR(XHR)
     );
 }
+
+// </editor-fold>
 
 /**
  * Process requests using JSONP.
@@ -146,17 +112,9 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
     request(method, url, data=null){
         return new Promise((resolve, reject)=>{
             var XHR = new XMLHttpRequest();
-            var urlObject = parseUrl(url);
 
-            XHR.addEventListener('load', function(){
+            XHR.addEventListener('load', ()=>{
                 var response = getRawResponse(XHR);
-                var headers = getHeadersFromXHR(XHR);
-                var setCookie = headers['set-cookie'];
-
-                if (setCookie) {
-                    cookieJar[urlObject.host] = setCookie.map((current) => Cookie.parse(current));
-                }
-
                 if (response) {
                     resolve(response);
                 } else {
@@ -164,15 +122,15 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
                 }
             });
 
-            XHR.addEventListener('error', function(event) {
+            XHR.addEventListener('error', (event)=>{
                 console.log('XMLHttpRequestAdapter error', event, XHR);
                 reject(event); // TODO Handle
             });
-            XHR.addEventListener('timeout', function(event) {
+            XHR.addEventListener('timeout', (event)=>{
                 console.log('XMLHttpRequestAdapter timeout', event, XHR);
                 reject(event); // TODO Handle
             });
-            // XHR.addEventListener('abort', function(event) {
+            // XHR.addEventListener('abort', (event)=>{
             //     console.log('XMLHttpRequestAdapter abort', event, XHR);
             //     reject(event);
             // });
@@ -180,12 +138,8 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
             try {
                 XHR.open(method, url);
                 XHR.setRequestHeader("Content-Type", "application/json");
-                var sessionCookie = getSessionCookie(urlObject.host);
-                if (sessionCookie){
-                    XHR.setRequestHeader("Cookie", sessionCookie);
-                }
                 if (AuthService.oauthSession){
-                    //TODO Test
+                    //TODO Add refresh
                     XHR.setRequestHeader("Authorization", AuthService.oauthSession.toHeaderString());
                 }
                 XHR.send(data ? JSON.stringify(data) : null);
@@ -195,6 +149,8 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
             }
         });
     }
+
+    // <editor-fold desc="Wrapped Requests">
 
     /**
      * Submit a GET request
@@ -235,6 +191,8 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
     del(url, data){
         return this.request('DELETE', url, data);
     }
+
+    // </editor-fold>
 }
 
 // Return single instance, making it a singleton

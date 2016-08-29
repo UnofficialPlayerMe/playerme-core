@@ -37,13 +37,13 @@ class UsersRepository {
                 return;
             }
 
-            promise.then((response)=>{
-                if (response.success){
-                    resolve(
-                        new UserEntityResponse(response)
-                    );
+            promise.then((rawResponse)=>{
+                var userResponse = new UserEntityResponse(rawResponse);
+                if (userResponse.success){
+                    resolve(userResponse);
                 } else {
-                    reject(response); //TODO Error response
+                    // TODO Entity Error Response
+                    reject(userResponse);
                 }
             });
         });

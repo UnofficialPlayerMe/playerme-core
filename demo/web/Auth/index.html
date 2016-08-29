@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unofficial PlayerMe Core</title>
+
+    <script src="../../../dist/web/playerme-core.js"></script>
+    <script src="../../helpers/logLibrary.js"></script>
+    <script src="../../vendor/require.js"></script>
+    <script src="./scripts/setupClient.js"></script>
+    <script src="./scripts/redirectLogin.js"></script>
+    <script src="./scripts/refreshToken.js"></script>
+    <script src="./scripts/passwordLogin.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+
+    <script>
+        window.onload = function() {
+            logLibrary('PlayerMe', PlayerMe);
+            logLibrary('PlayerMe.API.AuthService', PlayerMe.API.AuthService);
+
+            PlayerMe.API.APIService.setAdapter(PlayerMe.API.adapters.XMLHttpRequestAdapter);
+            PlayerMe.API.AuthService.rememberMe = true;
+
+            // <editor-fold desc="Pre-populate from env file">
+            requirejs(['../../../env/demo.js'],
+                function(demoEnv){
+                    var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID       || null;
+                    var clientSecret = demoEnv && demoEnv.OAUTH_CLIENT_SECRET   || null;
+                    var username     = demoEnv && demoEnv.PLAYER_USERNAME       || null;
+                    var password     = demoEnv && demoEnv.PLAYER_PASSWORD       || null;
+                    var baseUrl      = demoEnv && demoEnv.PLAYER_BASE_URL       || null;
+                    var redirectUrl  = window.location.href.split('?')[0];
+
+                    if (clientId){
+                        document.querySelectorAll('[name=clientId]').forEach(function(field){
+                            field.value = clientId;
+                        });
+                    }
+                    if (clientSecret){
+                        document.querySelectorAll('[name=clientSecret]').forEach(function(field){
+                            field.value = clientSecret;
+                        });
+                    }
+                    if (redirectUrl){
+                        document.querySelectorAll('[name=redirectUrl]').forEach(function(field){
+                            field.value = redirectUrl;
+                        });
+                    }
+                    if (username){
+                        document.querySelectorAll('[name=username]').forEach(function(field){
+                            field.value = username;
+                        });
+                    }
+                    if (password){
+                        document.querySelectorAll('[name=password]').forEach(function(field){
+                            field.value = password;
+                        });
+                    }
+
+                    if (baseUrl) {
+                        PlayerMe.API.APIService.baseUrl = baseUrl;
+                    }
+
+                    if (clientId && clientSecret){
+                        setupClient(clientId, clientSecret)
+                    }
+                },
+                function(err){
+                    console.error("Failed to load custom demo presets in " + err.requireModules[0]);
+                }
+            );
+            // </editor-fold>
+
+        };
+
+        function testSelf(){
+            PlayerMe.API.UsersRepository.getSelf().then(
+                function(result){
+                    alert("Success");
+                    console.log("Success", result);
+                },
+                function(failure){
+                    alert("Failure");
+                    console.log("Failure", failure);
+                }
+            );
+        }
+
+        function logout(){
+            PlayerMe.API.AuthService.logout();
+            alert("Logged out");
+        }
+
+    </script>
+</head>
+<body>
+<h1>Demo: Auth</h1>
+<p>Test the auth methods.</p>
+<p>Fields are pre-populated based on the contents of <em>env/demo.js</em>.</p>
+
+<h3>Setup Client</h3>
+<form>
+    <p>Client ID:     <input type="text" name="clientId"></p>
+    <p>Client Secret: <input type="text" name="clientSecret"></p>
+    <input type="button" value="Go" onClick="setupClientFromForm(this.form)">
+</form>
+
+<h3>Authenticated Test</h3>
+<input type="button" value="Get self" onClick="testSelf()">
+<input type="button" value="Logout"   onClick="logout()">
+
+<h3>Redirect Login</h3>
+<form>
+    <p>Redirect URL: <input type="text" name="redirectUrl"></p>
+    <p>State:        <input type="text" name="state"></p>
+    <input type="button" value="Go" onClick="redirectLogin(this.form)">
+</form>
+<h5>Exchange Redirect Code for Auth Token</h5>
+<form>
+    <p>Redirect URL: <input type="text" name="redirectUrl"></p>
+    <input type="button" value="Go" onClick="exchangeToken(this.form)">
+</form>
+
+<h3>Password Login</h3>
+<form>
+    <p>Username: <input type="text"     name="username"></p>
+    <p>Password: <input type="password" name="password"></p>
+    <input type="button" value="Go" onClick="passwordLogin(this.form)">
+</form>
+
+<h3>Refresh Login</h3>
+<form>
+    <input type="button" value="Go" onClick="refreshToken(this.form)">
+</form>
+
+</body>
+</html>

@@ -1,3 +1,5 @@
+const LOCAL_STORAGE_KEY = 'OAuthSessionModel';
+
 /**
  * A model representing a Player.me OAuth session.
  * @memberOf module:api/auth
@@ -15,9 +17,9 @@ class OAuthSessionModel {
         this._expires      = obj && obj.expires       || 0;
         this._expiresIn    = obj && obj.expires_in    || 0;
 
-        if (this._expires){
-            this._expires = new Date(this._expires*1000);
-        }
+        this._expires = this._expires ? new Date(this._expires*1000) : null;
+
+        this._raw = obj;
     }
 
     toString() {
@@ -86,7 +88,41 @@ class OAuthSessionModel {
      * @see http://docs.playerme.apiary.io/#reference/general/example-authenticated-requests/with-request-headers-oauth-only
      */
     toHeaderString(){
-        return this.tokenType+" "+this.accessToken;
+        if (this.tokenType && this.accessToken) {
+            // Capitalise first letter of tokenType
+            var tokenType = this.tokenType.charAt(0).toUpperCase() + this.tokenType.slice(1);
+            return tokenType + " " + this.accessToken;
+        }
+        return "";
+    }
+
+    /**
+     * Add this session to storage
+     * TODO Cookie fallback
+     */
+    addToLocalStorage(){
+        if (typeof localStorage == 'undefined') return;
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this._raw));
+    }
+
+    /**
+     * Get a model from local storage
+     * @returns {OAuthSessionModel}
+     */
+    static getFromLocalStorage(){
+        if (typeof localStorage == 'undefined') return null;
+        var json = localStorage.getItem(LOCAL_STORAGE_KEY);
+        var parsed = JSON.parse(json);
+
+        return parsed ? new OAuthSessionModel(parsed) : null;
+    }
+
+    /**
+     * Remove a modal from local storage
+     */
+    static removeFromLocalStorage(){
+        if (typeof localStorage == 'undefined') return;
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
 }
 
