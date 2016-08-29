@@ -109,6 +109,7 @@ class AuthService {
      *
      * @param {string} redirectUrl  The URL the user will be redirected to from player.me, once they've accepted/declined
      * @param {string} [state]      A string that is passed back to the redirect URL
+     * @return {string} The URL we're attempting to redirect to - in case automatic redirect fails
      *
      * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-player.me
      * @see AuthService::didRedirectLogin()
@@ -130,7 +131,7 @@ class AuthService {
         }
 
         // Redirect to url
-        window.location = url;
+        return window.location = url;
     }
 
     /**
