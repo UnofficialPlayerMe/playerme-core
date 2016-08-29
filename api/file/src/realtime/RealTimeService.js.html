@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/realtime/RealTimeService.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,181 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/realtime/RealTimeService.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Sails                 from &apos;./Sails&apos;;
+import FeedRealTime          from &apos;./api/feed/FeedRealTime&apos;;
+import NotificationsRealTime from &apos;./api/notifications/NotificationsRealTime&apos;;
+
+/**
+ * @class The core Sails.io.js wrapper for PlayerMe
+ * @extends Sails
+ * @memberOf module:realtime
+ */
+class RealTimeService extends Sails {
+    // &lt;editor-fold desc=&quot;Static Methods&quot;&gt;
+
+    /**
+     * @returns {object}
+     */
+    static getSailsIO(){
+        return Sails.getSailsIO();
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Setup&quot;&gt;
+
+    /**
+     * @param {string}  url                  Server to connect to
+     * @param {boolean} [autoGetCookie=true] Set to false if running outside of a browser and use `verifyWithOAuth`
+     * @param {object}  [options]            Custom options to override the defaults
+     */
+    constructor(url, autoGetCookie=true, options) {
+        super();
+
+        Sails.getSailsIO().useCORSRouteToGetCookie = autoGetCookie;
+
+        this._verifiedUserId = 0;
+
+        this._defaultConnectionOptions = {
+            transports: [&apos;websocket&apos;]
+        };
+
+        this._connect(url, options);
+
+        this.feed = new FeedRealTime(this);
+        this.notifications = new NotificationsRealTime(this);
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Verification&quot;&gt;
+
+    /**
+     * This will link the Socket ID to the User ID,
+     * so that the Sails can send user-wide messages to the correct sockets.
+     * Send this immediately after connect.
+     * {@link http://docs.playerme.apiary.io/#reference/RealTime/oauth/authenticate-+++}
+     * @param {function} [callback]
+     * @returns {RealTimeService} Itself
+     */
+    verify(callback){
+        // Use super&apos;s post method to avoid verification check
+        super.post(&apos;/verify&apos;, null, (body, jwr)=&gt;{
+            if(body &amp;&amp; body.id) {
+                this._verifiedUserId = body.id;
+            }
+            if (callback){
+                callback(body, jwr);
+            }
+        });
+        return this;
+    }
+
+    /**
+     * @param {string} [accessToken]
+     * @param {function} callback
+     * @returns {RealTimeService} Itself
+     */
+    verifyWithOAuth(accessToken, callback){
+        var params = accessToken ? { access_token: accessToken } : null;
+
+        // Use super&apos;s post method to avoid verification check
+        super.post(&apos;/oauth&apos;, params, (body, jwr)=&gt;{
+            if(body &amp;&amp; body.id) {
+                this._verifiedUserId = body.id;
+            }
+            if (callback){
+                callback(body, jwr);
+            }
+        });
+        return this;
+    }
+
+    /**
+     * Whether the user has been verified
+     * @returns {boolean}
+     */
+    get isVerified(){
+        return this._verifiedUserId &gt; 0;
+    }
+
+    /**
+     * The ID of the verified user, or 0
+     * @returns {int}
+     */
+    get verifiedUserId(){
+        return this._verifiedUserId;
+    }
+
+    /**
+     * Throw an error if the user isn&apos;t verified before calling the passed method name.
+     * @param {string} methodName
+     * @protected
+     */
+    _checkVerified(methodName){
+        if (!this.isVerified){
+            throw new Error(
+                &quot;The user must be verified before calling &quot;+
+                    this.constructor.name+&quot;.&quot;+methodName+&quot;.&quot;
+            );
+        }
+    }
+
+    // &lt;/editor-fold&gt; Verification
+    // &lt;editor-fold desc=&quot;Debugging&quot;&gt;
+
+    /**
+     * Send a message which will be picked up by onTest()
+     * @param {string} message The message to make the round-trip.
+     * @returns {RealTimeService}
+     */
+    postTest(message){
+        this.post(&apos;/test&apos;, {message: message});
+        return this;
+    }
+
+    /**
+     * @param {function} callback
+     * @return {Sails} Itself
+     */
+    onTest(callback){
+        this.on(&apos;test&apos;, (data)=&gt;{
+            callback(data.message);
+        });
+        return this;
+    }
+
+    // &lt;/editor-fold&gt; Debugging
+    // &lt;editor-fold desc=&quot;Request Methods&quot;&gt;
+
+    /** @inheritdoc */
+    get(url, data, callback){
+        this._checkVerified(&apos;get()&apos;);
+        super.get(url, data, callback);
+    }
+
+    /** @inheritdoc */
+    post(url, data, callback){
+        this._checkVerified(&apos;post()&apos;);
+        super.post(url, data, callback);
+    }
+
+    /** @inheritdoc */
+    put(url, data, callback){
+        this._checkVerified(&apos;put()&apos;);
+        super.put(url, data, callback);
+    }
+
+    /** @inheritdoc */
+    del(url, data, callback){
+        this._checkVerified(&apos;del()&apos;);
+        super.del(url, data, callback);
+    }
+
+    // &lt;/editor-fold&gt; Request Methods
+}
+
+export default RealTimeService;</code></pre>
+
 </div>
 
 <footer class="footer">

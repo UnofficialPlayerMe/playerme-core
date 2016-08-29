@@ -1,0 +1,241 @@
+{
+  "coverage": "90.76%",
+  "expectCount": 455,
+  "actualCount": 413,
+  "files": {
+    "src/models/notification/NotificationModel.js": {
+      "expectCount": 42,
+      "actualCount": 41,
+      "undocumentLines": [
+        33
+      ]
+    },
+    "src/api/request/APIService.js": {
+      "expectCount": 13,
+      "actualCount": 7,
+      "undocumentLines": [
+        233,
+        14,
+        71,
+        59,
+        63,
+        67
+      ]
+    },
+    "src/realtime/api/AbstractRealTimeAPI.js": {
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
+    },
+    "src/api/request/adapter/AbstractRequestAdapter.js": {
+      "expectCount": 9,
+      "actualCount": 8,
+      "undocumentLines": [
+        6
+      ]
+    },
+    "src/api/request/response/AbstractResponse.js": {
+      "expectCount": 11,
+      "actualCount": 11,
+      "undocumentLines": []
+    },
+    "src/models/activity/ActivityModel.js": {
+      "expectCount": 42,
+      "actualCount": 41,
+      "undocumentLines": [
+        70
+      ]
+    },
+    "src/models/activity/ActivityPostData.js": {
+      "expectCount": 10,
+      "actualCount": 10,
+      "undocumentLines": []
+    },
+    "src/models/activity/ActivityVideoData.js": {
+      "expectCount": 6,
+      "actualCount": 6,
+      "undocumentLines": []
+    },
+    "src/api/auth/AuthService.js": {
+      "expectCount": 17,
+      "actualCount": 15,
+      "undocumentLines": [
+        463,
+        12
+      ]
+    },
+    "src/api/request/response/CollectionResponse.js": {
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
+    },
+    "src/models/activity/comment/CommentMeta.js": {
+      "expectCount": 12,
+      "actualCount": 12,
+      "undocumentLines": []
+    },
+    "src/models/activity/comment/CommentModel.js": {
+      "expectCount": 23,
+      "actualCount": 22,
+      "undocumentLines": [
+        44
+      ]
+    },
+    "src/api/request/response/EntityResponse.js": {
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
+    },
+    "src/realtime/api/feed/FeedRealTime.js": {
+      "expectCount": 11,
+      "actualCount": 11,
+      "undocumentLines": []
+    },
+    "src/models/game/GameExtendedModel.js": {
+      "expectCount": 47,
+      "actualCount": 44,
+      "undocumentLines": [
+        331,
+        416,
+        65
+      ]
+    },
+    "src/models/game/GameMetadataModel.js": {
+      "expectCount": 16,
+      "actualCount": 15,
+      "undocumentLines": [
+        30
+      ]
+    },
+    "src/models/game/GameModel.js": {
+      "expectCount": 16,
+      "actualCount": 15,
+      "undocumentLines": [
+        30
+      ]
+    },
+    "src/api/request/adapter/JSONPRequestAdapter.js": {
+      "expectCount": 7,
+      "actualCount": 1,
+      "undocumentLines": [
+        11,
+        137,
+        84,
+        143,
+        129,
+        133
+      ]
+    },
+    "src/api/request/adapter/NodeRequestAdapter.js": {
+      "expectCount": 6,
+      "actualCount": 2,
+      "undocumentLines": [
+        87,
+        75,
+        81,
+        84
+      ]
+    },
+    "src/realtime/api/notifications/NotificationsRealTime.js": {
+      "expectCount": 6,
+      "actualCount": 6,
+      "undocumentLines": []
+    },
+    "src/api/auth/OAuthSessionModel.js": {
+      "expectCount": 12,
+      "actualCount": 11,
+      "undocumentLines": [
+        25
+      ]
+    },
+    "src/api/auth/OAuthSessionResponse.js": {
+      "expectCount": 4,
+      "actualCount": 3,
+      "undocumentLines": [
+        33
+      ]
+    },
+    "src/api/request/response/PagerData.js": {
+      "expectCount": 8,
+      "actualCount": 8,
+      "undocumentLines": []
+    },
+    "src/api/request/response/RawResponse.js": {
+      "expectCount": 9,
+      "actualCount": 9,
+      "undocumentLines": []
+    },
+    "src/api/request/response/ErrorResponse.js": {
+      "expectCount": 8,
+      "actualCount": 8,
+      "undocumentLines": []
+    },
+    "src/realtime/api/RealTimeResponse.js": {
+      "expectCount": 6,
+      "actualCount": 5,
+      "undocumentLines": [
+        6
+      ]
+    },
+    "src/realtime/RealTimeService.js": {
+      "expectCount": 16,
+      "actualCount": 14,
+      "undocumentLines": [
+        41,
+        42
+      ]
+    },
+    "src/realtime/Sails.js": {
+      "expectCount": 25,
+      "actualCount": 24,
+      "undocumentLines": [
+        25
+      ]
+    },
+    "src/api/users/UserCollectionResponse.js": {
+      "expectCount": 3,
+      "actualCount": 2,
+      "undocumentLines": [
+        10
+      ]
+    },
+    "src/api/users/UserEntityResponse.js": {
+      "expectCount": 3,
+      "actualCount": 2,
+      "undocumentLines": [
+        10
+      ]
+    },
+    "src/models/user/UserExtendedModel.js": {
+      "expectCount": 23,
+      "actualCount": 22,
+      "undocumentLines": [
+        57
+      ]
+    },
+    "src/models/user/UserModel.js": {
+      "expectCount": 17,
+      "actualCount": 16,
+      "undocumentLines": [
+        26
+      ]
+    },
+    "src/api/users/UsersRepository.js": {
+      "expectCount": 7,
+      "actualCount": 3,
+      "undocumentLines": [
+        61,
+        66,
+        71,
+        78
+      ]
+    },
+    "src/api/request/adapter/XMLHttpRequestAdapter.js": {
+      "expectCount": 7,
+      "actualCount": 6,
+      "undocumentLines": [
+        199
+      ]
+    }
+  }
+}

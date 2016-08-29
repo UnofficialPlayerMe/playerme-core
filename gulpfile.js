@@ -5,7 +5,7 @@ var path        = require('path');
 var del         = require('del');
 var fs          = require('fs');
 var gutil       = require('gulp-util');
-var jsdoc       = require('gulp-jsdoc3');
+var esdoc       = require("gulp-esdoc");
 var openBrowser = require('gulp-open');
 
 // </editor-fold> Imports
@@ -42,9 +42,7 @@ gulp.task('build', ['doc']);
 /**
  * Clear out the existing documentation and build some new ones
  */
-gulp.task('doc', function (done) {
-    // Get jsdoc config
-    var config = require('./jsdoc.config.json');
+gulp.task('doc', function(){
 
     // Get paths
     var rootDir      = path.resolve('../playerme-core');
@@ -52,44 +50,48 @@ gulp.task('doc', function (done) {
     var tutorialsDir = path.resolve('../playerme-core/tutorials');
     var readmePath   = path.resolve('../playerme-core/README.md');
     var packagePath  = path.resolve('../playerme-core/package.json');
-    var targetDir    = path.resolve(config.opts.destination);
+    var targetDir    = path.resolve('./api');
 
-    // Assert files & directories
-    if (
-        assertDirectory(rootDir, 'Root directory'  ) == false
-    ||  assertDirectory(srcDir,  'Source directory') == false
-    ||  assertFile(readmePath,   'ReadMe file'     ) == false
-    ||  assertFile(packagePath,  'Package JSON'    ) == false
-    ){
-        done();
-        return;
-    }
-
-    // Get source project package.json
     var packageObj = require(packagePath);
-    if (packageObj.name !== 'playerme-core'){
-        logError("Project isn't playerme-core");
-        done();
-        return;
-    }
-    config.templates.systemName = packageObj.name+" "+packageObj.version;
+
+    var manuals = {
+        overview: [readmePath],
+        // faq: []
+        // installation: []
+        // usage: []
+        tutorial: []
+        // example: []
+        // asset: []
+        // configuration: []
+        // changelog: []
+    };
+
+    // Pup tutorial files in manuals map
+    var tutorialFiles = fs.readdirSync(tutorialsDir);
+    tutorialFiles.forEach(function(fileName){
+        var extensionSplit = fileName.split(new RegExp('.md$'));
+        var name = extensionSplit[0];
+        if (extensionSplit.length <= 1 || !name) return;
+
+        manuals.tutorial.push(path.resolve(tutorialsDir, fileName));
+    });
 
     // Clear files
     del.sync(
         path.join(targetDir, '*.*')
     );
 
-    // Edit config
-    config.opts.tutorials = tutorialsDir;
-
-    // Create Doc
-    gulp.src([
-        readmePath,
-        path.join(srcDir, '**/*.js')
-    ],{
-        read: false
-    }).pipe(
-        jsdoc(config, done)
+    gulp.src(
+        srcDir
+    ).pipe(
+        esdoc({
+            'destination':  targetDir,
+            'title':        packageObj.name+': '+packageObj.version,
+            'index':        readmePath,
+            'package':      packagePath,
+            'manual':       manuals,
+            'access':       ["public", "protected"]
+        })
     );
 });
 

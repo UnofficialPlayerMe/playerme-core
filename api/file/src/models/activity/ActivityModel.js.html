@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/models/activity/ActivityModel.js | playerme-core: 0.4.0 API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/UnofficialPlayerMe/playerme-core" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/auth</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/auth/AuthService.js~AuthService.html">AuthService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/auth/OAuthSessionModel.js~OAuthSessionModel.html">OAuthSessionModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/auth/OAuthSessionResponse.js~OAuthSessionResponse.html">OAuthSessionResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-authService">authService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/request</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/APIService.js~APIService.html">APIService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-aPIService">aPIService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/request/adapter</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/AbstractRequestAdapter.js~AbstractRequestAdapter.html">AbstractRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/JSONPRequestAdapter.js~JSONPRequestAdapter.html">JSONPRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/NodeRequestAdapter.js~NodeRequestAdapter.html">NodeRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/XMLHttpRequestAdapter.js~XMLHttpRequestAdapter.html">XMLHttpRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-jSONPRequestAdapter">jSONPRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-xMLHttpRequestAdapter">xMLHttpRequestAdapter</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/request/response</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/AbstractResponse.js~AbstractResponse.html">AbstractResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/CollectionResponse.js~CollectionResponse.html">CollectionResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/EntityResponse.js~EntityResponse.html">EntityResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/ErrorResponse.js~RawResponse.html">RawResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/PagerData.js~PagerData.html">PagerData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/RawResponse.js~RawResponse.html">RawResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/users</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/users/UserCollectionResponse.js~UserCollectionResponse.html">UserCollectionResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/users/UserEntityResponse.js~UserEntityResponse.html">UserEntityResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/users/UsersRepository.js~UsersRepository.html">UsersRepository</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-usersRepository">usersRepository</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/activity</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/ActivityModel.js~ActivityModel.html">ActivityModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/ActivityPostData.js~ActivityPostMetaData.html">ActivityPostMetaData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/ActivityVideoData.js~ActivityVideoData.html">ActivityVideoData</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/activity/comment</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/comment/CommentMeta.js~CommentMeta.html">CommentMeta</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/comment/CommentModel.js~CommentModel.html">CommentModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/game</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameExtendedModel.js~GameCompany.html">GameCompany</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameExtendedModel.js~GameExtendedModel.html">GameExtendedModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameExtendedModel.js~GamePlatform.html">GamePlatform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameMetadataModel.js~GameMetadataModel.html">GameMetadataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameModel.js~GameModel.html">GameModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/notification</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/notification/NotificationModel.js~NotificationModel.html">NotificationModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/user</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/user/UserExtendedModel.js~UserExtendedModel.html">UserExtendedModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/user/UserModel.js~UserModel.html">UserModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/RealTimeService.js~RealTimeService.html">RealTimeService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/Sails.js~Sails.html">Sails</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime/api</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/AbstractRealTimeAPI.js~AbstractRealTimeAPI.html">AbstractRealTimeAPI</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/RealTimeResponse.js~RealTimeResponse.html">RealTimeResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime/api/feed</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/feed/FeedRealTime.js~FeedRealTime.html">FeedRealTime</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime/api/notifications</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/notifications/NotificationsRealTime.js~NotificationsRealTime.html">NotificationsRealTime</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/models/activity/ActivityModel.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import UserModel from &apos;./../user/UserModel&apos;;
+import CommentModel from &apos;./comment/CommentModel&apos;;
+import ActivityPostData from &apos;./ActivityPostData&apos;;
+import ActivityVideoData from &apos;./ActivityVideoData&apos;;
+
+/**
+ * A model representing a Player.me Activity.
+ * @memberOf module:models/activity
+ */
+class ActivityModel {
+    /**
+     * Create a new Activity model.
+     * @param {Object} [obj] A player response object to initialise this model with.
+     */
+    constructor(obj=null)
+    {
+        var toDate = (str) =&gt; {
+            if (!str) return null;
+            return new Date(str);
+        };
+
+        this._id                = obj &amp;&amp; obj.id                     || 0;
+        this._resourceId        = obj &amp;&amp; obj.resource_id            || 0;
+        this._type              = obj &amp;&amp; obj.type                   || &apos;&apos;;
+        this._user              = obj &amp;&amp; new UserModel(obj.user)    || null;
+        this._source            = obj &amp;&amp; obj.source                 || &apos;&apos;;
+        this._sourceUrl         = obj &amp;&amp; obj.sourceUrl              || &apos;&apos;;
+        this._url               = obj &amp;&amp; obj.url                    || &apos;&apos;;
+        this._fullUrl           = obj &amp;&amp; obj.full_url               || &apos;&apos;;
+        this._publishedAt       = obj &amp;&amp; toDate(obj.published_at)   || null;
+        this._createdAt         = obj &amp;&amp; toDate(obj.created_at)     || null;
+        this._updatedAt         = obj &amp;&amp; toDate(obj.updated_at)     || null;
+        this._editedAt          = obj &amp;&amp; toDate(obj.edited_at)      || null;
+        this._isSubscribed      = obj &amp;&amp; obj.isSubscribed           || false;
+        this._showEdit          = obj &amp;&amp; obj.showEdit               || false;
+        this._showDelete        = obj &amp;&amp; obj.showDelete             || false;
+        this._userIsHidden      = obj &amp;&amp; obj.userIsHidden           || false;
+        this._userIsBlocked     = obj &amp;&amp; obj.userIsBlocked          || false;
+        this._userIsFollowed    = obj &amp;&amp; obj.userIsFollowed         || false;
+        this._isOwnActivity     = obj &amp;&amp; obj.isOwnActivity          || false;
+        this._hasPinned         = obj &amp;&amp; obj.hasPinned              || false;
+        this._pinsCount         = obj &amp;&amp; obj.pinsCount              || 0;
+        this._hasShared         = obj &amp;&amp; obj.hasShared              || false;
+        this._shareCount        = obj &amp;&amp; obj.shareCount             || 0;
+        this._commentsCount     = obj &amp;&amp; obj.commentsCount          || 0;
+        this._fullUrl           = obj &amp;&amp; obj.fullUrl                || &apos;&apos;;
+        this._hasLiked          = obj &amp;&amp; obj.hasLiked               || false;
+        this._likesCount        = obj &amp;&amp; obj.likesCount             || 0;
+
+        this._comments = [];
+        if (obj &amp;&amp; obj.comments){
+            this._comments = obj.comments.map(
+                (comment) =&gt; new CommentModel(comment)
+            );
+        }
+
+        this._postData = null;
+        this._videoData = null;
+
+        if (obj &amp;&amp; obj.data){
+            if (this.isPost()){
+                this._postData = new ActivityPostData(obj.data);
+            }
+            if (this.isVideo()){
+                this._videoData = new ActivityVideoData(obj.data);
+            }
+        }
+    }
+
+    toString() {
+        var msg = &apos;[ActivityModel&apos;;
+        if (this._id) msg += &apos; #&apos;+this._id;
+        return msg +&apos;]&apos;;
+    }
+
+    /**
+     * The activity&apos;s ID number.
+     * @readonly
+     * @member {number} ActivityModel#id
+     * @returns {number}
+     */
+    get id(){
+        return this._id;
+    }
+
+    /**
+     * TODO What is ActivityModel resourceId?
+     * @readonly
+     * @member {number} ActivityModel#resourceId
+     * @returns {number}
+     */
+    get resourceId(){
+        return this._resourceId;
+    }
+
+    /**
+     * The type of activity (i.e. &quot;Video&quot; or &quot;Post&quot;).
+     * @readonly
+     * @member {string} ActivityModel#type
+     * @returns {string}
+     */
+    get type(){
+        return this._type;
+    }
+
+    /**
+     * The user that posted this Activity.
+     * @readonly
+     * @member {UserModel} ActivityModel#user
+     * @returns {UserModel}
+     */
+    get user(){
+        return this._user;
+    }
+
+    /**
+     * Where the Activity came from (i.e. &quot;youtube&quot;, &quot;twitch&quot; or &quot;player&quot;).
+     * @readonly
+     * @member {string} ActivityModel#source
+     * @returns {string}
+     */
+    get source(){
+        return this._source;
+    }
+
+    /**
+     * The URL where this activity originated.
+     * @readonly
+     * @member {string} ActivityModel#sourceUrl
+     * @returns {string}
+     */
+    get sourceUrl(){
+        return this._sourceUrl;
+    }
+
+    /**
+     * The partial URL where this activity is located on player.
+     * @readonly
+     * @member {string} ActivityModel#url
+     * @returns {string}
+     */
+    get url(){
+        return this._url;
+    }
+
+    /**
+     * The full URL where this activity is located on player.
+     * @readonly
+     * @member {string} ActivityModel#fullUrl
+     * @returns {string}
+     */
+    get fullUrl(){
+        return this._fullUrl;
+    }
+
+    /**
+     * The date this activity was published.
+     * @readonly
+     * @member {Date} ActivityModel#publishedAt
+     * @returns {Date}
+     */
+    get publishedAt(){
+        return this._publishedAt;
+    }
+
+    /**
+     * The date this activity row was created.
+     * @readonly
+     * @member {Date} ActivityModel#createdAt
+     * @returns {Date}
+     */
+    get createdAt(){
+        return this._createdAt;
+    }
+
+    /**
+     * The date this activity row was updated.
+     * @readonly
+     * @member {Date} ActivityModel#updatedAt
+     * @returns {Date}
+     */
+    get updatedAt(){
+        return this._updatedAt;
+    }
+
+    /**
+     * The date this activity was edited, or null if never.
+     * @readonly
+     * @member {Date|null} ActivityModel#editedAt
+     * @returns {Date|null}
+     */
+    get editedAt(){
+        return this._editedAt;
+    }
+
+    /**
+     * If the current user has subscribed to this activity.
+     * @readonly
+     * @member {boolean} ActivityModel#isSubscribed
+     * @returns {boolean}
+     */
+    get isSubscribed(){
+        return this._isSubscribed;
+    }
+
+    /**
+     * If the user can edit this activity.
+     * @readonly
+     * @member {boolean} ActivityModel#showEdit
+     * @returns {boolean}
+     */
+    get showEdit(){
+        return this._showEdit;
+    }
+
+    /**
+     * If the user can delete this activity.
+     * @readonly
+     * @member {boolean} ActivityModel#showDelete
+     * @returns {boolean}
+     */
+    get showDelete(){
+        return this._showDelete;
+    }
+
+    /**
+     * If the user has hidden the author.
+     * @readonly
+     * @member {boolean} ActivityModel#userIsHidden
+     * @returns {boolean}
+     */
+    get userIsHidden(){
+        return this._userIsHidden;
+    }
+
+    /**
+     * If the user has blocked the author.
+     * @readonly
+     * @member {boolean} ActivityModel#userIsBlocked
+     * @returns {boolean}
+     */
+    get userIsBlocked(){
+        return this._userIsBlocked;
+    }
+
+    /**
+     * If the user is following the author.
+     * @readonly
+     * @member {boolean} ActivityModel#userIsFollowed
+     * @returns {boolean}
+     */
+    get userIsFollowed(){
+        return this._userIsFollowed;
+    }
+
+    /**
+     * If the user is the author.
+     * @readonly
+     * @member {boolean} ActivityModel#isOwnActivity
+     * @returns {boolean}
+     */
+    get isOwnActivity(){
+        return this._isOwnActivity;
+    }
+
+    /**
+     * If the user has liked this activity.
+     * @readonly
+     * @member {boolean} ActivityModel#hasLiked
+     * @returns {boolean}
+     */
+    get hasLiked(){
+        return this._hasLiked;
+    }
+
+    /**
+     * The number of likes this activity has received.
+     * @readonly
+     * @member {number} ActivityModel#likesCount
+     * @returns {number}
+     */
+    get likesCount(){
+        return this._likesCount;
+    }
+
+    /**
+     * If the user has pinned this activity.
+     * @readonly
+     * @member {boolean} ActivityModel#hasPinned
+     * @returns {boolean}
+     */
+    get hasPinned(){
+        return this._hasPinned;
+    }
+
+    /**
+     * The number of pins this activity has received.
+     * @readonly
+     * @member {number} ActivityModel#pinsCount
+     * @returns {number}
+     */
+    get pinsCount(){
+        return this._pinsCount;
+    }
+
+    /**
+     * If the user has shared this activity.
+     * @readonly
+     * @member {boolean} ActivityModel#hasShared
+     * @returns {boolean}
+     */
+    get hasShared(){
+        return this._hasShared;
+    }
+
+    /**
+     * The number of shares this activity has received.
+     * @readonly
+     * @member {number} ActivityModel#shareCount
+     * @returns {number}
+     */
+    get shareCount(){
+        return this._shareCount;
+    }
+
+    /**
+     * The total number of comments on this activity.
+     * @readonly
+     * @member {number} ActivityModel#commentsCount
+     * @returns {number}
+     */
+    get commentsCount(){
+        return this._commentsCount;
+    }
+
+    /**
+     * An array of comments the client has loaded.
+     * @readonly
+     * @member {CommentModel[]} ActivityModel#comments
+     * @returns {CommentModel[]}
+     */
+    get comments(){
+        return this._comments;
+    }
+
+    /**
+     * Data about the post, if this Activity is the right type.
+     * @readonly
+     * @member {ActivityPostData|null} ActivityModel#post
+     * @returns {ActivityPostData|null}
+     */
+    get post(){
+        return this._postData;
+    }
+
+    /**
+     * Data about the video, if this Activity is the right type.
+     * @readonly
+     * @member {ActivityVideoData|null} ActivityModel#video
+     * @returns {ActivityVideoData|null}
+     */
+    get video(){
+        return this._videoData;
+    }
+
+    //////////////
+    //   TYPE   //
+    //////////////
+
+    /**
+     * True if this Activity&apos;s type is a Video.
+     * @returns {boolean}
+     */
+    isVideo(){
+        return this._type == &quot;video&quot;;
+    }
+
+    /**
+     * True if this Activity&apos;s type is a Post.
+     * @returns {boolean}
+     */
+    isPost(){
+        return this._type == &quot;post&quot;;
+    }
+
+    //////////////
+    //  SOURCE  //
+    //////////////
+
+    /**
+     * True if this Activity&apos;s source is YouTube.
+     * @returns {boolean}
+     */
+    isFromYoutube(){
+        return this.source == &quot;youtube&quot;;
+    }
+
+    /**
+     * True if this Activity&apos;s source is Twitch.
+     * @returns {boolean}
+     */
+    isFromTwitch(){
+        return this.source == &quot;twitch&quot;;
+    }
+
+    /**
+     * True if this Activity&apos;s source is Player.me.
+     * @returns {boolean}
+     */
+    isFromPlayer(){
+        return this.source == &quot;player&quot;;
+    }
+
+    //////////////
+    // COMMENTS //
+    //////////////
+
+    /**
+     * If the client has loaded all this activity&apos;s comments.
+     * @readonly
+     * @returns {boolean}
+     */
+    hasAllComments(){
+        return this._comments.length &gt;= this._commentsCount;
+    }
+
+    /**
+     * Get the comment&apos;s index by its ID.
+     * @param commentId
+     * @returns {number}
+     * @private
+     */
+    _getCommentIndex(commentId){
+        for (var i=0; i &lt; this.comments.length; i++){
+            if (this.comments[i].id == commentId) return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Add a comment to this activity.
+     * @param {CommentModel} comment
+     */
+    addComment(comment){
+        if (this.id != comment.activityId) {
+            throw &quot;This comment doesn&apos;t belong to this activity&quot;;
+        }
+        this.comments.push(comment);
+        this._commentsCount++;
+    }
+
+    /**
+     * Override this activity&apos;s copy of a comment.
+     * @param {CommentModel} comment
+     * @return {boolean} If there was an original to replace.
+     */
+    updateComment(comment){
+        if (!comment || !comment.id) {
+            throw &quot;Invalid comment to update on Activity &quot;+this._id;
+        }
+
+        var index = this._getCommentIndex(comment.id);
+        if (index &lt; 0) return false;
+
+        this.comments[index] = comment;
+        return true;
+    }
+
+    /**
+     * Remove the comment.
+     * @param {number} commentId
+     * @returns {boolean} If there was a comment to remove.
+     */
+    removeComment(commentId){
+        var index = this._getCommentIndex(commentId);
+        if (index &lt; 0) return false;
+
+        this.comments.splice(index, 1);
+        return true;
+    }
+
+    /**
+     * Add comments to the start of the list, such as earlier comments.
+     * @param {CommentModel[]} comments
+     */
+    addCommentsToStart(comments){
+        if (!Array.isArray(comments)) {
+            throw &quot;Earlier comments to add to Activity &quot;+this._id+&quot; wasn&apos;t an array&quot;;
+        }
+        this._comments = this._comments ? comments.concat(this._comments) : comments;
+    }
+}
+
+export default ActivityModel;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

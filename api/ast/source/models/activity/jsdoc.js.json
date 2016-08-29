@@ -1,0 +1,59 @@
+{
+  "type": "Program",
+  "body": [],
+  "sourceType": "module",
+  "range": [
+    101,
+    101
+  ],
+  "loc": {
+    "start": {
+      "line": 4,
+      "column": 3
+    },
+    "end": {
+      "line": 4,
+      "column": 3
+    }
+  },
+  "leadingComments": [
+    {
+      "type": "Block",
+      "value": "*\n * Models representing Activity entities as part of the Player API\n * @module models/activity\n ",
+      "range": [
+        0,
+        101
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 4,
+          "column": 3
+        }
+      }
+    }
+  ],
+  "comments": [
+    {
+      "type": "Block",
+      "value": "*\n * Models representing Activity entities as part of the Player API\n * @module models/activity\n ",
+      "range": [
+        0,
+        101
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 4,
+          "column": 3
+        }
+      }
+    }
+  ]
+}

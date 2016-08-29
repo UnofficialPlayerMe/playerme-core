@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/models/notification/NotificationModel.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,300 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/models/notification/NotificationModel.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import UserModel from &apos;./../user/UserModel&apos;;
+
+/**
+ * A model representing a Player.me Notification.
+ * @memberOf module:models/notification
+ */
+class NotificationModel {
+    /**
+     * Create a new Notification model.
+     * @param {Object} [obj] A player response object to initialise this model with.
+     */
+    constructor(obj=null)
+    {
+        var toDate = (str) =&gt; {
+            if (!str) return null;
+            return new Date(str);
+        };
+
+        this._key       = obj &amp;&amp; obj.key                 || &apos;&apos;;
+        this._type      = obj &amp;&amp; obj.type                || &apos;&apos;;
+        this._set       = obj &amp;&amp; obj.set                 || &apos;&apos;;
+        this._id        = obj &amp;&amp; obj.id                  || 0;
+        this._ids       = obj &amp;&amp; obj.ids                 || [];
+        this._user      = obj &amp;&amp; new UserModel(obj.user) || null;
+        this._url       = obj &amp;&amp; obj.url                 || null;
+        this._createdAt = obj &amp;&amp; toDate(obj.created_at)  || null;
+        this._names     = obj &amp;&amp; obj.names               || &apos;&apos;;
+        this._text      = obj &amp;&amp; obj.text                || &apos;&apos;;
+        this._image     = obj &amp;&amp; obj.image               || &apos;&apos;;
+        this._unread    = obj &amp;&amp; obj.unread              || false;
+    }
+
+    toString() {
+        var msg = &apos;[NotificationModel&apos;;
+        if (this._set){
+            msg += &apos; &apos;+this._set;
+        }
+        return msg +&apos;]&apos;;
+    }
+
+    // &lt;editor-fold desc=&quot;Properties&quot;&gt;
+
+    /**
+     * The notification&apos;s key.
+     * A combination of the first character of the entity name, and its ID.
+     * @example &apos;c123&apos; for comment 123
+     * @returns {string}
+     */
+    get key(){
+        return this._key;
+    }
+
+    /**
+     * The type of notification
+     * @returns {string}
+     */
+    get type(){
+        return this._type;
+    }
+
+    /**
+     * A combination of type and key, separated by a colon.
+     * @returns {string}
+     */
+    get set(){
+        return this._set;
+    }
+
+    /**
+     * TODO What is this?
+     * @returns {number}
+     */
+    get id(){
+        return this._id;
+    }
+
+    /**
+     * TODO What is this?
+     * @returns {number[]}
+     */
+    get ids(){
+        return this._ids;
+    }
+
+    /**
+     * TODO What is this?
+     * @returns {UserModel}
+     */
+    get user(){
+        return this._user;
+    }
+
+    /**
+     * The URL to go to the entity and clear the notification
+     * @returns {string}
+     */
+    get url(){
+        return this._url;
+    }
+
+    /**
+     * When the notification was created
+     * @returns {Date}
+     */
+    get createdAt(){
+        return this._createdAt;
+    }
+
+    /**
+     * The names of users at the start of the notification message
+     * @returns {string}
+     */
+    get names(){
+        return this._names;
+    }
+
+    /**
+     * The text at the end of the notification message
+     * @returns {string}
+     */
+    get text(){
+        return this._text;
+    }
+
+    /**
+     * Image to be used for the notification
+     * @returns {string}
+     */
+    get image(){
+        return this._image;
+    }
+
+    /**
+     * Whether or not the notification has been marked as read
+     * @returns {boolean}
+     */
+    get unread(){
+        return this._unread;
+    }
+
+    // &lt;/editor-fold&gt;
+
+    // &lt;editor-fold desc=&quot;Notification Types&quot;&gt;
+    // &lt;editor-fold desc=&quot;Likes&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get LIKE_COMMENT(){ return &apos;like_comment&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get LIKE_ACTIVITY(){ return &apos;like_activity&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Comments&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get REPLY_COMMENT(){ return &apos;reply_comment&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get REPLY_ACTIVITY(){ return &apos;reply_activity&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get ALSO_COMMENTED(){ return &apos;also_commented&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Mentions&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get MENTION_COMMENT(){ return &apos;mention_comment&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get MENTION_ACTIVITY(){ return &apos;mention_activity&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Follows&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get FOLLOW(){ return &apos;follow&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Groups&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get GROUP_REQUEST_USER(){ return &apos;group_request_user&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GROUP_CONFIRM_USER(){ return &apos;group_confirm_user&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GROUP_DENY_USER(){ return &apos;group_deny_user&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GROUP_REMOVE_USER(){ return &apos;group_remove_user&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GROUP_REQUEST_ADMIN(){ return &apos;group_request_admin&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GROUP_CONFIRM_ADMIN(){ return &apos;group_confirm_admin&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GROUP_DENY_ADMIN(){ return &apos;group_deny_admin&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GROUP_REMOVE_ADMIN(){ return &apos;group_remove_admin&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Game Attribute&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get GAME_ATTRIBUTE_APPROVED(){ return &apos;game_attribute_approved&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get GAME_SUGGESTION_APPROVED(){ return &apos;game_suggestion_approved&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get COVER_APPROVED(){ return &apos;cover_approved&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get COVER_DENIED(){ return &apos;cover_denied&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get IMAGES_APPROVED(){ return &apos;image_approved&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get VIDEO_APPROVED(){ return &apos;video_approved&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get VIDEO_DENIED(){ return &apos;video_denied&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Companies&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get COMPANY_REQUEST_APPROVED(){ return &apos;company_request_approved&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Achievements&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get BADGE_UPGRADE(){ return &apos;badge_upgrade&apos;; }
+    /**
+     * @returns {string}
+     */
+    static get BADGE_NEW(){ return &apos;badge_new&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Partnership&quot;&gt;
+
+    /**
+     * @returns {string}
+     */
+    static get PARTNERSHIP_APPROVED(){ return &apos;partnership_approved&apos;; }
+
+    // &lt;/editor-fold&gt;
+    // &lt;/editor-fold&gt;
+}
+
+export default NotificationModel;
+</code></pre>
+
 </div>
 
 <footer class="footer">

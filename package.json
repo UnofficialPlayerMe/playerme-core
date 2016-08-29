@@ -6,8 +6,7 @@
   "devDependencies": {
     "del": "^2.2.1",
     "gulp": "^3.9.1",
-    "gulp-jsdoc": "^0.1.5",
-    "gulp-jsdoc3": "^0.3.0",
+    "gulp-esdoc": "^0.3.0",
     "gulp-open": "^2.0.0",
     "gulp-util": "^3.0.7"
   },

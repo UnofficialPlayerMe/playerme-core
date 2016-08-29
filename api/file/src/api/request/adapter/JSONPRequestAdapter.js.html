@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">src/api/request/adapter/JSONPRequestAdapter.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,152 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/api/request/adapter/JSONPRequestAdapter.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import AbstractRequestAdapter from &apos;./AbstractRequestAdapter&apos;;
+import RawResponse from &apos;../response/RawResponse&apos;;
+
+/**
+ * Process requests using JSONP.
+ * Browsers allow this method for cross-domain calls, but only GET requests.
+ * @extends AbstractRequestAdapter
+ * @memberOf module:api/request/adapter
+ */
+class JSONPRequestAdapter extends AbstractRequestAdapter {
+    constructor()
+    {
+        super();
+
+        /**
+         * The next ID to use in a callback reference name
+         * @member {int}
+         * @private
+         */
+        this._lastCallbackId = 0;
+
+        /**
+         * The object-chain up from window, where JSONP callbacks are stored.
+         * @member {string}
+         * @private
+         */
+        this._callbackNamespace = &quot;playermeJSONP.callbacks&quot;;
+
+        /**
+         * The top object defined by CALLBACK_NAMESPACE, where JSONP callbacks are stored.
+         * @member {object}
+         * @private
+         */
+        this._callbackContainer = this._setupCallbackContainer(
+            this._callbackNamespace
+        );
+    }
+
+    /**
+     * Sets up the object-chain where callbacks are stored.
+     * @param {string} namespace A period-delimited list of child object names, starting from window
+     * @returns {object} The topmost object in the chain.
+     * @private
+     */
+    _setupCallbackContainer(namespace){
+        // Split string into individual object names
+        var namespaces = namespace.split(&quot;.&quot;);
+
+        // Create the object chain of namespaces, starting at window
+        var currentTarget = window;
+        for (var i=0; i &lt; namespaces.length; i++){
+            currentTarget = this._createObjectOnParent(currentTarget, namespaces[i]);
+        }
+
+        // Return the top of the namespace
+        return currentTarget;
+    }
+
+    /**
+     * Create an object on the parent, with the given name
+     * @param {object} parent
+     * @param {string} objectName
+     * @returns {object}
+     * @private
+     */
+    _createObjectOnParent(parent, objectName){
+        if (typeof parent[objectName] !== &apos;object&apos;){
+            parent[objectName] = {};
+        }
+        return parent[objectName];
+    }
+
+    /**
+     * Get the next available reference name of a callback
+     * @returns {string}
+     * @private
+     */
+    _generateCallbackRef(){
+        var currentCallbackId = (this._lastCallbackId+1) % Number.MAX_SAFE_INTEGER; // Wrap around so ID doesn&apos;t get too high
+        this._lastCallbackId = currentCallbackId;
+        return &apos;jsonp_&apos; + currentCallbackId;
+    }
+
+    get(url, data){
+        return new Promise((resolve, reject)=&gt;{
+            try {
+
+                // Setup defaults
+                if (!data || typeof data !== &apos;object&apos;) {
+                    data = {};
+                }
+
+                // Get the reference for this callback
+                var callbackRef = this._generateCallbackRef();
+
+                // Create a script element for JSONP
+                var scriptElement = document.createElement(&apos;script&apos;);
+                var documentHead = document.getElementsByTagName(&quot;head&quot;)[0];
+
+                // Setup callback wrapper
+                this._callbackContainer[callbackRef] = (payload) =&gt; {
+                    try {
+                        // Remove script and callback
+                        documentHead.removeChild(scriptElement);
+                        delete this._callbackContainer[callbackRef];
+                        resolve(
+                            new RawResponse(payload)
+                        );
+                    }catch(e){
+                        reject(e);
+                    }
+                };
+
+                // Add the full callback path to player.me&apos;s JSON callback parameter
+                data.callback = this._callbackNamespace + &apos;.&apos; + callbackRef;
+
+                // Attach the script tag for this JSONP request
+                scriptElement.setAttribute(&quot;data-callback&quot;, callbackRef);
+                scriptElement.setAttribute(&quot;src&quot;, this.addToQueryString(url, data));
+                documentHead.appendChild(scriptElement);
+
+            }catch(e){
+                //TODO Tidy up if it gets here
+                reject(e);
+            }
+        });
+    }
+
+    post(){
+        throw new Error(&quot;POST method not available for JSONPRequestAdapter&quot;)
+    }
+
+    put(){
+        throw new Error(&quot;PUT method not available for JSONPRequestAdapter&quot;)
+    }
+
+    del(){
+        throw new Error(&quot;DELETE method not available for JSONPRequestAdapter&quot;)
+    }
+}
+
+// Return single instance, making it a singleton
+export default new JSONPRequestAdapter();
+</code></pre>
+
 </div>
 
 <footer class="footer">

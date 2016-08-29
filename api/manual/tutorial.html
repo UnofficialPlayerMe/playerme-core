@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Tutorial</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/UnofficialPlayerMe/playerme-core" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual" data-toc-name="overview">
+    <h1 class="manual-toc-title"><a href="manual/overview.html" data-ice="title">Overview</a></h1>
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="manual/overview.html#playerme-core" data-ice="link">playerme-core</a></li>
+<li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="manual/overview.html#adding-as-a-dependency-to-another-project" data-ice="link">Adding as a dependency to another project</a></li>
+<li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="manual/overview.html#project-development" data-ice="link">Project Development</a></li>
+<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/overview.html#requirements" data-ice="link">Requirements</a></li>
+<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/overview.html#custom-builds" data-ice="link">Custom Builds</a></li>
+<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/overview.html#demo" data-ice="link">Demo</a></li>
+</ul>
+  </div>
+<div data-ice="manual" data-toc-name="tutorial">
+    <h1 class="manual-toc-title"><a href="manual/tutorial.html" data-ice="title">Tutorial</a></h1>
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#about-entry-points" data-ice="link">About entry points</a></li>
+<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#locating-entry-points" data-ice="link">Locating entry points</a></li>
+<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#creating-a-new-entry-point" data-ice="link">Creating a new entry point</a></li>
+<li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#create-a-new-gulp-task" data-ice="link">Create a new Gulp task</a></li>
+<li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#running-the-custom-build-task" data-ice="link">Running the custom build task</a></li>
+</ul>
+  </div>
+<div data-ice="manual" data-toc-name="reference">
+    <h1 class="manual-toc-title"><a href="identifiers.html" data-ice="title">Reference</a></h1>
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="identifiers.html#class" data-ice="link">Class</a></li>
+<li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="identifiers.html#variable" data-ice="link">Variable</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown">
+  <div class="manual-breadcrumb-list">
+    <a href="./manual/./index.html">Manual</a>
+    <span>&#xBB;</span>
+    <span data-ice="title">Tutorial</span>
+  </div>
+  <div data-ice="content"><h3 id="about-entry-points">About entry points</h3>
+<p>Entry points are what defines what goes into each build and also provide
+an build-specific configuration.
+A different entry point could, for example, export fewer modules for a slimmer build.
+A custom entry point can also be used to add new modules unique to a particular build.</p>
+<h3 id="locating-entry-points">Locating entry points</h3>
+<p>The entry points are located at <strong><em>/entry</em></strong>. 
+New ones should also be located here so Gulp can find them.</p>
+<h3 id="creating-a-new-entry-point">Creating a new entry point</h3>
+<p>An entry point is simply a JS file that imports whatever you want added to a build
+and exports whatever you want accessible. You can look at existing ones as an example.</p>
+<p>Once that&apos;s done you&apos;ll either need to create a new Gulp task or use the custom build task.</p>
+<h4 id="create-a-new-gulp-task">Create a new Gulp task</h4>
+<p>To create a new build task you simply pipe <code>webpackStream</code> into an empty stream
+and call either <code>WebpackConfig.makeWeb()</code> or <code>WebpackConfig.makeNode()</code>, 
+passing in the name of the entry file in <strong><em>/entry</em></strong> and the output file name.
+Finally pipe <code>gulp.dest()</code> with the location you want the output to go into.</p>
+<h4 id="running-the-custom-build-task">Running the custom build task</h4>
+<p>To use the custom build task, run <code>gulp build:custom:web</code> passing in the entry file name 
+(<strong>-E</strong>/<strong>--entry</strong>) and output file name (<strong>-O</strong>/<strong>--output</strong>) to process 
+the entry point and place the result in the <strong>/dist</strong> folder.
+e.g. <code>gulp build:custom:web --entry example.js --output player-me.example.js</code></p>
+</div>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

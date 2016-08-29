@@ -1,0 +1,59 @@
+{
+  "type": "Program",
+  "body": [],
+  "sourceType": "module",
+  "range": [
+    118,
+    118
+  ],
+  "loc": {
+    "start": {
+      "line": 4,
+      "column": 3
+    },
+    "end": {
+      "line": 4,
+      "column": 3
+    }
+  },
+  "leadingComments": [
+    {
+      "type": "Block",
+      "value": "*\n * Adapter classes that dictate how the client communicates with the Player API\n * @module api/request/adapter\n ",
+      "range": [
+        0,
+        118
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 4,
+          "column": 3
+        }
+      }
+    }
+  ],
+  "comments": [
+    {
+      "type": "Block",
+      "value": "*\n * Adapter classes that dictate how the client communicates with the Player API\n * @module api/request/adapter\n ",
+      "range": [
+        0,
+        118
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 4,
+          "column": 3
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/api/auth/AuthService.js | playerme-core: 0.4.0 API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/UnofficialPlayerMe/playerme-core" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/auth</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/auth/AuthService.js~AuthService.html">AuthService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/auth/OAuthSessionModel.js~OAuthSessionModel.html">OAuthSessionModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/auth/OAuthSessionResponse.js~OAuthSessionResponse.html">OAuthSessionResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-authService">authService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/request</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/APIService.js~APIService.html">APIService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-aPIService">aPIService</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/request/adapter</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/AbstractRequestAdapter.js~AbstractRequestAdapter.html">AbstractRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/JSONPRequestAdapter.js~JSONPRequestAdapter.html">JSONPRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/NodeRequestAdapter.js~NodeRequestAdapter.html">NodeRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/adapter/XMLHttpRequestAdapter.js~XMLHttpRequestAdapter.html">XMLHttpRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-jSONPRequestAdapter">jSONPRequestAdapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-xMLHttpRequestAdapter">xMLHttpRequestAdapter</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/request/response</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/AbstractResponse.js~AbstractResponse.html">AbstractResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/CollectionResponse.js~CollectionResponse.html">CollectionResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/EntityResponse.js~EntityResponse.html">EntityResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/ErrorResponse.js~RawResponse.html">RawResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/PagerData.js~PagerData.html">PagerData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/request/response/RawResponse.js~RawResponse.html">RawResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">api/users</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/users/UserCollectionResponse.js~UserCollectionResponse.html">UserCollectionResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/users/UserEntityResponse.js~UserEntityResponse.html">UserEntityResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/api/users/UsersRepository.js~UsersRepository.html">UsersRepository</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-usersRepository">usersRepository</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/activity</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/ActivityModel.js~ActivityModel.html">ActivityModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/ActivityPostData.js~ActivityPostMetaData.html">ActivityPostMetaData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/ActivityVideoData.js~ActivityVideoData.html">ActivityVideoData</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/activity/comment</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/comment/CommentMeta.js~CommentMeta.html">CommentMeta</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/activity/comment/CommentModel.js~CommentModel.html">CommentModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/game</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameExtendedModel.js~GameCompany.html">GameCompany</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameExtendedModel.js~GameExtendedModel.html">GameExtendedModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameExtendedModel.js~GamePlatform.html">GamePlatform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameMetadataModel.js~GameMetadataModel.html">GameMetadataModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/game/GameModel.js~GameModel.html">GameModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/notification</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/notification/NotificationModel.js~NotificationModel.html">NotificationModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">models/user</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/user/UserExtendedModel.js~UserExtendedModel.html">UserExtendedModel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/models/user/UserModel.js~UserModel.html">UserModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/RealTimeService.js~RealTimeService.html">RealTimeService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/Sails.js~Sails.html">Sails</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime/api</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/AbstractRealTimeAPI.js~AbstractRealTimeAPI.html">AbstractRealTimeAPI</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/RealTimeResponse.js~RealTimeResponse.html">RealTimeResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime/api/feed</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/feed/FeedRealTime.js~FeedRealTime.html">FeedRealTime</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">realtime/api/notifications</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/realtime/api/notifications/NotificationsRealTime.js~NotificationsRealTime.html">NotificationsRealTime</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/api/auth/AuthService.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import APIService from &apos;../request/APIService&apos;;
+import OAuthSessionResponse from &apos;./OAuthSessionResponse&apos;;
+import OAuthSessionModel from &apos;./OAuthSessionModel&apos;;
+
+const LOCAL_STORAGE_KEY_REMEMBER_ME = &apos;AuthService:rememberMe&apos;;
+
+/**
+ *
+ * @memberOf module:api/auth
+ */
+class AuthService {
+    constructor(){
+        // TODO Have a session map, OAuth can be switched without re-authenticating
+        this._oauthSession = null;
+        this._rememberMe = null;
+
+        if (typeof localStorage != &apos;undefined&apos;){
+            this._oauthSession = OAuthSessionModel.getFromLocalStorage();
+            this._rememberMe = localStorage.getItem(LOCAL_STORAGE_KEY_REMEMBER_ME) == &apos;true&apos;;
+        }
+
+        this._clientId = null;
+        this._clientSecret = null;
+    }
+
+    // &lt;editor-fold desc=&quot;Setup Client&quot;&gt;
+
+    /**
+     * Setup the OAuth client for login requests
+     * @param {string} clientId
+     * @param {string} clientSecret
+     */
+    setupClient(clientId, clientSecret){
+        this._clientId = clientId;
+        this._clientSecret = clientSecret;
+    }
+
+    /**
+     * Throws an error if the client wasn&apos;t set up.
+     * @throws {ReferenceError}
+     */
+    assertClientValid(){
+        if (!this._clientId || typeof this._clientId !== &apos;string&apos;){
+            throw ReferenceError(&quot;AuthService client not set up. No clientId found. Call AuthService.setupClient().&quot;);
+        }
+        if (!this._clientSecret || typeof this._clientSecret !== &apos;string&apos;){
+            throw ReferenceError(&quot;AuthService client not set up. No clientSecret found. Call AuthService.setupClient().&quot;);
+        }
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;OAuthSession&quot;&gt;
+
+    /**
+     * The current OAuth session&apos;s tokens
+     * @returns {OAuthSessionModel|null}
+     */
+    get oauthSession(){
+        return this._oauthSession;
+    }
+    /**
+     * @param {OAuthSessionModel|null} model
+     */
+    set oauthSession(model){
+        this._oauthSession = model;
+        if (model &amp;&amp; this.rememberMe) {
+            model.addToLocalStorage();
+        } else {
+            OAuthSessionModel.removeFromLocalStorage();
+        }
+    }
+
+    /**
+     * Whether the OAuth session should be kept in local storage.
+     * @returns {boolean}
+     */
+    get rememberMe(){
+        return this._rememberMe;
+    }
+    /** @param {boolean} bool */
+    set rememberMe(bool){
+        this._rememberMe = bool;
+        if (typeof localStorage != &apos;undefined&apos;) {
+            localStorage.setItem(LOCAL_STORAGE_KEY_REMEMBER_ME, this._rememberMe);
+        }
+        this.oauthSession = this.oauthSession; // Reset with new rememberMe
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Logout&quot;&gt;
+
+    /**
+     * Clear the current session
+     */
+    logout(){
+       this.oauthSession = null;
+        if (typeof localStorage != &apos;undefined&apos;) {
+            localStorage.removeItem(LOCAL_STORAGE_KEY_REMEMBER_ME);
+        }
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Login: Redirect&quot;&gt;
+
+    /**
+     * Redirects the user to player.me to authenticate your app.
+     * Once the user has accepted, they will then be redirected to the passed `redirectUrl` with whatever `state` you pass.
+     * The user will also be sent to the `redirectUrl` if they decline.
+     *
+     * @param {string} redirectUrl  The URL the user will be redirected to from player.me, once they&apos;ve accepted/declined
+     * @param {string} [state]      A string that is passed back to the redirect URL
+     * @return {string} The URL we&apos;re attempting to redirect to - in case automatic redirect fails
+     *
+     * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-player.me
+     * @see AuthService::didRedirectLogin()
+     * @see AuthService::failedRedirectLogin()
+     * @see AuthService::processRedirectedLogin()
+     * @example AuthService.redirectLogin(clientId, &quot;https://example.com/foo&quot;, &quot;bar&quot;);
+     */
+    redirectLogin(redirectUrl, state=&apos;&apos;){
+        // Validation
+        validateParameter(&quot;AuthService.redirectLogin()&quot;, &apos;redirect url&apos;, redirectUrl);
+        this.assertClientValid();
+
+        // Build URL
+        var url = APIService.baseUrl + &quot;/o/auth?response_type=code&quot;;
+        url += &quot;&amp;client_id=&quot;+this._clientId;
+        url += &quot;&amp;redirect_uri=&quot;+encodeURIComponent(redirectUrl);
+        if (state) {
+            url += &quot;&amp;state=&quot;+state;
+        }
+
+        // Redirect to url
+        return window.location = url;
+    }
+
+    /**
+     * Returns an object if the passed or current URL looks like it was a login redirect.
+     * You can use this to get the `state` originally passed to `AuthService::redirectLogin()`.
+     * @param {string} [url]
+     * @returns {{code:string, state:string}|null}
+     *
+     * @see AuthService::redirectLogin()
+     * @see AuthService::failedRedirectLogin()
+     * @see AuthService::processRedirectedLogin()
+     *
+     * @example if (AuthService.didRedirectLogin()) {...}
+     */
+    didRedirectLogin(url){
+        var code = getQueryString(&apos;code&apos;, url);
+        var state = getQueryString(&apos;state&apos;, url);
+
+        if (typeof code != &apos;undefined&apos; &amp;&amp; typeof state != &apos;undefined&apos;){
+            return {
+                code:code,
+                state:state
+            };
+        }
+        return null;
+    }
+
+    /**
+     * Returns an object if the passed or current URL looks like it was a failed login redirect.
+     * @param {string} [url]
+     * @returns {{error:string, description:string, state:string}|null}
+     *
+     * @see AuthService::redirectLogin()
+     * @see AuthService::didRedirectLogin()
+     * @see AuthService::processRedirectedLogin()
+     *
+     * @example var authFail = AuthService.failedRedirectLogin();
+     * if (authFail) {
+     *      console.error(&quot;Failed to login:&quot;, authFail.description);
+     * }
+     */
+    failedRedirectLogin(url){
+        var error = getQueryString(&apos;error&apos;, url);
+        var errorDescription = getQueryString(&apos;error_description&apos;, url);
+        var state = getQueryString(&apos;state&apos;, url);
+        if (typeof error != &apos;undefined&apos; &amp;&amp; typeof errorDescription != &apos;undefined&apos; &amp;&amp; typeof state != &apos;undefined&apos;){
+            return {
+                error: error,
+                description: decodeURIComponent(errorDescription).replace(/\+/g, &apos; &apos;),
+                state: state
+            };
+        }
+        return null;
+    }
+
+    /**
+     * If the user was redirected here via `AuthService::redirectLogin()` and the user accepted, then
+     *
+     * @param {string} redirectUrl The URL used in AuthService.redirectLogin()
+     * @returns {Promise} Resolve: OAuthSessionResponse, state:string | Reject: Error|OAuthSessionResponse, state:string
+     * @throws {Error} If the user wasn&apos;t redirected here.
+     *
+     * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-your-site
+     * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-authorization-code-for-an-access-token/exchange-authorization-code-for-an-access-token
+     * @see AuthService.redirectLogin()
+     *
+     * @see AuthService::redirectLogin()
+     * @see AuthService::didRedirectLogin()
+     * @see AuthService::failedRedirectLogin()
+     *
+     * @example
+     * AuthService.processRedirectedLogin(
+     *  function(){
+     *      console.log(&quot;Authenticated&quot;, response.result.accessToken);
+     *  },
+     *  function(response, state){
+     *      console.log(&quot;Failed to authenticate&quot;, response);
+     *  }
+     * );
+     */
+    processRedirectedLogin(redirectUrl){
+        // &lt;editor-fold desc=&quot;Prepare&quot;&gt;
+
+        // Validation
+        validateParameter(&quot;AuthService.processRedirectedLogin()&quot;, &apos;redirect url&apos;, redirectUrl);
+        this.assertClientValid();
+
+        // &lt;/editor-fold&gt;
+
+        return new Promise((resolve, reject)=&gt;{
+            // &lt;editor-fold desc=&quot;Redirect check&quot;&gt;
+
+            var didRedirect = this.didRedirectLogin();
+
+            if (!didRedirect){
+                var failedRedirect = this.failedRedirectLogin();
+                if (failedRedirect){
+                    return reject(
+                        new Error(&quot;Failed to get auth code: &quot;+failedRedirect.description),
+                        failedRedirect.state
+                    );
+                }
+                return reject(
+                    new Error(&quot;AuthService.processRedirectedLogin() wasn&apos;t redirected to here.&quot;),
+                    null
+                );
+            }
+
+            // &lt;/editor-fold&gt;
+            // &lt;editor-fold desc=&quot;Request&quot;&gt;
+
+            try {
+                var promise = APIService.post(&apos;api/oauth/access_token?grant_type=authorization_code&apos;, {
+                    grant_type: &quot;authorization_code&quot;,
+                    client_id: this._clientId,
+                    client_secret: this._clientSecret,
+                    code: didRedirect.code,
+                    redirect_uri: redirectUrl
+                });
+            }catch(e){
+                reject(e);
+                return;
+            }
+
+            // &lt;/editor-fold&gt;
+            // &lt;editor-fold desc=&quot;Response&quot;&gt;
+
+            promise.then((rawResponse)=&gt;{
+                var response = new OAuthSessionResponse(rawResponse);
+
+                if (response.success) {
+                    this.oauthSession = response.result;
+                    resolve(response, didRedirect.state);
+                } else {
+                    // TODO Better rejection
+                    reject(response, didRedirect.state);
+                }
+            }, function(error){
+                reject(error, didRedirect.state);
+            });
+
+            // &lt;/editor-fold&gt;
+        });
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Login: Password&quot;&gt;
+
+    /**
+     * This is for mobile app developers only!
+     * This will return a cookie named playerme_session. TODO Confirm this is still true
+     *
+     * @param {string} login The login (username OR email)
+     * @param {string} password The password
+     * @returns {Promise} Resolve: OAuthSessionResponse | Reject: Error|OAuthSessionResponse
+     *
+     * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-login-for-an-access-token/exchange-login-for-an-access-token
+     * @example
+     * AuthService.passwordLogin(login, password, clientId, clientSecret).then({
+     *     function(response){
+     *         console.log(&quot;Welcome back, &quot;+login+&quot;!&quot;, response);
+     *     },
+     *     function(error){
+     *         console.error(error);
+     *     }
+     * );
+     */
+    passwordLogin(login, password){
+        // &lt;editor-fold desc=&quot;Prepare&quot;&gt;
+
+        validateParameter(&quot;AuthService.appLogin()&quot;, &apos;login&apos;, login);
+        validateParameter(&quot;AuthService.appLogin()&quot;, &apos;password&apos;, password);
+        this.assertClientValid();
+
+        // &lt;/editor-fold&gt;
+
+        return new Promise((resolve, reject)=&gt;{
+            // &lt;editor-fold desc=&quot;Request&quot;&gt;
+
+            try {
+                var promise = APIService.post(&apos;api/oauth/access_token?grant_type=password&apos;, {
+                    grant_type: &quot;password&quot;,
+                    client_id: this._clientId,
+                    client_secret: this._clientSecret,
+                    username: login,
+                    password: password
+                });
+            }catch(e){
+                reject(e);
+                return;
+            }
+
+            // &lt;/editor-fold&gt;
+            // &lt;editor-fold desc=&quot;Response&quot;&gt;
+
+            promise.then((rawResponse)=&gt;{
+                var response = new OAuthSessionResponse(rawResponse);
+
+                if (response.success) {
+                    this.oauthSession = response.result;
+                    resolve(response);
+                } else {
+                    // TODO Better rejection
+                    reject(response);
+                }
+            }, function(error){
+                reject(error);
+            });
+
+            // &lt;/editor-fold&gt;
+        });
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Login: Two-Factor&quot;&gt;
+
+    /**
+     *
+     * @param {string} twoFactorToken
+     *
+     * @see http://docs.playermev2.apiary.io/#reference/oauth2/exchange-two-factor-tokens-for-an-access-token/exchange-two-factor-tokens-for-an-access-token
+     */
+    twoFactorAppLogin(twoFactorToken){
+        // &lt;editor-fold desc=&quot;Prepare&quot;&gt;
+
+        validateParameter(&quot;AuthService.twoFactorAppLogin()&quot;, &apos;two-factor-access token&apos;, twoFactorToken);
+
+        // &lt;/editor-fold&gt;
+
+        // TODO Two factor auth
+    }
+
+    // &lt;/editor-fold&gt;
+    // &lt;editor-fold desc=&quot;Login: Refresh&quot;&gt;
+
+    /**
+     * Get a new token based on the old one
+     * @returns {Promise}
+     *
+     * @throws {Error} If there&apos;s no refresh token
+     */
+    refreshLogin(){
+        // &lt;editor-fold desc=&quot;Validate&quot;&gt;
+
+        var refreshToken = this.oauthSession &amp;&amp; this.oauthSession.refreshToken || false;
+        if (!refreshToken){
+            throw new Error(&quot;No refresh token&quot;);
+        }
+        this.assertClientValid();
+
+        // &lt;/editor-fold&gt;
+
+        return new Promise((resolve, reject)=&gt;{
+
+            // &lt;editor-fold desc=&quot;Request&quot;&gt;
+
+            try {
+                var promise = APIService.post(&apos;api/oauth/access_token?grant_type=refresh_token&apos;, {
+                    grant_type: &quot;refresh_token&quot;,
+                    client_id: this._clientId,
+                    client_secret: this._clientSecret,
+                    refresh_token: refreshToken
+                });
+            }catch(e){
+                reject(e);
+                return;
+            }
+
+            // &lt;/editor-fold&gt;
+            // &lt;editor-fold desc=&quot;Response&quot;&gt;
+
+            promise.then((rawResponse)=&gt;{
+                var response = new OAuthSessionResponse(rawResponse);
+
+                if (response.success) {
+                    this.oauthSession = response.result;
+                    resolve(response);
+                } else {
+                    // TODO Better rejection
+                    reject(response);
+                }
+            }, function(error){
+                reject(error);
+            });
+
+            // &lt;/editor-fold&gt;
+        });
+    }
+
+    // &lt;/editor-fold&gt;
+}
+
+// &lt;editor-fold desc=&quot;Helpers&quot;&gt;
+
+/**
+ * Get the query string parameter from the URL
+ * @param {string} field The name of the parameter
+ * @param {string} [url] Defaults to the current URL
+ * @returns {string|undefined} The field&apos;s value
+ */
+function getQueryString(field, url) {
+    var reg = new RegExp( &apos;[?&amp;]&apos; + field + &apos;=([^&amp;#]*)&apos;, &apos;i&apos; );
+    var string = reg.exec(url || window.location.href);
+    return string ? string[1] : undefined;
+}
+
+/**
+ * Throw an exception if the parameter isn&apos;t set or the correct type
+ * @param {string} methodName Name of the method to display in an error
+ * @param {string} name Name of the parameter to display in an error
+ * @param {*} value Parameter to be tested
+ * @param {string} [expectedType=&apos;string&apos;] Expected `typeof` for the parameter
+ * @protected
+ * @throws {ReferenceError}
+ * @throws {TypeError}
+ */
+function validateParameter(methodName, name, value, expectedType=&apos;string&apos;){
+    if (!value){
+        throw new ReferenceError(&quot;No &quot;+name+&quot; passed to &quot;+methodName+&quot;.&quot;);
+    }
+    if (expectedType &amp;&amp; typeof value !== expectedType){
+        throw new TypeError(&quot;The &quot;+name+&quot; passed to &quot;+methodName+&quot; isn&apos;t a &quot;+expectedType+&quot;. Was [&quot;+(typeof value)+&quot;].&quot;);
+    }
+}
+
+// &lt;/editor-fold&gt;
+
+// Return instance, making this a singleton
+export default new AuthService();
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

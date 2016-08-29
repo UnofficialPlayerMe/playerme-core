@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/api/auth/OAuthSessionResponse.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,73 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/api/auth/OAuthSessionResponse.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import AbstractResponse from &apos;../request/response/AbstractResponse&apos;;
+import OAuthSessionModel from &apos;./OAuthSessionModel&apos;;
+
+/*
+201
+{
+  &quot;access_token&quot;:  &quot;$ACCESS_TOKEN&quot;,
+  &quot;token_type&quot;:    &quot;bearer&quot;,
+  &quot;expires&quot;:       $EXPIRATION_TIME,
+  &quot;expires_in&quot;:    $EXPIRATION_TIME_FROM_NOW,
+  &quot;refresh_token&quot;: &quot;$REFRESH_TOKEN&quot;
+}
+
+400
+{
+  &quot;error&quot;:             &quot;invalid_request&quot;,
+  &quot;error_description&quot;: &quot;The user credentials were incorrect.&quot;
+}
+
+401
+{
+  &quot;error&quot;:             &quot;access_denied&quot;,
+  &quot;error_description&quot;: &quot;You have enabled 2-Factor authentication. Please click your link in the email.&quot;
+}
+ */
+
+/**
+ * Response containing OAuth tokens
+ * @extends AbstractResponse
+ * @memberOf module:api/auth
+ */
+class OAuthSessionResponse extends AbstractResponse {
+    constructor(rawResponse)
+    {
+        super(rawResponse);
+
+        var session = new OAuthSessionModel(rawResponse.body);
+        this._result = null;
+
+        this._success = this.statusCode &gt;= 200 &amp;&amp; this.statusCode &lt; 300 &amp;&amp; session.accessToken;
+        if (this._success){
+            this._result = session;
+        }
+    }
+
+    /**
+     * The response body
+     * @returns {OAuthSessionModel}
+     */
+    get result(){
+        return this._result;
+    }
+
+    /**
+     * Whether this response was successful
+     * @returns {boolean}
+     * @readonly
+     */
+    get success(){
+        return this._success;
+    }
+}
+
+export default OAuthSessionResponse;
+</code></pre>
+
 </div>
 
 <footer class="footer">

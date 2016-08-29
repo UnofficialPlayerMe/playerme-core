@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/api/request/APIService.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,242 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/api/request/APIService.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import AbstractRequestAdapter from &apos;./adapter/AbstractRequestAdapter&apos;;
+
+/**
+ * A singleton wrapper for Request adapters
+ * @extends AbstractRequestAdapter
+ * @memberOf module:api/request
+ */
+class APIService extends AbstractRequestAdapter {
+
+    //
+    // Constructor
+    //
+
+    constructor()
+    {
+        super();
+
+        /**
+         * The URL that gets prepended to partial request URLs
+         * @member {string}
+         * @private
+         */
+        this._baseUrl = &apos;&apos;;
+
+        /**
+         * The adapter used to make requests
+         * @member {object}
+         * @private
+         */
+        this._adapter = null;
+
+        // Set defaults
+        this.baseUrl = &quot;https://player.me&quot;;
+    }
+
+    //
+    // Request Methods
+    //
+
+    // TODO Have success &amp; failure classes
+    _request(method, url, data){
+        var requestBodyRequired = false;
+        switch(method){
+            case &apos;get&apos;:  requestBodyRequired = false; break;
+            case &apos;post&apos;: requestBodyRequired = true;  break;
+            case &apos;put&apos;:  requestBodyRequired = true;  break;
+            case &apos;del&apos;:  requestBodyRequired = false; break;
+            default: throw new Error(&quot;Unhandled method [&quot;+method+&quot;] passed to APIService._request().&quot;);
+        }
+
+        validateURL(method, url);
+        validateData(method, data, requestBodyRequired);
+
+        var adapter = this.getAdapter(true);
+        url = this.prependBaseUrl(url);
+        return adapter[method](url, data);
+    }
+
+    get(url, data){
+        return this._request(&apos;get&apos;, url, data);
+    }
+
+    post(url, data){
+        return this._request(&apos;post&apos;, url, data);
+    }
+
+    put(url, data){
+        return this._request(&apos;put&apos;, url, data);
+    }
+
+    del(url, data){
+        return this._request(&apos;del&apos;, url, data);
+    }
+
+    //
+    // Base URL methods
+    //
+
+    /**
+     * @param {string} str
+     */
+    set baseUrl(str){
+        if (typeof str !== &apos;string&apos;){
+            throw new TypeError(&quot;baseUrl passed to APIService is not a string&quot;);
+        }
+        if (str.length == 0){
+            throw new TypeError(&quot;baseUrl passed to APIService is empty&quot;);
+        }
+        // Must have &apos;://&apos; and at least one character before it
+        if (str.indexOf(&apos;://&apos;) &lt;= 0){
+            throw new TypeError(&quot;baseUrl is missing protocol&quot;);
+        }
+        this._baseUrl = str;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get baseUrl(){
+        return this._baseUrl;
+    }
+
+    /**
+     * Add the baseUrl to the start of the passed address
+     * @param {string} url
+     * @returns {string}
+     */
+    prependBaseUrl(url){
+        // Skip if passed url has a protocol
+        if (url.indexOf(&apos;://&apos;) == -1){
+            var baseUrl = this._baseUrl;
+
+            // Remove slash at end
+            if (baseUrl.charAt(baseUrl.length-1) === &apos;/&apos;){
+                baseUrl = baseUrl.substring(0, baseUrl.length-1);
+            }
+            // Remove slash at start
+            if (url.charAt(0) === &apos;/&apos;){
+                url = url.substring(1);
+            }
+
+            // Add base to url
+            url = baseUrl + &apos;/&apos; + url;
+        }
+        return url;
+    }
+
+    //
+    // Adapter Methods
+    //
+
+    /**
+     * Get the current adapter
+     * @param {boolean} [validate=false] Validate the adapter before returning it
+     * @returns {object} The adapter
+     * @throws {TypeError} If adapter is invalid
+     * @throws {ReferenceError} If no adapter is set
+     */
+    getAdapter(validate=false){
+        if (!this._adapter) {
+            throw new ReferenceError(&quot;APIService error: No adapter set&quot;);
+        }
+        if (validate){
+            this.validateAdapter(this._adapter);
+        }
+        return this._adapter;
+    }
+
+    /**
+     * Set the adapter
+     * @param {AbstractRequestAdapter} adapter Adapter instance or class
+     * @throws {TypeError} If adapter is invalid
+     */
+    setAdapter(adapter){
+        // Turn class into an instance
+        if (typeof adapter === &apos;function&apos; &amp;&amp; adapter.constructor){
+            adapter = new adapter();
+        }
+
+        this.validateAdapter(adapter);
+        this._adapter = adapter;
+    }
+
+    /**
+     * Throws an error if the adapter is invalid
+     * @param {object} adapter The adapter to validate
+     * @throws {TypeError}
+     */
+    validateAdapter(adapter){
+        // Assert adapter is an object
+        if (typeof adapter !== &apos;object&apos;) {
+            throw new TypeError(&apos;Invalid APIRequest adapter: Not an object.&apos;);
+        }
+
+        // Assert adapter inherits from AbstractRequestAdapter
+        var adapterClass = adapter.constructor;
+        while (adapterClass){
+            if (adapterClass === AbstractRequestAdapter) return;
+            adapterClass = Object.getPrototypeOf(adapterClass);
+        }
+        throw new TypeError(&quot;Invalid APIRequest adapter: Doesn&apos;t inherit from AbstractRequestAdapter.&quot;);
+    }
+
+    /// End of APIService
+}
+
+//
+// Inaccessible Validation Methods
+//
+
+/**
+ * Validate that the URL is valid
+ * @param {string} method Name of the method this is being called in
+ * @param {string} url The request URL
+ * @throws {ReferenceError}
+ * @ignore
+ */
+function validateURL(method, url){
+    var msg;
+    if (!url){
+        msg = &quot;No URL passed to APIService:&quot;+method+&quot;.&quot;;
+        console.error(msg);
+        throw new ReferenceError(msg);
+    }
+    if (typeof url != &apos;string&apos;){
+        msg = &quot;Invalid URL passed to APIService:&quot;+method+&quot;. Was [&quot;+typeof url+&quot;].&quot;;
+        console.error(msg);
+        throw new ReferenceError(msg);
+    }
+}
+
+/**
+ * Validate that the data object is valid
+ * @param {string} method Name of the method this is being called in
+ * @param {data} data The data to be used in the request
+ * @param {boolean} required If the request body should be truthy
+ * @throws {ReferenceError}
+ * @ignore
+ */
+function validateData(method, data, required){
+    var msg;
+    if (!required &amp;&amp; !data){
+        return;
+    }
+    if (typeof data != &apos;object&apos;){
+        msg = &quot;Invalid data passed to APIService:&quot;+method+&quot;. Was [&quot;+typeof data+&quot;].&quot;;
+        console.error(msg);
+        throw new ReferenceError(msg);
+    }
+}
+
+// Export a singleton instance
+export default new APIService;
+</code></pre>
+
 </div>
 
 <footer class="footer">

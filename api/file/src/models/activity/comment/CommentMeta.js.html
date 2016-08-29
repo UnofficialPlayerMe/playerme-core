@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">src/models/activity/comment/CommentMeta.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,128 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/models/activity/comment/CommentMeta.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * A class representing a Player.me Comment&apos;s assets.
+ * @memberOf module:models/activity/comment
+ */
+class CommentMeta {
+    /**
+     * Create a new Comment Meta instance.
+     * @param {Object} [obj] A player response object to initialise this object with.
+     */
+    constructor(obj=null)
+    {
+        this._images        = obj &amp;&amp; obj.images         || [];
+        this._url           = obj &amp;&amp; obj.url            || &apos;&apos;;
+        this._title         = obj &amp;&amp; obj.title          || &apos;&apos;;
+        this._description   = obj &amp;&amp; obj.description    || &apos;&apos;;
+        this._provider      = obj &amp;&amp; obj.provider       || &apos;&apos;;
+        this._content       = obj &amp;&amp; obj.content        || &apos;&apos;;
+        this._isInternal    = obj &amp;&amp; obj.isInternal     || false;
+        this._thumbnail     = obj &amp;&amp; obj.thumbnail      || &apos;&apos;;
+    }
+
+    /**
+     * An array of URLs to images.
+     * @readonly
+     * @member {string[]} CommentMeta#images
+     * @returns {string[]}
+     */
+    get images(){
+        return this._images;
+    }
+
+    /**
+     * Absolute path to this asset.
+     * @readonly
+     * @member {string} CommentMeta#url
+     * @returns {string}
+     */
+    get url() {
+        return this._url;
+    }
+
+    /**
+     * Title of this asset.
+     * @readonly
+     * @member {string} CommentMeta#title
+     * @returns {string}
+     */
+    get title() {
+        return this._title;
+    }
+
+    /**
+     * Description for this asset.
+     * @readonly
+     * @member {string} CommentMeta#description
+     * @returns {string}
+     */
+    get description() {
+        return this._description;
+    }
+
+    /**
+     * The provider that hosts this asset.
+     * @readonly
+     * @member {string} CommentMeta#provider
+     * @returns {string}
+     */
+    get provider() {
+        return this._provider;
+    }
+
+    /**
+     * The type of asset.
+     * @readonly
+     * @member {string} CommentMeta#content
+     * @returns {string}
+     */
+    get content() {
+        return this._content;
+    }
+
+    /**
+     * TODO What is CommentMetaModel isInternal?
+     * @readonly
+     * @member {boolean} CommentMeta#isInternal
+     * @returns {boolean}
+     */
+    get isInternal() {
+        return this._isInternal;
+    }
+
+    /**
+     * The URL of a thumbnail for the asset.
+     * @readonly
+     * @member {string} CommentMeta#thumbnail
+     * @returns {string}
+     */
+    get thumbnail() {
+        return this._thumbnail;
+    }
+
+    /**
+     * Whether this asset is a photo.
+     * @returns {boolean}
+     */
+    isPhoto(){
+        return this._content == &apos;photo&apos;;
+    }
+
+    /**
+     * Whether this asset is a video.
+     * @returns {boolean}
+     */
+    isVideo(){
+        return this._content == &apos;video&apos;;
+    }
+}
+
+export default CommentMeta;
+</code></pre>
+
 </div>
 
 <footer class="footer">

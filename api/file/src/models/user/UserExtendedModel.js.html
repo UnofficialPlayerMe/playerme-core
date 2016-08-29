@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/models/user/UserExtendedModel.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,276 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/models/user/UserExtendedModel.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import UserModel from &apos;./UserModel&apos;;
+
+/**
+ * A model representing an extended data set for a Player.me User.
+ * @extends UserModel
+ * @memberOf module:models/user
+ */
+class UserExtendedModel extends UserModel{
+    /**
+     * Create a new extended User model.
+     * @param {Object} [obj] A player response object to initialise this model with.
+     */
+    constructor(obj=null)
+    {
+        var toDate = (str) =&gt; {
+            if (!str) return null;
+            return new Date(str);
+        };
+
+        super(obj);
+        var cover = obj &amp;&amp; obj.cover || null;
+        var avatar = obj &amp;&amp; obj.avatar || null;
+
+        this._shortDescription          = obj    &amp;&amp; obj   .short_description    || &apos;&apos;;
+        this._description               = obj    &amp;&amp; obj   .description          || &apos;&apos;;
+        this._descriptionHtml           = obj    &amp;&amp; obj   .descriptionHtml      || &apos;&apos;;
+        this._coverOriginal             = cover  &amp;&amp; cover .original             || &apos;&apos;;
+        this._coverCached               = cover  &amp;&amp; cover .cached               || &apos;&apos;;
+        this._coverOriginalFilename     = cover  &amp;&amp; cover .original_filename    || &apos;&apos;;
+        this._avatarOriginal            = avatar &amp;&amp; avatar.original             || &apos;&apos;;
+        this._avatarCached              = avatar &amp;&amp; avatar.cached               || &apos;&apos;;
+        this._avatarOriginalFilename    = avatar &amp;&amp; avatar.original_filename    || &apos;&apos;;
+        this._createdAt                 = obj    &amp;&amp; toDate(obj.created_at)      || &apos;&apos;;
+        this._generatedBy               = obj    &amp;&amp; obj   .generated_by         || null;
+        this._isCurrentUser             = obj    &amp;&amp; obj   .is_current_user      || false;
+        this._isFollowing               = obj    &amp;&amp; obj   .is_following         || false;
+        this._isFollowed                = obj    &amp;&amp; obj   .is_followed          || false;
+        this._isFriend                  = obj    &amp;&amp; obj   .is_friend            || false;
+        this._isBlocked                 = obj    &amp;&amp; obj   .is_blocked           || false;
+        this._canMessage                = obj    &amp;&amp; obj   .can_message          || false;
+        this._isOnline                  = obj    &amp;&amp; obj   .is_online            || false;
+        this._followingCount            = obj    &amp;&amp; obj   .following_count      || 0;
+
+        // Group specific
+        this._isConfirmedGroupMember = obj &amp;&amp; obj.is_confirmed_group_member || false;
+        this._canConfirmMembership   = obj &amp;&amp; obj.can_confirm_membership    || false;
+        this._canRemoveMembership    = obj &amp;&amp; obj.can_remove_membership     || false;
+
+        // Overrides
+        if (cover)  this._cover  = cover.cached;
+        if (avatar) this._avatar = avatar.cached;
+
+        //Convert ISO date strings to Dates
+        this._createdAt = (this._createdAt ? new Date(this._createdAt) : false) || null;
+    }
+
+    toString() {
+        var msg = &apos;[UserExtendedModel&apos;;
+        if (this._id) msg += &apos; #&apos;+this._id;
+        if (this._slug) msg += &apos; &quot;&apos;+this._slug+&apos;&quot;&apos;;
+        return msg +&apos;]&apos;;
+    }
+
+    /**
+     * The user&apos;s short bio.
+     * @readonly
+     * @member {string} UserExtendedModel#shortDescription
+     * @returns {string}
+     */
+    get shortDescription() {
+        return this._shortDescription;
+    }
+
+    /**
+     * The user&apos;s bio.
+     * @readonly
+     * @member {string} UserExtendedModel#description
+     * @returns {string}
+     */
+    get description() {
+        return this._description;
+    }
+
+    /**
+     * The user&apos;s bio in HTML.
+     * @readonly
+     * @member {string} UserExtendedModel#descriptionHtml
+     * @returns {string}
+     */
+    get descriptionHtml() {
+        return this._descriptionHtml;
+    }
+
+    /**
+     * The path to the original cover image.
+     * @readonly
+     * @member {string} UserExtendedModel#coverOriginal
+     * @returns {string}
+     */
+    get coverOriginal() {
+        return this._coverOriginal;
+    }
+
+    /**
+     * The original cover image&apos;s filename.
+     * @readonly
+     * @member {string} UserExtendedModel#coverOriginalFilename
+     * @returns {string}
+     */
+    get coverOriginalFilename() {
+        return this._coverOriginalFilename;
+    }
+
+    /**
+     * The path to the original avatar.
+     * @readonly
+     * @member {string} UserExtendedModel#avatarOriginal
+     * @returns {string}
+     */
+    get avatarOriginal() {
+        return this._avatarOriginal;
+    }
+
+    /**
+     * The original avatar&apos;s filename.
+     * @readonly
+     * @member {string} UserExtendedModel#avatarOriginalFilename
+     * @returns {string}
+     */
+    get avatarOriginalFilename() {
+        return this._avatarOriginalFilename;
+    }
+
+    /**
+     * The date and time the user was created on.
+     * @readonly
+     * @member {Date} UserExtendedModel#createdAt
+     * @returns {Date}
+     */
+    get createdAt() {
+        return this._createdAt;
+    }
+
+    /**
+     * TODO What is a user&apos;s generatedBy field?
+     * @readonly
+     * @member {string} UserExtendedModel#generatedBy
+     * @returns {string}
+     */
+    get generatedBy() {
+        return this._generatedBy;
+    }
+
+    /**
+     * Whether this is the logged in user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isCurrentUser
+     * @returns {boolean}
+     */
+    get isCurrentUser() {
+        return this._isCurrentUser;
+    }
+
+    /**
+     * Whether this user is following the logged in user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isFollowing
+     * @returns {boolean}
+     */
+    get isFollowing() {
+        return this._isFollowing;
+    }
+
+    /**
+     * Whether the logged in user has followed this user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isFollowed
+     * @returns {boolean}
+     */
+    get isFollowed() {
+        return this._isFollowed;
+    }
+
+    /**
+     * Whether this and the logged in user are following each other.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isFriend
+     * @returns {boolean}
+     */
+    get isFriend() {
+        return this._isFriend;
+    }
+
+    /**
+     * Whether the logged in user has blocked this user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isBlocked
+     * @returns {boolean}
+     */
+    get isBlocked() {
+        return this._isBlocked;
+    }
+
+    /**
+     * Whether the logged in user can message this user.
+     * @readonly
+     * @member {boolean} UserExtendedModel#canMessage
+     * @returns {boolean}
+     */
+    get canMessage() {
+        return this._canMessage;
+    }
+
+    /**
+     * Whether the user is logged in.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isOnline
+     * @returns {boolean}
+     */
+    get isOnline() {
+        return this._isOnline;
+    }
+
+    /**
+     * The number of user&apos;s this user is following.
+     * @readonly
+     * @member {number} UserExtendedModel#followingCount
+     * @returns {number}
+     */
+    get followingCount() {
+        return this._followingCount;
+    }
+
+    /**
+     * Whether the logged in user is a member of this group.
+     * @readonly
+     * @member {boolean} UserExtendedModel#isConfirmedGroupMember
+     * @returns {boolean}
+     */
+    get isConfirmedGroupMember() {
+        return this._isConfirmedGroupMember;
+    }
+
+    /**
+     * Whether the logged in user has rights to confirm memberships.
+     * TODO Confirm the description for canConfirmMembership() is correct
+     * @readonly
+     * @member {boolean} UserExtendedModel#canConfirmMembership
+     * @returns {boolean}
+     */
+    get canConfirmMembership() {
+        return this._canConfirmMembership;
+    }
+
+    /**
+     * Whether the logged in user has rights to remove memberships.
+     * TODO Confirm the description for canRemoveMembership() is correct
+     * @readonly
+     * @member {boolean} UserExtendedModel#canRemoveMembership
+     * @returns {boolean}
+     */
+    get canRemoveMembership() {
+        return this._canRemoveMembership;
+    }
+}
+
+export default UserExtendedModel;
+</code></pre>
+
 </div>
 
 <footer class="footer">

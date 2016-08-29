@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/api/auth/OAuthSessionModel.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,138 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/api/auth/OAuthSessionModel.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const LOCAL_STORAGE_KEY = &apos;OAuthSessionModel&apos;;
+
+/**
+ * A model representing a Player.me OAuth session.
+ * @memberOf module:api/auth
+ */
+class OAuthSessionModel {
+    /**
+     * Create a new Activity model.
+     * @param {Object} [obj] A player response object to initialise this model with.
+     */
+    constructor(obj=null)
+    {
+        this._accessToken  = obj &amp;&amp; obj.access_token  || &apos;&apos;;
+        this._refreshToken = obj &amp;&amp; obj.refresh_token || &apos;&apos;;
+        this._tokenType    = obj &amp;&amp; obj.token_type    || &apos;&apos;;
+        this._expires      = obj &amp;&amp; obj.expires       || 0;
+        this._expiresIn    = obj &amp;&amp; obj.expires_in    || 0;
+
+        this._expires = this._expires ? new Date(this._expires*1000) : null;
+
+        this._raw = obj;
+    }
+
+    toString() {
+        var msg = &apos;[OAuthSession&apos;;
+        if (this._tokenType){
+            msg += &apos; &apos;+this._tokenType;
+        }
+        return msg +&apos;]&apos;;
+    }
+
+    /**
+     * The OAuth session&apos;s active token.
+     * @readonly
+     * @member {string} OAuthSessionModel#accessToken
+     * @returns {string}
+     */
+    get accessToken(){
+        return this._accessToken;
+    }
+
+    /**
+     * The OAuth session&apos;s refresh token.
+     * @readonly
+     * @member {string} OAuthSessionModel#refreshToken
+     * @returns {string}
+     */
+    get refreshToken(){
+        return this._refreshToken;
+    }
+
+    /**
+     * The OAuth session&apos;s token type.
+     * i.e. &quot;bearer&quot;
+     * @readonly
+     * @member {string} OAuthSessionModel#tokenType
+     * @returns {string}
+     */
+    get tokenType(){
+        return this._tokenType;
+    }
+
+    /**
+     * The date this session lasts until
+     * @readonly
+     * @member {Date} OAuthSessionModel#expires
+     * @returns {Date}
+     */
+    get expires(){
+        return this._expires;
+    }
+
+    /**
+     * The number of seconds until this session expires, since the session was last updated.
+     * @readonly
+     * @member {int} OAuthSessionModel#expiresIn
+     * @returns {int}
+     */
+    get expiresIn(){
+        return this._expiresIn;
+    }
+
+    /**
+     * Returns the string we&apos;re expected to pass to Player in a header.
+     * @returns {string}
+     *
+     * @see http://docs.playerme.apiary.io/#reference/general/example-authenticated-requests/with-request-headers-oauth-only
+     */
+    toHeaderString(){
+        if (this.tokenType &amp;&amp; this.accessToken) {
+            // Capitalise first letter of tokenType
+            var tokenType = this.tokenType.charAt(0).toUpperCase() + this.tokenType.slice(1);
+            return tokenType + &quot; &quot; + this.accessToken;
+        }
+        return &quot;&quot;;
+    }
+
+    /**
+     * Add this session to storage
+     * TODO Cookie fallback
+     */
+    addToLocalStorage(){
+        if (typeof localStorage == &apos;undefined&apos;) return;
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this._raw));
+    }
+
+    /**
+     * Get a model from local storage
+     * @returns {OAuthSessionModel}
+     */
+    static getFromLocalStorage(){
+        if (typeof localStorage == &apos;undefined&apos;) return null;
+        var json = localStorage.getItem(LOCAL_STORAGE_KEY);
+        var parsed = JSON.parse(json);
+
+        return parsed ? new OAuthSessionModel(parsed) : null;
+    }
+
+    /**
+     * Remove a modal from local storage
+     */
+    static removeFromLocalStorage(){
+        if (typeof localStorage == &apos;undefined&apos;) return;
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+    }
+}
+
+export default OAuthSessionModel;
+</code></pre>
+
 </div>
 
 <footer class="footer">

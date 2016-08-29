@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/api/users/UsersRepository.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,87 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/api/users/UsersRepository.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import APIService from &apos;../request/APIService&apos;;
+import UserEntityResponse from &apos;./UserEntityResponse&apos;;
+
+/**
+ * A repository for accessing Player Users
+ * @memberOf module:api/users
+ */
+class UsersRepository {
+    /**
+     * Fetches the user with the requested ID
+     * @param {int|string} id The user&apos;s ID
+     * @return Promise
+     */
+    get(id)
+    {
+        var idType = typeof id;
+        var validStrings = [&apos;me&apos;, &apos;default&apos;]; // String values that are OK
+
+        if (idType === &apos;string&apos;){
+            // Check if this is a valid string, or number string
+            var isValidString = validStrings.indexOf(id.toLowerCase()) &gt;= 0;
+            if (!isValidString) {
+                id = parseInt(id, 10);
+                if (isNaN(id)) {
+                    throw new TypeError(&quot;id string passed to UsersRepository:get() isn&apos;t a number [&apos;&quot; + id + &quot;&apos;].&quot;);
+                }
+            }
+        }else if (idType !== &apos;number&apos;){
+            throw new TypeError(&quot;id passed to UsersRepository:get() isn&apos;t a number. Was [&quot;+idType+&quot;].&quot;);
+        }
+
+        return new Promise((resolve, reject)=&gt;{
+            try {
+                var promise = APIService.get(&apos;api/v1/users/&apos; + id, null);
+            }catch(e){
+                reject(e);
+                return;
+            }
+
+            promise.then((rawResponse)=&gt;{
+                var userResponse = new UserEntityResponse(rawResponse);
+                if (userResponse.success){
+                    resolve(userResponse);
+                } else {
+                    // TODO Entity Error Response
+                    reject(userResponse);
+                }
+            });
+        });
+    }
+
+    /**
+     * Fetches the currently logged in user
+     * @return Promise
+     */
+    getSelf()
+    {
+       return this.get(&apos;me&apos;);
+    }
+
+    list()
+    {
+        //TODO
+    }
+
+    listOnline()
+    {
+        //TODO
+    }
+
+    update()
+    {
+        //TODO
+    }
+}
+
+// Return instance, making this a singleton
+export default new UsersRepository();
+</code></pre>
+
 </div>
 
 <footer class="footer">

@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">src/api/request/adapter/XMLHttpRequestAdapter.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,208 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/api/request/adapter/XMLHttpRequestAdapter.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import AbstractRequestAdapter from &apos;./AbstractRequestAdapter&apos;;
+import RawResponse from &apos;../response/RawResponse&apos;;
+import AuthService from &apos;../../../api/auth/AuthService&apos;;
+import ErrorResponse from &apos;../response/ErrorResponse&apos;;
+
+// &lt;editor-fold desc=&quot;Login: Helpers&quot;&gt;
+
+/**
+ *
+ * @param {string} url
+ * @returns {{protocol:string, host:string, path:string, query:string}}
+ * @ignore
+ */
+function parseUrl(url){
+    var response = {};
+
+    // Get protocol
+    // &apos;http://google.com/a/b?c=d&apos; =&gt; [&apos;http&apos;, &apos;google.com/a/b?c=d&apos;]
+    var split = url.split(&apos;://&apos;, 2);
+    if (split.length &lt; 2) {
+        throw new Error(&quot;Invalid URL in XHR passed to XMLHttpRequestAdapter&apos;s getURLObjectFromXHR [&quot;+url+&quot;]&quot;);
+    }
+    response.protocol = split[0];
+
+    // Get host
+    // &apos;google.com/a/b?c=d&apos; =&gt; [&apos;google.com&apos;, &apos;a/b?c=d&apos;]
+    split = split[1].split(&apos;/&apos;, 2);
+    if (split.length &lt; 2) {
+        throw new Error(&quot;Invalid URL in XHR passed to XMLHttpRequestAdapter&apos;s getURLObjectFromXHR [&quot;+url+&quot;]&quot;);
+    }
+    response.host = split[0];
+
+    // Get path
+    // &apos;a/b?c=d&apos; =&gt; [&apos;a/b&apos;, &apos;c=d&apos;]
+    split = split[1].split(&apos;?&apos;, 2);
+    response.path = split[0];
+
+    // Get query string
+    response.query = split[1];
+
+    return response;
+}
+
+/**
+ * Takes a XMLHttpRequest and returns the headers in key-value pairs.
+ * @param {XMLHttpRequest} XHR
+ * @returns {Object.&lt;string,string&gt;}
+ * @ignore
+ */
+function getHeadersFromXHR(XHR){
+    var result = {};
+    var headers = XHR.getAllResponseHeaders().split(&apos;\u000d\u000a&apos;);
+    for (var i=0; i &lt; headers.length; i++){
+        var split = headers[i].split(&apos;: &apos;, 2);
+        if (split.length == 2){
+            var key = split[0].toLowerCase();
+            result[key] = split[1];
+        }
+    }
+    return result;
+}
+
+/**
+ *
+ * @param {XMLHttpRequest} XHR
+ * @returns {RawResponse|null}
+ * @ignore
+ */
+function getRawResponse(XHR) {
+    try {
+        return new RawResponse(
+            JSON.parse(XHR.responseText),
+            XHR.status,
+            XHR.statusText,
+            getHeadersFromXHR(XHR)
+        );
+    } catch (e) {
+        return null;
+    }
+}
+/**
+ *
+ * @param XHR
+ * @returns {ErrorResponse}
+ * @ignore
+ */
+function getErrorResponse(XHR) {
+    return new ErrorResponse(
+        XHR.responseText,
+        XHR.status,
+        XHR.statusText,
+        getHeadersFromXHR(XHR)
+    );
+}
+
+// &lt;/editor-fold&gt;
+
+/**
+ * Process requests using JSONP.
+ * Browsers allow this method for cross-domain calls, but only GET requests.
+ * @extends AbstractRequestAdapter
+ * @memberOf module:api/request/adapter
+ */
+class XMLHttpRequestAdapter extends AbstractRequestAdapter {
+    /**
+     * Submit a request
+     * @param {string} method
+     * @param {string} url
+     * @param {Object} [data]
+     * @returns {Promise}
+     */
+    request(method, url, data=null){
+        return new Promise((resolve, reject)=&gt;{
+            var XHR = new XMLHttpRequest();
+
+            XHR.addEventListener(&apos;load&apos;, ()=&gt;{
+                var response = getRawResponse(XHR);
+                if (response) {
+                    resolve(response);
+                } else {
+                    reject(getErrorResponse(XHR));
+                }
+            });
+
+            XHR.addEventListener(&apos;error&apos;, (event)=&gt;{
+                console.log(&apos;XMLHttpRequestAdapter error&apos;, event, XHR);
+                reject(event); // TODO Handle
+            });
+            XHR.addEventListener(&apos;timeout&apos;, (event)=&gt;{
+                console.log(&apos;XMLHttpRequestAdapter timeout&apos;, event, XHR);
+                reject(event); // TODO Handle
+            });
+            // XHR.addEventListener(&apos;abort&apos;, (event)=&gt;{
+            //     console.log(&apos;XMLHttpRequestAdapter abort&apos;, event, XHR);
+            //     reject(event);
+            // });
+
+            try {
+                XHR.open(method, url);
+                XHR.setRequestHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);
+                if (AuthService.oauthSession){
+                    //TODO Add refresh
+                    XHR.setRequestHeader(&quot;Authorization&quot;, AuthService.oauthSession.toHeaderString());
+                }
+                XHR.send(data ? JSON.stringify(data) : null);
+            }catch(e){
+                console.log(&apos;XMLHttpRequestAdapter exception&apos;, e);
+                reject(e);
+            }
+        });
+    }
+
+    // &lt;editor-fold desc=&quot;Wrapped Requests&quot;&gt;
+
+    /**
+     * Submit a GET request
+     * @param {string} url
+     * @param {Object} data
+     * @returns {Promise}
+     */
+    get(url, data){
+        return this.request(&apos;GET&apos;, this.addToQueryString(url, data));
+    }
+
+    /**
+     * Submit a POST request
+     * @param {string} url
+     * @param {Object} data
+     * @returns {Promise}
+     */
+    post(url, data){
+        return this.request(&apos;POST&apos;, url, data);
+    }
+
+    /**
+     * Submit a PUT request
+     * @param {string} url
+     * @param {Object} data
+     * @returns {Promise}
+     */
+    put(url, data){
+        return this.request(&apos;PUT&apos;, url, data);
+    }
+
+    /**
+     * Submit a DELETE request
+     * @param {string} url
+     * @param {Object} data
+     * @returns {Promise}
+     */
+    del(url, data){
+        return this.request(&apos;DELETE&apos;, url, data);
+    }
+
+    // &lt;/editor-fold&gt;
+}
+
+// Return single instance, making it a singleton
+export default new XMLHttpRequestAdapter();
+</code></pre>
+
 </div>
 
 <footer class="footer">

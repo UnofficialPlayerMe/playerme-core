@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/models/user/UserModel.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,180 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/models/user/UserModel.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * A model representing a Player.me User.
+ * @memberOf module:models/user
+ */
+class UserModel {
+    /**
+     * Create a new User model.
+     * @param {Object} [obj] A player response object to initialise this model with.
+     */
+    constructor(obj=null)
+    {
+        this._id                = obj &amp;&amp; obj.id                 || 0;
+        this._username          = obj &amp;&amp; obj.username           || &apos;&apos;;
+        this._accountType       = obj &amp;&amp; obj.account_type       || &apos;&apos;;
+        this._slug              = obj &amp;&amp; obj.slug               || &apos;&apos;;
+        this._avatar            = obj &amp;&amp; obj.avatar             || &apos;&apos;;
+        this._cover             = obj &amp;&amp; obj.cover              || &apos;&apos;;
+        this._url               = obj &amp;&amp; obj.url                || &apos;&apos;;
+        this._followersCount    = obj &amp;&amp; obj.followers_count    || 0;
+        this._isFeatured        = obj &amp;&amp; obj.is_featured        || false;
+        this._isVerified        = obj &amp;&amp; obj.is_verified        || false;
+        this._isPartner         = obj &amp;&amp; obj.is_partner         || false;
+        this._isPrivate         = obj &amp;&amp; obj.is_private         || false;
+    }
+
+    toString() {
+        var msg = &apos;[UserModel&apos;;
+        if (this._id) msg += &apos; #&apos;+this._id;
+        if (this._slug) msg += &apos; &quot;&apos;+this._slug+&apos;&quot;&apos;;
+        return msg +&apos;]&apos;;
+    }
+
+    /**
+     * The user&apos;s ID.
+     * @readonly
+     * @member {number} UserModel#id
+     * @returns {number}
+     */
+    get id() {
+        return this._id;
+    }
+
+    /**
+     * The user&apos;s username.
+     * @readonly
+     * @member {string} UserModel#username
+     * @returns {string}
+     */
+    get username() {
+        return this._username;
+    }
+
+    /**
+     * The type of account.
+     * @readonly
+     * @member {string} UserModel#accountType
+     * @returns {string}
+     */
+    get accountType() {
+        return this._accountType;
+    }
+
+    /**
+     * The URL-friendly version of the user&apos;s name.
+     * @readonly
+     * @member {string} UserModel#slug
+     * @returns {string}
+     */
+    get slug() {
+        return this._slug;
+    }
+
+    /**
+     * The URL of the user&apos;s avatar.
+     * Player provides a default.
+     * @readonly
+     * @member {string} UserModel#avatar
+     * @returns {string}
+     */
+    get avatar() {
+        return this._avatar;
+    }
+
+    /**
+     * The URL to the user&apos;s profile cover image.
+     * @readonly
+     * @member {string} UserModel#cover
+     * @returns {string}
+     */
+    get cover() {
+        return this._cover;
+    }
+
+    /**
+     * A relative URL to the user&apos;s profile.
+     * @readonly
+     * @member {string} UserModel#url
+     * @returns {string}
+     */
+    get url() {
+        return this._url;
+    }
+
+    /**
+     * The number of followers the user has.
+     * @readonly
+     * @member {number} UserModel#followersCount
+     * @returns {number}
+     */
+    get followersCount() {
+        return this._followersCount;
+    }
+
+    /**
+     * Whether Player.me has listed this as a featured user.
+     * @readonly
+     * @member {boolean} UserModel#isFeatured
+     * @returns {boolean}
+     */
+    get isFeatured() {
+        return this._isFeatured;
+    }
+
+    /**
+     * Whether Player.me has verified this user.
+     * @readonly
+     * @member {boolean} UserModel#isVerified
+     * @returns {boolean}
+     */
+    get isVerified() {
+        return this._isVerified;
+    }
+
+    /**
+     * Whether this is a Player.me staff member or partner.
+     * @readonly
+     * @member {boolean} UserModel#isPartner
+     * @returns {boolean}
+     */
+    get isPartner() {
+        return this._isPartner;
+    }
+
+    /**
+     * Whether this is a private user.
+     * @readonly
+     * @member {boolean} UserModel#isPrivate
+     * @returns {boolean}
+     */
+    get isPrivate() {
+        return this._isPrivate;
+    }
+
+    /**
+     * Whether the account is for a normal user.
+     * @returns {boolean}
+     */
+    isUser(){
+        return this._accountType == &apos;user&apos;;
+    }
+
+    /**
+     * Whether the account is for a group.
+     * @returns {boolean}
+     */
+    isGroup(){
+        return this._accountType == &apos;group&apos;;
+    }
+}
+
+export default UserModel;
+</code></pre>
+
 </div>
 
 <footer class="footer">

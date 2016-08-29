@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">playerme-core: 0.4.0 API Document</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/models/activity/ActivityPostData.js | playerme-core: 0.4.0 API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -77,29 +77,195 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="playerme-core">playerme-core</h1>
-<p>The core stand-alone library for interacting with the official API.
-See our <a href="https://unofficialplayerme.github.io/playerme-core">Github Project Page</a> for full documentation.</p>
-<h1 id="adding-as-a-dependency-to-another-project">Adding as a dependency to another project</h1>
-<p>Run <code>npm install UnofficialPlayerMe/playerme-core</code></p>
-<h1 id="project-development">Project Development</h1>
-<p>The source is written in ES2015/ES6.
-The project is compiled by <a href="https://webpack.github.io/">Webpack</a> using the <a href="http://gulpjs.com/">Gulp</a> task runner.</p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li><a href="https://nodejs.org/">Node.js</a></li>
-</ul>
-<h2 id="custom-builds">Custom Builds</h2>
-<p>You are able to configure your own build by adding your own entry point.
-By doing this you can add, remove or restructure the library.
-See the <strong>Entry points</strong> tutorial for more detail.</p>
-<h2 id="demo">Demo</h2>
-<p>Browser security prevents scripts from making &apos;cross-origin&apos; requests. 
-There&apos;s a workaround by using the JSONP technique for GET requests only. </p>
-<p>If you&apos;re not working in a browser-like environment that doesn&apos;t have this security (i.e. cordova/phonegap/ionic) then you can use JSONPRequestAdapter.
-To preview JSONPRequestAdapter requests in the browser you need to disable your browser&apos;s security.
-There&apos;s an NPM helper script to launch chrome without this security; run <code>npm run browse-insecure-linux</code> or <code>npm run browse-insecure-windows</code>.</p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/models/activity/ActivityPostData.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import GameMetadataModel from &apos;./../game/GameMetadataModel&apos;;
+
+/**
+ * The main contents of an ActivityModel of type &quot;post&quot;.
+ * @memberOf module:models/activity
+ */
+class ActivityPostData {
+    /**
+     * @param {object} [obj] Part of a player response object to initialise this instance with.
+     */
+    constructor(obj=null)
+    {
+        var game = obj &amp;&amp; obj.game || false;
+
+        this._post            = obj &amp;&amp; obj.post     || &apos;&apos;;
+        this._postRaw         = obj &amp;&amp; obj.post_raw || &apos;&apos;;
+        this._metas           = obj &amp;&amp; obj.metas.map((meta) =&gt; new ActivityPostMetaData(meta)) || [];
+        this._game            = game &amp;&amp; new GameMetadataModel(obj.game) || null;
+        this._gameCheckInType = game &amp;&amp; game.check_in_type      || null;
+    }
+
+    /**
+     * The post&apos;s formatted text.
+     * @readonly
+     * @member {string} ActivityPostData#post
+     * @returns {string}
+     */
+    get post(){
+        return this._post;
+    }
+
+    /**
+     * The post&apos;s un-formatted text.
+     * @readonly
+     * @member {string} ActivityPostData#postRaw
+     * @returns {string}
+     */
+    get postRaw(){
+        return this._postRaw;
+    }
+
+    /**
+     * The post&apos;s related content.
+     * @readonly
+     * @member {ActivityPostMetaData[]} ActivityPostData#meta
+     * @returns {ActivityPostMetaData[]}
+     */
+    get metas(){
+        return this._metas;
+    }
+
+    /**
+     * The game that has been checked in, if any.
+     * @readonly
+     * @member {GameMetadataModel|null} ActivityPostData#game
+     * @returns {GameMetadataModel|null}
+     */
+    get game(){
+        return this._game;
+    }
+
+    /**
+     * The type of check-in for the game, if any (e.g. &quot;playing&quot;).
+     * TODO The API can apparently handle other types, but can the client specify them?
+     * @readonly
+     * @member {string|null} ActivityPostData#gameCheckInType
+     * @returns {string|null}
+     */
+    get gameCheckInType(){
+        return this._gameCheckInType;
+    }
+
+    /**
+     * If the post says the author is playing a game.
+     * @returns {boolean}
+     */
+    isPlayingGame(){
+        return this._gameCheckInType == &quot;playing&quot;;
+    }
+
+} // End of ActivityPostData
+
+/**
+ * Metadata associated with a Post.
+ * @memberOf module:models/activity
+ */
+class ActivityPostMetaData {
+    /**
+     * @param {object} [obj] Part of a player response object to initialise this instance with.
+     */
+    constructor(obj=null){
+        this._content     = obj &amp;&amp; obj.content     || &apos;&apos;;
+        this._title       = obj &amp;&amp; obj.title       || null;
+        this._description = obj &amp;&amp; obj.description || null;
+        this._provider    = obj &amp;&amp; obj.provider    || &apos;&apos;;
+        this._isInternal  = obj &amp;&amp; obj.isInternal  || false;
+        this._images      = obj &amp;&amp; obj.images      || [];
+        this._url         = obj &amp;&amp; obj.url         || &apos;&apos;;
+        this._thumbnail   = obj &amp;&amp; obj.thumbnail   || null;
+    }
+
+    /**
+     * The meta&apos;s content type (i.e. &quot;Photo&quot;).
+     * @readonly
+     * @member {string} ActivityPostMetaData#content
+     * @returns {string}
+     */
+    get content(){
+        return this._content;
+    }
+
+    /**
+     * The title of the metadata, if applicable.
+     * @readonly
+     * @member {string|null} ActivityPostMetaData#title
+     * @returns {string|null}
+     */
+    get title(){
+        return this._title;
+    }
+
+    /**
+     * The description for the metadata, if applicable.
+     * @readonly
+     * @member {string|null} ActivityPostMetaData#description
+     * @returns {string|null}
+     */
+    get description(){
+        return this._description;
+    }
+
+    /**
+     * The provider for the metadata (e.g. &quot;Player&quot;).
+     * @readonly
+     * @member {string} ActivityPostMetaData#provider
+     * @returns {string}
+     */
+    get provider(){
+        return this._provider;
+    }
+
+    /**
+     * TODO What is ActivityPostMetaData isInternal?
+     * @readonly
+     * @member {boolean} ActivityPostMetaData#isInternal
+     * @returns {boolean}
+     */
+    get isInternal(){
+        return this._isInternal;
+    }
+
+    /**
+     * A list of image URLs.
+     * @readonly
+     * @member {string[]} ActivityPostMetaData#images
+     * @returns {string[]}
+     */
+    get images(){
+        return this._images;
+    }
+
+    /**
+     * The link to whatever&apos;s represented by the metadata (e.g. an image)
+     * @readonly
+     * @member {string} ActivityPostMetaData#url
+     * @returns {string}
+     */
+    get url(){
+        return this._url;
+    }
+
+    /**
+     * URL of the metadata&apos;s thumbnail.
+     * @readonly
+     * @member {string|null} ActivityPostMetaData#thumbnail
+     * @returns {string|null}
+     */
+    get thumbnail(){
+        return this._thumbnail;
+    }
+
+} // End of ActivityPostMetaData
+
+export {
+    ActivityPostData as default,
+    ActivityPostMetaData
+}</code></pre>
+
 </div>
 
 <footer class="footer">
