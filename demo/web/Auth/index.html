@@ -7,10 +7,11 @@
     <script src="../../../dist/web/playerme-core.js"></script>
     <script src="../../helpers/logLibrary.js"></script>
     <script src="../../vendor/require.js"></script>
-    <script src="./scripts/setupClient.js"></script>
-    <script src="./scripts/redirectLogin.js"></script>
-    <script src="./scripts/refreshToken.js"></script>
-    <script src="./scripts/passwordLogin.js"></script>
+    <script src="../_helper/prepopulateFields.js"></script>
+    <script src="../_helper/setupClient.js"></script>
+    <script src="../_helper/redirectLogin.js"></script>
+    <script src="../_helper/refreshToken.js"></script>
+    <script src="../_helper/passwordLogin.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./styles.css">
 
@@ -25,46 +26,13 @@
             // <editor-fold desc="Pre-populate from env file">
             requirejs(['../../../env/demo.js'],
                 function(demoEnv){
-                    var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID       || null;
-                    var clientSecret = demoEnv && demoEnv.OAUTH_CLIENT_SECRET   || null;
-                    var username     = demoEnv && demoEnv.PLAYER_USERNAME       || null;
-                    var password     = demoEnv && demoEnv.PLAYER_PASSWORD       || null;
-                    var baseUrl      = demoEnv && demoEnv.PLAYER_BASE_URL       || null;
-                    var redirectUrl  = window.location.href.split('?')[0];
+                    prepopulateFields(demoEnv);
+                    var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID     || null;
+                    var clientSecret = demoEnv && demoEnv.OAUTH_CLIENT_SECRET || null;
+                    var baseUrl      = demoEnv && demoEnv.PLAYER_BASE_URL     || null;
 
-                    if (clientId){
-                        document.querySelectorAll('[name=clientId]').forEach(function(field){
-                            field.value = clientId;
-                        });
-                    }
-                    if (clientSecret){
-                        document.querySelectorAll('[name=clientSecret]').forEach(function(field){
-                            field.value = clientSecret;
-                        });
-                    }
-                    if (redirectUrl){
-                        document.querySelectorAll('[name=redirectUrl]').forEach(function(field){
-                            field.value = redirectUrl;
-                        });
-                    }
-                    if (username){
-                        document.querySelectorAll('[name=username]').forEach(function(field){
-                            field.value = username;
-                        });
-                    }
-                    if (password){
-                        document.querySelectorAll('[name=password]').forEach(function(field){
-                            field.value = password;
-                        });
-                    }
-
-                    if (baseUrl) {
-                        PlayerMe.API.APIService.baseUrl = baseUrl;
-                    }
-
-                    if (clientId && clientSecret){
-                        setupClient(clientId, clientSecret)
-                    }
+                    if (baseUrl) PlayerMe.API.APIService.baseUrl = baseUrl;
+                    if (clientId && clientSecret) setupClient(clientId, clientSecret);
                 },
                 function(err){
                     console.error("Failed to load custom demo presets in " + err.requireModules[0]);
@@ -114,12 +82,12 @@
 <form>
     <p>Redirect URL: <input type="text" name="redirectUrl"></p>
     <p>State:        <input type="text" name="state"></p>
-    <input type="button" value="Go" onClick="redirectLogin(this.form)">
+    <input type="button" value="Go" onClick="redirectLoginFromForm(this.form)">
 </form>
 <h5>Exchange Redirect Code for Auth Token</h5>
 <form>
     <p>Redirect URL: <input type="text" name="redirectUrl"></p>
-    <input type="button" value="Go" onClick="exchangeToken(this.form)">
+    <input type="button" value="Go" onClick="exchangeTokenFromForm(this.form)">
 </form>
 
 <h3>Password Login</h3>

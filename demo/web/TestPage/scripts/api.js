@@ -32,64 +32,30 @@ function clickedRequest(url){
     }
 
     promise.then(function(payload){
-        console.log("Processed");
         try {
-            console.log(payload);
+            console.log({payload});
         }catch(e){
             console.error(e);
         }
         console.groupEnd();
-    }, function(payload){
-        console.error("Failure");
-        console.log(payload);
+    }, function(failure){
+        console.log({failure:failure});
         console.groupEnd();
     });
 }
 
-function login(form){
-    var AuthService = window.PlayerMe.API.AuthService;
-
-    var usernameField = form.querySelectorAll('[name=username]')[0];
-    var passwordField = form.querySelectorAll('[name=password]')[0];
-
-    var username = usernameField.value;
-    var password = passwordField.value;
-
-    if (username && password) {
-        console.group("Log in...");
-        AuthService.login(username, password, false).then(
-            function(success){
-                console.log("Processed");
-                console.log(success);
-                console.groupEnd();
-            },
-            function(failure){
-                console.error("Failure");
-                console.log(failure);
-                console.groupEnd();
-            }
-        );
-    } else {
-        alert("Username and password required");
-    }
-}
-
 function clickedUsersRepository(id){
-    console.group("Get user", id);
     try {
-        var promise = PlayerMe.API.UsersRepository.get(id);
+        var promise = window.PlayerMe.API.UsersRepository.get(id);
         promise.then(function(payload){
-            console.log("Processed");
-            console.log(payload);
+            console.log({payload:payload});
             console.groupEnd();
         }, function(error){
-            console.error("Failure");
-            console.log(error);
+            console.log({error:error});
             console.groupEnd();
         })
     } catch(e) {
         console.error(e);
         console.groupEnd();
-        return;
     }
 }

@@ -2,7 +2,6 @@ function setupClient(clientId, clientSecret){
     var AuthService = window.PlayerMe.API.AuthService;
 
     if (clientId && clientSecret) {
-        console.log("setupClient", clientId);
         AuthService.setupClient(clientId, clientSecret);
     } else {
         alert("clientId and clientSecret required");

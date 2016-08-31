@@ -5,6 +5,10 @@
     <title>Unofficial PlayerMe Core</title>
 
     <script src="../../../dist/web/playerme-core.js"></script>
+    <script src="../../vendor/require.js"></script>
+    <script src="../_helper/prepopulateFields.js"></script>
+    <script src="../_helper/setupClient.js"></script>
+    <script src="../_helper/redirectLogin.js"></script>
     <script src="./scripts/general.js"></script>
     <script src="./scripts/api.js"></script>
     <script src="./scripts/realtime.js"></script>
@@ -18,8 +22,36 @@
             logLibrary('PlayerMe.API',      PlayerMe.API     );
             logLibrary('PlayerMe.RealTime', PlayerMe.RealTime);
 
+            // <editor-fold desc="Pre-populate from env file">
+            requirejs(['../../../env/demo.js'],
+                    function(demoEnv){
+                        prepopulateFields(demoEnv);
+                        var clientId     = demoEnv && demoEnv.OAUTH_CLIENT_ID     || null;
+                        var clientSecret = demoEnv && demoEnv.OAUTH_CLIENT_SECRET || null;
+                        var baseUrl      = demoEnv && demoEnv.PLAYER_BASE_URL     || null;
+
+                        if (baseUrl) PlayerMe.API.APIService.baseUrl = baseUrl;
+                        if (clientId && clientSecret) setupClient(clientId, clientSecret);
+                    },
+                    function(err){
+                        console.error("Failed to load custom demo presets in " + err.requireModules[0]);
+                    }
+            );
+            // </editor-fold>
+
             updateAdapter();
             updateBaseURL();
+
+            var authRedirect = window.PlayerMe.API.AuthService.didRedirectLogin();
+            document.getElementById("redirect_auth").disabled = authRedirect;
+            document.getElementById("redirect_final").disabled = !authRedirect;
+            document.getElementById("redirect_state").disabled = authRedirect;
+            document.getElementById("redirect_state").value = authRedirect && authRedirect.state;
+
+            var oauthSession = window.PlayerMe.API.AuthService.oauthSession;
+            if (oauthSession){
+                console.log("Existing OAuth session", oauthSession);
+            }
         }
     </script>
 </head>
@@ -38,18 +70,18 @@
         <input type="button" value="Live server" onClick="setBaseURL('https://player.me')">
         <input type="button" value="Staging server" onClick="setBaseURL('https://staging.player.me')">
 
-        <h3>Log in</h3>
+        <h3>Redirect Login</h3>
         <form>
-            <p>Username: <input type="text" name="username"></p>
-            <p>Password: <input type="password" name="password"></p>
-            <input type="button" value="Log in"  onClick="login(this.form)">
-            <input type="button" value="Log out" onClick="clickedRequest('actions/logout')">
+            <p>Redirect URL: <input type="text" name="redirectUrl"></p>
+            <p>State:        <input id="redirect_state" type="text" name="state"></p>
+            <input id="redirect_auth"  type="button" value="Authenticate" onClick="redirectLoginFromForm(this.form)">
+            <input id="redirect_final" type="button" value="Finalise" onClick="exchangeTokenFromForm(this.form)">
         </form>
 
         <h3>Test Actions</h3>
         <p>
-            <button onclick="clickedRequest('api/v1/feed')">Request Feed</button>
-            <button onclick="clickedRequest('api/v1/users/me')">Request User</button>
+            <button onclick="clickedRequest('api/v1/feed')">Raw Request Feed</button>
+            <button onclick="clickedRequest('api/v1/users/me')">Raw Request User</button>
         </p>
         <p>
             <button onclick="clickedUsersRepository(1)">UsersRepository GET</button>
