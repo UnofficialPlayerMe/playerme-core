@@ -1,5 +1,6 @@
 import AbstractRequestAdapter from './AbstractRequestAdapter';
 import RawResponse from '../response/RawResponse';
+import ResponseError from '../response/error/ResponseError';
 import AuthService from '../../../api/auth/AuthService';
 
 import URL from 'url';
@@ -8,7 +9,6 @@ import HTTPS from 'https';
 /**
  * Process requests using https://www.npmjs.com/package/request
  * For use in environments where cross-domain requests isn't an issue (i.e. Node.js, Cordova, etc)
- * @extends AbstractRequestAdapter
  * @memberOf module:api/request/adapter
  */
 class NodeRequestAdapter extends AbstractRequestAdapter{
@@ -50,16 +50,26 @@ class NodeRequestAdapter extends AbstractRequestAdapter{
                 response.on('end', () => {
                     try {
                         // Resolve response
-                        resolve(
-                            new RawResponse(
-                                JSON.parse(str),
+                        var rawResponse = new RawResponse(
+                            JSON.parse(str),
+                            response.statusCode,
+                            response.statusMessage,
+                            response.headers
+                        );
+                        if (rawResponse.statusCode < 400){
+                            resolve(rawResponse);
+                        } else {
+                            resolve(rawResponse.createError(str));
+                        }
+                    } catch(e) {
+                        reject(
+                            new ResponseError(
+                                str,
                                 response.statusCode,
                                 response.statusMessage,
                                 response.headers
                             )
                         );
-                    } catch(e) {
-                        return reject(str); //TODO Error response
                     }
                 });
             });

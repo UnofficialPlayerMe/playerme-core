@@ -1,3 +1,5 @@
+import ResponseError from './error/ResponseError';
+
 /**
  * A class representing the raw output from player.
  * @memberOf module:api/request/response
@@ -80,6 +82,21 @@ class RawResponse {
      */
     get headers(){
         return this._headers;
+    }
+
+    /**
+     * Create an error from this response
+     * @param {string} [message] - Message to give this error
+     * @returns {module:api/request/response/error.ResponseError}
+     */
+    createError(message){
+        return new ResponseError(
+            message,
+            this.statusCode,
+            this.statusMessage,
+            this.headers,
+            this
+        );
     }
 }
 

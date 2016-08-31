@@ -4,7 +4,6 @@ import RawResponse from '../response/RawResponse';
 /**
  * Process requests using JSONP.
  * Browsers allow this method for cross-domain calls, but only GET requests.
- * @extends AbstractRequestAdapter
  * @memberOf module:api/request/adapter
  */
 class JSONPRequestAdapter extends AbstractRequestAdapter {
@@ -92,6 +91,8 @@ class JSONPRequestAdapter extends AbstractRequestAdapter {
 
                 // Get the reference for this callback
                 var callbackRef = this._generateCallbackRef();
+
+                // TODO Create timeout to reject suspected failed requests
 
                 // Create a script element for JSONP
                 var scriptElement = document.createElement('script');

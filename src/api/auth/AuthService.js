@@ -1,11 +1,11 @@
 import APIService from '../request/APIService';
 import OAuthSessionResponse from './OAuthSessionResponse';
 import OAuthSessionModel from './OAuthSessionModel';
+import OAuthSessionError from './OAuthSessionError';
 
 /**
- * A const string specifying the key for rememberMe in local storage,
+ * A const string specifying the key for {@link AuthService#rememberMe} in local storage.
  * @type {string}
- * @see {@link AuthService#rememberMe}
  */
 const LOCAL_STORAGE_KEY_REMEMBER_ME = 'AuthService:rememberMe';
 
@@ -15,6 +15,9 @@ const LOCAL_STORAGE_KEY_REMEMBER_ME = 'AuthService:rememberMe';
  * @memberOf module:api/auth
  */
 class AuthService {
+    /**
+     * Create the AuthService
+     */
     constructor(){
         // TODO Have a session map so OAuth can be switched without re-authenticating
 
@@ -31,7 +34,7 @@ class AuthService {
          * @type {boolean}
          * @private
          */
-        this._rememberMe = false;
+        this._rememberMe = true;
 
         /**
          * The client ID to be used in authentication requests
@@ -242,7 +245,7 @@ class AuthService {
      * then exchange the access code it retrieved and exchange it for an OAuth token - finalising the login process.
      *
      * @param {string} redirectUrl - The URL used in AuthService.redirectLogin()
-     * @returns {Promise<OAuthSessionResponse, Error>}
+     * @returns {Promise<OAuthSessionResponse, OAuthSessionError>}
      * @throws {Error} If the user wasn't redirected here.
      *
      * @see http://docs.playermev2.apiary.io/#introduction/authentication/redirect-the-user-to-your-site
@@ -281,11 +284,14 @@ class AuthService {
                 var failedRedirect = this.failedRedirectLogin();
                 if (failedRedirect){
                     return reject(
-                        new Error("Failed to get auth code: "+failedRedirect.description)
+                        new OAuthSessionError(failedRedirect.description, failedRedirect.error)
                     );
                 }
                 return reject(
-                    new Error("AuthService.processRedirectedLogin() wasn't redirected to here.")
+                    new OAuthSessionError(
+                        "Tried to process an authentication redirect doesn't appear to have occurred.",
+                        'no_redirect'
+                    )
                 );
             }
 
@@ -301,7 +307,7 @@ class AuthService {
                     redirect_uri: redirectUrl
                 });
             }catch(e){
-                reject(e);
+                reject(new OAuthSessionError(e.message, e.name));
                 return;
             }
 
@@ -309,16 +315,24 @@ class AuthService {
             // <editor-fold desc="Response">
 
             promise.then((rawResponse)=>{
-                var response = new OAuthSessionResponse(rawResponse);
+                if (rawResponse.body && typeof rawResponse.body.error == 'string'){
+                    reject(
+                        new OAuthSessionError(
+                            rawResponse.body.error_description,
+                            rawResponse.body.error
+                        )
+                    );
+                }
 
+                var response = new OAuthSessionResponse(rawResponse);
                 if (response.success) {
                     this.oauthSession = response.result;
                     resolve(response, didRedirect.state);
                 } else {
-                    reject(new Error(response.errorMessage));
+                    reject(new OAuthSessionError(e.statusMessage, 'code_'+e.statusCode));
                 }
             }, function(error){
-                reject(error, didRedirect.state);
+                reject(new OAuthSessionError(error.message, error.name));
             });
 
             // </editor-fold>
@@ -367,7 +381,7 @@ class AuthService {
                     password: password
                 });
             }catch(e){
-                reject(e);
+                reject(new OAuthSessionError(e.message, e.name));
                 return;
             }
 
@@ -375,16 +389,24 @@ class AuthService {
             // <editor-fold desc="Response">
 
             promise.then((rawResponse)=>{
-                var response = new OAuthSessionResponse(rawResponse);
+                if (rawResponse.body && typeof rawResponse.body.error == 'string'){
+                    reject(
+                        new OAuthSessionError(
+                            rawResponse.body.error_description,
+                            rawResponse.body.error
+                        )
+                    );
+                }
 
+                var response = new OAuthSessionResponse(rawResponse);
                 if (response.success) {
                     this.oauthSession = response.result;
                     resolve(response);
                 } else {
-                    reject(new Error(response.errorMessage));
+                    reject(new OAuthSessionError(e.statusMessage, 'code_'+e.statusCode));
                 }
             }, function(error){
-                reject(error);
+                reject(new OAuthSessionError(error.message, error.name));
             });
 
             // </editor-fold>
@@ -452,7 +474,7 @@ class AuthService {
                     refresh_token: refreshToken
                 });
             }catch(e){
-                reject(e);
+                reject(new OAuthSessionError(e.message, e.name));
                 return;
             }
 
@@ -460,16 +482,24 @@ class AuthService {
             // <editor-fold desc="Response">
 
             promise.then((rawResponse)=>{
-                var response = new OAuthSessionResponse(rawResponse);
+                if (rawResponse.body && typeof rawResponse.body.error == 'string'){
+                    reject(
+                        new OAuthSessionError(
+                            rawResponse.body.error_description,
+                            rawResponse.body.error
+                        )
+                    );
+                }
 
+                var response = new OAuthSessionResponse(rawResponse);
                 if (response.success) {
                     this.oauthSession = response.result;
                     resolve(response);
                 } else {
-                    reject(new Error(response.errorMessage));
+                    reject(new OAuthSessionError(e.statusMessage, 'code_'+e.statusCode));
                 }
             }, function(error){
-                reject(error);
+                reject(new OAuthSessionError(error.message, error.name));
             });
 
             // </editor-fold>

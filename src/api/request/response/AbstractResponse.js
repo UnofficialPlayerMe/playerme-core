@@ -1,3 +1,5 @@
+import ResponseError from './error/ResponseError';
+
 /**
  * This is an abstract wrapper around a RawResponse.
  * Sub-classes should be tailored to specific APIs.
@@ -97,6 +99,18 @@ class AbstractResponse {
      */
     get uri(){
         return this.raw.uri;
+    }
+
+    /**
+     * Create an error from this response
+     * @param {string} [message] - Message to give this error
+     * @returns {ResponseError}
+     */
+    createError(message){
+        if (this.raw){
+            return this.raw.createError(message || this.errorMessage);
+        }
+        return null;
     }
 }
 

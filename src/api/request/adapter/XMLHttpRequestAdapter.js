@@ -1,45 +1,8 @@
 import AbstractRequestAdapter from './AbstractRequestAdapter';
 import RawResponse from '../response/RawResponse';
 import AuthService from '../../../api/auth/AuthService';
-import ErrorResponse from '../response/ErrorResponse';
 
 // <editor-fold desc="Login: Helpers">
-
-/**
- *
- * @param {string} url
- * @returns {{protocol:string, host:string, path:string, query:string}}
- * @ignore
- */
-function parseUrl(url){
-    var response = {};
-
-    // Get protocol
-    // 'http://google.com/a/b?c=d' => ['http', 'google.com/a/b?c=d']
-    var split = url.split('://', 2);
-    if (split.length < 2) {
-        throw new Error("Invalid URL in XHR passed to XMLHttpRequestAdapter's getURLObjectFromXHR ["+url+"]");
-    }
-    response.protocol = split[0];
-
-    // Get host
-    // 'google.com/a/b?c=d' => ['google.com', 'a/b?c=d']
-    split = split[1].split('/', 2);
-    if (split.length < 2) {
-        throw new Error("Invalid URL in XHR passed to XMLHttpRequestAdapter's getURLObjectFromXHR ["+url+"]");
-    }
-    response.host = split[0];
-
-    // Get path
-    // 'a/b?c=d' => ['a/b', 'c=d']
-    split = split[1].split('?', 2);
-    response.path = split[0];
-
-    // Get query string
-    response.query = split[1];
-
-    return response;
-}
 
 /**
  * Takes a XMLHttpRequest and returns the headers in key-value pairs.
@@ -61,9 +24,8 @@ function getHeadersFromXHR(XHR){
 }
 
 /**
- *
  * @param {XMLHttpRequest} XHR
- * @returns {RawResponse|null}
+ * @returns {?module:api/request/response.RawResponse}
  * @ignore
  */
 function getRawResponse(XHR) {
@@ -78,27 +40,12 @@ function getRawResponse(XHR) {
         return null;
     }
 }
-/**
- *
- * @param XHR
- * @returns {ErrorResponse}
- * @ignore
- */
-function getErrorResponse(XHR) {
-    return new ErrorResponse(
-        XHR.responseText,
-        XHR.status,
-        XHR.statusText,
-        getHeadersFromXHR(XHR)
-    );
-}
 
 // </editor-fold>
 
 /**
  * Process requests using JSONP.
  * Browsers allow this method for cross-domain calls, but only GET requests.
- * @extends AbstractRequestAdapter
  * @memberOf module:api/request/adapter
  */
 class XMLHttpRequestAdapter extends AbstractRequestAdapter {
@@ -115,31 +62,33 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
 
             XHR.addEventListener('load', ()=>{
                 var response = getRawResponse(XHR);
-                if (response) {
+                if (response && response.statusCode < 400) {
                     resolve(response);
                 } else {
-                    reject(getErrorResponse(XHR));
+                    reject(response.createError(XHR.responseText));
                 }
             });
 
-            XHR.addEventListener('error', (event)=>{
-                console.log('XMLHttpRequestAdapter error', event, XHR);
-                reject(event); // TODO Handle
+            XHR.addEventListener('error', ()=>{
+                var error = new Error("The request encountered an error.");
+                error.name = 'request_error';
             });
-            XHR.addEventListener('timeout', (event)=>{
-                console.log('XMLHttpRequestAdapter timeout', event, XHR);
-                reject(event); // TODO Handle
+            XHR.addEventListener('timeout', ()=>{
+                var error = new Error("The request timed out.");
+                error.name = 'request_timeout';
+                reject(error);
             });
-            // XHR.addEventListener('abort', (event)=>{
-            //     console.log('XMLHttpRequestAdapter abort', event, XHR);
-            //     reject(event);
-            // });
+            XHR.addEventListener('abort', ()=>{
+                var error = new Error("The request was aborted.");
+                error.name = 'request_abort';
+                reject(error);
+            });
 
             try {
                 XHR.open(method, url);
                 XHR.setRequestHeader("Content-Type", "application/json");
                 if (AuthService.oauthSession){
-                    //TODO Add refresh
+                    //TODO Add auto-refresh auth token
                     XHR.setRequestHeader("Authorization", AuthService.oauthSession.toHeaderString());
                 }
                 XHR.send(data ? JSON.stringify(data) : null);

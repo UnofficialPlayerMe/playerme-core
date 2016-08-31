@@ -1,3 +1,7 @@
+/**
+ * A const string specifying the key for a single {@link OAuthSessionModel}.
+ * @type {string}
+ */
 const LOCAL_STORAGE_KEY = 'OAuthSessionModel';
 
 /**
@@ -7,7 +11,7 @@ const LOCAL_STORAGE_KEY = 'OAuthSessionModel';
 class OAuthSessionModel {
     /**
      * Create a new Activity model.
-     * @param {Object} [obj] A player response object to initialise this model with.
+     * @param {Object} [obj] - A player response object to initialise this model with.
      */
     constructor(obj=null)
     {
@@ -33,8 +37,7 @@ class OAuthSessionModel {
     /**
      * The OAuth session's active token.
      * @readonly
-     * @member {string} OAuthSessionModel#accessToken
-     * @returns {string}
+     * @type {string}
      */
     get accessToken(){
         return this._accessToken;
@@ -43,8 +46,7 @@ class OAuthSessionModel {
     /**
      * The OAuth session's refresh token.
      * @readonly
-     * @member {string} OAuthSessionModel#refreshToken
-     * @returns {string}
+     * @type {string}
      */
     get refreshToken(){
         return this._refreshToken;
@@ -62,27 +64,25 @@ class OAuthSessionModel {
     }
 
     /**
-     * The date this session lasts until
+     * The date this session lasts until.
      * @readonly
-     * @member {Date} OAuthSessionModel#expires
-     * @returns {Date}
+     * @type {Date}
      */
     get expires(){
         return this._expires;
     }
 
     /**
-     * The number of seconds until this session expires, since the session was last updated.
+     * The number of seconds until this session expires, since the session object was created/updated.
      * @readonly
-     * @member {int} OAuthSessionModel#expiresIn
-     * @returns {int}
+     * @type {int}
      */
     get expiresIn(){
         return this._expiresIn;
     }
 
     /**
-     * Returns the string we're expected to pass to Player in a header.
+     * Returns the string we're expected to pass to Player as a header.
      * @returns {string}
      *
      * @see http://docs.playerme.apiary.io/#reference/general/example-authenticated-requests/with-request-headers-oauth-only
@@ -91,23 +91,25 @@ class OAuthSessionModel {
         if (this.tokenType && this.accessToken) {
             // Capitalise first letter of tokenType
             var tokenType = this.tokenType.charAt(0).toUpperCase() + this.tokenType.slice(1);
-            return tokenType + " " + this.accessToken;
+            return tokenType + ' ' + this.accessToken;
         }
-        return "";
+        return '';
     }
 
     /**
-     * Add this session to storage
-     * TODO Cookie fallback
+     * Add this session to storage.
+     * @returns {boolean} If localStorage was available.
+     * @TODO Cookie fallback
      */
     addToLocalStorage(){
-        if (typeof localStorage == 'undefined') return;
+        if (typeof localStorage == 'undefined') return false;
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this._raw));
+        return true;
     }
 
     /**
-     * Get a model from local storage
-     * @returns {OAuthSessionModel}
+     * Get a model from local storage.
+     * @returns {?OAuthSessionModel}
      */
     static getFromLocalStorage(){
         if (typeof localStorage == 'undefined') return null;
@@ -118,7 +120,7 @@ class OAuthSessionModel {
     }
 
     /**
-     * Remove a modal from local storage
+     * Remove a modal from local storage.
      */
     static removeFromLocalStorage(){
         if (typeof localStorage == 'undefined') return;
