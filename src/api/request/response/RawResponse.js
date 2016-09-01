@@ -7,15 +7,15 @@ import ResponseError from './error/ResponseError';
 class RawResponse {
     /**
      *
-     * @param {Object}                  body          - The raw response body
+     * @param {Object}                  body            - The raw response body
      * @property {?object}                  results
      * @property {?string}                  method
      * @property {?string}                  uri
      * @property {?string}                  error
      * @property {?string}                  error_description
-     * @param {int}                     statusCode    - The status code
-     * @param {string}                  statusMessage - The status code's message
-     * @param {Object.<string,string>}  headers       - Result headers
+     * @param {int}                     [statusCode]    - The status code
+     * @param {string}                  [statusMessage] - The status code's message
+     * @param {Object.<string,string>}  [headers]       - Result headers
      */
     constructor(body, statusCode, statusMessage, headers)
     {

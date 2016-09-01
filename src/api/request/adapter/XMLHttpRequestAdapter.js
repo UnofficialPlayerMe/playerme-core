@@ -54,7 +54,7 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
      * @param {string} method
      * @param {string} url
      * @param {Object} [data]
-     * @returns {Promise}
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}
      */
     request(method, url, data=null){
         return new Promise((resolve, reject)=>{
@@ -72,6 +72,7 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
             XHR.addEventListener('error', ()=>{
                 var error = new Error("The request encountered an error.");
                 error.name = 'request_error';
+                reject(error);
             });
             XHR.addEventListener('timeout', ()=>{
                 var error = new Error("The request timed out.");
@@ -79,7 +80,7 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
                 reject(error);
             });
             XHR.addEventListener('abort', ()=>{
-                var error = new Error("The request was aborted.");
+                var error = Error("The request was aborted.");
                 error.name = 'request_abort';
                 reject(error);
             });
@@ -93,7 +94,6 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
                 }
                 XHR.send(data ? JSON.stringify(data) : null);
             }catch(e){
-                console.log('XMLHttpRequestAdapter exception', e);
                 reject(e);
             }
         });
@@ -105,7 +105,7 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
      * Submit a GET request
      * @param {string} url
      * @param {Object} data
-     * @returns {Promise}
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}
      */
     get(url, data){
         return this.request('GET', this.addToQueryString(url, data));
@@ -115,7 +115,7 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
      * Submit a POST request
      * @param {string} url
      * @param {Object} data
-     * @returns {Promise}
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}
      */
     post(url, data){
         return this.request('POST', url, data);
@@ -125,7 +125,7 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
      * Submit a PUT request
      * @param {string} url
      * @param {Object} data
-     * @returns {Promise}
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}
      */
     put(url, data){
         return this.request('PUT', url, data);
@@ -135,7 +135,7 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
      * Submit a DELETE request
      * @param {string} url
      * @param {Object} data
-     * @returns {Promise}
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}
      */
     del(url, data){
         return this.request('DELETE', url, data);

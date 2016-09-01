@@ -1,0 +1,4 @@
+/**
+ * Miscellaneous classes
+ * @module misc
+ */

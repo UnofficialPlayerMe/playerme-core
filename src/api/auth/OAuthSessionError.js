@@ -1,4 +1,4 @@
-import CustomError from '../../misc/CustomError';
+import CustomError from '../../misc/error/CustomError';
 
 /**
  * An error for failed OAuthSession requests.

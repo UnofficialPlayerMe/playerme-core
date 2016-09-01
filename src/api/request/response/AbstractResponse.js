@@ -14,6 +14,11 @@ class AbstractResponse {
      */
     constructor(rawResponse)
     {
+        var abstractClassName = 'AbstractRequestAdapter';
+        if (this.className === abstractClassName){
+            throw new Error(abstractClassName+' was not supposed to be instantiated.');
+        }
+
         // Validate rawResponse
         if (!rawResponse){
             throw new ReferenceError('No raw defined by '+this.className);

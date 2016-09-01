@@ -1,6 +1,7 @@
 /**
  * A class that handles the complexity of extending Error since Babel struggles with extending naive classes.
  * @extends Error
+ * @memberOf module:misc/error
  */
 class CustomError extends Error {
     /**

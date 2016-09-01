@@ -1,21 +1,16 @@
+import NotImplementedError from '../../../misc/error/NotImplementedError';
+
 /**
- *
+ * Request adapters provide an interface between the APIService and a particular implementation of a request mechanism.
+ * This allows us to switch the mechanism APIService uses, to one appropriate for a particular situation.
  * @memberOf module:api/request/adapter
  */
 class AbstractRequestAdapter {
-    constructor()
-    {
-        var abstractClassName = 'AbstractRequestAdapter';
-        if (this.name === abstractClassName){
-            throw new Error(abstractClassName+' was not supposed to be instantiated.');
-        }
-    }
-
     /**
      * The adapter's name
      * @returns {string}
      */
-    get name(){
+    get className(){
         return this.constructor.name;
     }
 
@@ -24,60 +19,61 @@ class AbstractRequestAdapter {
      * @param {string} method
      * @param {string} url
      * @param {object} data
-     * @return Promise
-     * @throws Error Error when not implemented
-     * TODO Create not-implemented error
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}
+     *
+     * @abstract
+     * @throws module:misc/error.NotImplementedError
      */
     request(method, url, data){
-        throw new Error("request() not implemented by "+this.name);
+        throw new NotImplementedError("request() not implemented by "+this.className);
     }
 
     /**
      * Submit a GET request
      * @param {string} url
      * @param {object} data
-     * @return Promise
-     * @throws Error Error when not implemented
-     * TODO Create not-implemented error
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}     *
+     * @abstract
+     * @throws module:misc/error.NotImplementedError
      */
     get(url, data){
-        throw new Error("GET not implemented by "+this.name);
+        throw new NotImplementedError("GET not implemented by "+this.className);
     }
 
     /**
      * Submit a POST request
      * @param {string} url
      * @param {object} data
-     * @return Promise
-     * @throws Error Error when not implemented
-     * TODO Create not-implemented error
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}     *
+     * @abstract
+     * @throws module:misc/error.NotImplementedError
      */
     post(url, data){
-        throw new Error("POST not implemented by "+this.name);
+        throw new NotImplementedError("POST not implemented by "+this.className);
     }
 
     /**
      * Submit a PUT request
      * @param {string} url
      * @param {object} data
-     * @return Promise
-     * @throws Error Error when not implemented
-     * TODO Create not-implemented error
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}     *
+     * @abstract
+     * @throws module:misc/error.NotImplementedError
      */
     put(url, data){
-        throw new Error("PUT not implemented by "+this.name);
+        throw new NotImplementedError("PUT not implemented by "+this.className);
     }
 
     /**
      * Submit a DELETE request
      * @param {string} url
      * @param {object} data
-     * @return Promise
-     * @throws Error Error when not implemented
-     * TODO Create not-implemented error
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}     *
+     * @abstract
+     * @throws module:misc/error.NotImplementedError
      */
     del(url, data){
-        throw new Error("DEL not implemented by "+this.name);
+        throw new NotImplementedError("DEL not implemented by "+this.className);
     }
 
     /**

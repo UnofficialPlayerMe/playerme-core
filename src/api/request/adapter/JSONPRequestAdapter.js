@@ -1,5 +1,6 @@
 import AbstractRequestAdapter from './AbstractRequestAdapter';
 import RawResponse from '../response/RawResponse';
+import NotImplementedError from '../../../misc/error/NotImplementedError';
 
 /**
  * Process requests using JSONP.
@@ -80,6 +81,12 @@ class JSONPRequestAdapter extends AbstractRequestAdapter {
         return 'jsonp_' + currentCallbackId;
     }
 
+    /**
+     * Submit a GET request
+     * @param url
+     * @param data
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.ResponseError>}
+     */
     get(url, data){
         return new Promise((resolve, reject)=>{
             try {
@@ -127,16 +134,28 @@ class JSONPRequestAdapter extends AbstractRequestAdapter {
         });
     }
 
+    /**
+     * POST method cannot be used for JSONP.
+     * @abstract
+     */
     post(){
-        throw new Error("POST method not available for JSONPRequestAdapter")
+        throw new NotImplementedError("POST method not available for JSONPRequestAdapter")
     }
 
+    /**
+     * PUT method cannot be used for JSONP.
+     * @abstract
+     */
     put(){
-        throw new Error("PUT method not available for JSONPRequestAdapter")
+        throw new NotImplementedError("PUT method not available for JSONPRequestAdapter")
     }
 
+    /**
+     * DELETE method cannot be used for JSONP.
+     * @abstract
+     */
     del(){
-        throw new Error("DELETE method not available for JSONPRequestAdapter")
+        throw new NotImplementedError("DELETE method not available for JSONPRequestAdapter")
     }
 }
 

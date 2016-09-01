@@ -1,4 +1,4 @@
-import CustomError from '../../../../misc/CustomError';
+import CustomError from '../../../../misc/error/CustomError';
 
 /**
  * Represents failed requests.
@@ -6,7 +6,6 @@ import CustomError from '../../../../misc/CustomError';
  */
 class ResponseError extends CustomError {
     /**
-     *
      * @param {string}                                  message         - The raw text
      * @param {int}                                     [statusCode]    - The status code
      * @param {string}                                  [statusMessage] - The status code's message
