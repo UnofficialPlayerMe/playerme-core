@@ -12,6 +12,11 @@ class OAuthSessionModel {
     /**
      * Create a new Activity model.
      * @param {Object} [obj] - A player response object to initialise this model with.
+     * @property {string} access_token   - The token to be used in authenticated requests
+     * @property {string} refresh_token  - The token to request a new access token
+     * @property {string} token_type     - i.e. "bearer"
+     * @property {int}    expires        - Seconds since epoch
+     * @property {int}    expires_in     - Seconds until token expires
      */
     constructor(obj=null)
     {

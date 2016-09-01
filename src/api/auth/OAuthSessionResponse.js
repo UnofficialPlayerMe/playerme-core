@@ -26,7 +26,6 @@ import OAuthSessionModel from './OAuthSessionModel';
 
 /**
  * Response containing OAuth tokens
- * @extends AbstractResponse
  * @memberOf module:api/auth
  */
 class OAuthSessionResponse extends AbstractResponse {
@@ -37,7 +36,7 @@ class OAuthSessionResponse extends AbstractResponse {
         var session = new OAuthSessionModel(rawResponse.body);
         this._result = null;
 
-        this._success = this.statusCode >= 200 && this.statusCode < 300 && session.accessToken;
+        this._success = self.statusCode >= 200 && self.statusCode < 300 && session.accessToken;
         if (this._success){
             this._result = session;
         }
@@ -45,7 +44,7 @@ class OAuthSessionResponse extends AbstractResponse {
 
     /**
      * The response body
-     * @returns {OAuthSessionModel}
+     * @returns {module:api/auth.OAuthSessionModel}
      */
     get result(){
         return this._result;

@@ -37,7 +37,14 @@ class APIService extends AbstractRequestAdapter {
     // Request Methods
     //
 
-    // TODO Have success & failure classes
+    /**
+     * Issue a request
+     * @param {string} method
+     * @param {string} url
+     * @param {object} [data]
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.RawResponse>}
+     * @throws Error Unhandled method
+     */
     _request(method, url, data){
         var requestBodyRequired = false;
         switch(method){
@@ -56,18 +63,42 @@ class APIService extends AbstractRequestAdapter {
         return adapter[method](url, data);
     }
 
+    /**
+     * Issue a GET request
+     * @param {string} url
+     * @param {object} [data]
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.RawResponse>}
+     */
     get(url, data){
         return this._request('get', url, data);
     }
 
+    /**
+     * Issue a POST request
+     * @param {string} url
+     * @param {object} [data]
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.RawResponse>}
+     */
     post(url, data){
         return this._request('post', url, data);
     }
 
+    /**
+     * Issue a PUT request
+     * @param {string} url
+     * @param {object} [data]
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.RawResponse>}
+     */
     put(url, data){
         return this._request('put', url, data);
     }
 
+    /**
+     * Issue a DELETE request
+     * @param {string} url
+     * @param {object} [data]
+     * @returns {Promise<module:api/request/response.RawResponse, module:api/request/response/error.RawResponse>}
+     */
     del(url, data){
         return this._request('del', url, data);
     }
@@ -148,15 +179,10 @@ class APIService extends AbstractRequestAdapter {
 
     /**
      * Set the adapter
-     * @param {AbstractRequestAdapter} adapter Adapter instance or class
+     * @param {AbstractRequestAdapter} adapter Adapter instance
      * @throws {TypeError} If adapter is invalid
      */
     setAdapter(adapter){
-        // Turn class into an instance
-        if (typeof adapter === 'function' && adapter.constructor){
-            adapter = new adapter();
-        }
-
         this.validateAdapter(adapter);
         this._adapter = adapter;
     }
@@ -211,9 +237,9 @@ function validateURL(method, url){
 
 /**
  * Validate that the data object is valid
- * @param {string} method Name of the method this is being called in
- * @param {data} data The data to be used in the request
- * @param {boolean} required If the request body should be truthy
+ * @param {string}  method   - Name of the method this is being called in
+ * @param {object}  data     - The data to be used in the request
+ * @param {boolean} required - If the request body should be truthy
  * @throws {ReferenceError}
  * @ignore
  */
