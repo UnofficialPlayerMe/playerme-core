@@ -5,6 +5,11 @@
 class PagerData {
     /**
      * @param {object} rawPager The paging data in a RawResponse body.
+     * @property {int} limit
+     * @property {int} from
+     * @property {int} total
+     * @property {int} total_pages
+     * @property {int} current_page
      */
     constructor(rawPager){
         this._raw = rawPager;

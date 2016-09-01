@@ -9,7 +9,7 @@ import AbstractResponse from './AbstractResponse';
 class EntityResponse extends AbstractResponse {
     /**
      * @param {function} modelClass
-     * @param {RawResponse} rawResponse
+     * @param {module:api/request/response.RawResponse} rawResponse
      * @abstract
      */
     constructor(modelClass, rawResponse)
@@ -26,7 +26,7 @@ class EntityResponse extends AbstractResponse {
 
         /**
          * The class used to construct the result
-         * @type {Function}
+         * @type {function}
          */
         this._modelClass = modelClass;
 

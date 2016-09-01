@@ -4,12 +4,10 @@ import ResponseError from './error/ResponseError';
  * This is an abstract wrapper around a RawResponse.
  * Sub-classes should be tailored to specific APIs.
  * @memberOf module:api/request/response
- *
- * @TODO Add method to create new ResponseError from this instance
  */
 class AbstractResponse {
     /**
-     * @param {RawResponse} rawResponse
+     * @param {module:api/request/response.RawResponse} rawResponse
      * @abstract
      */
     constructor(rawResponse)
@@ -29,7 +27,7 @@ class AbstractResponse {
 
         /**
          * The raw request this wraps around
-         * @member {RawResponse}
+         * @member {module:api/request/response.RawResponse}
          */
         this.raw = rawResponse;
     }
@@ -109,7 +107,7 @@ class AbstractResponse {
     /**
      * Create an error from this response
      * @param {string} [message] - Message to give this error
-     * @returns {ResponseError}
+     * @returns {module:api/request/response/error.ResponseError}
      */
     createError(message){
         if (this.raw){

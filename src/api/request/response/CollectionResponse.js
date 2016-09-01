@@ -4,19 +4,17 @@ import PagerData from './PagerData';
 /**
  * This is an abstract wrapper around a RawResponse for a collection of entities.
  * Sub-classes should be tailored to specific APIs.
- * @extends AbstractResponse
  * @memberOf module:api/request/response
  */
 class CollectionResponse extends AbstractResponse {
     /**
      * @param {function} modelClass
-     * @param {RawResponse} rawResponse
+     * @param {module:api/request/response.RawResponse} rawResponse
      * @abstract
      */
     constructor(modelClass, rawResponse)
     {
         super(rawResponse);
-        this._assertNotInstanceOfAbstract(CollectionResponse);
 
         // Validate modelClass
         if (!modelClass){
@@ -28,7 +26,7 @@ class CollectionResponse extends AbstractResponse {
 
         /**
          * The class used to construct the result
-         * @type {Function}
+         * @type {function}
          */
         this._modelClass = modelClass;
 
@@ -41,10 +39,10 @@ class CollectionResponse extends AbstractResponse {
 
         /**
          * The pagination data for the response
-         * @member {PagerData} _pager
+         * @member {module:api/request/response.PagerData} _pager
          * @private
          */
-        this._pager = raw.body && raw.body.pager ? new PagerData(raw.body.pager) : null;
+        this._pager = this.raw.body && this.raw.body.pager ? new PagerData(this.raw.body.pager) : null;
     }
 
     /**
@@ -57,7 +55,7 @@ class CollectionResponse extends AbstractResponse {
 
     /**
      * The pagination data for the response
-     * @returns {PagerData}
+     * @returns {module:api/request/response.PagerData}
      */
     get pager(){
         return this._pager;
