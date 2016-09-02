@@ -5,7 +5,7 @@ function useAdapter(name){
 
 function updateAdapter(){
     var adapterName = document.getElementById('adapterName');
-    adapterName.innerHTML = window.PlayerMe.API.APIService.getAdapter().name;
+    adapterName.innerHTML = window.PlayerMe.API.APIService.getAdapter().className;
 }
 
 function setBaseURL(url){

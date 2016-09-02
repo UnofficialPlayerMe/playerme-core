@@ -63,7 +63,7 @@
     <h2>API</h2>
     <div>
         <h3>Adapter: <span id="adapterName"></span></h3>
-        <input type="button" value="JSONPRequestAdapter" onClick="useAdapter('JSONPRequestAdapter')">
+        <!--<input type="button" value="JSONPRequestAdapter" onClick="useAdapter('JSONPRequestAdapter')">-->
         <input type="button" value="XMLHttpRequest" onClick="useAdapter('XMLHttpRequestAdapter')">
 
         <h3>Environment: <span id="baseURL"></span></h3>
@@ -80,8 +80,7 @@
 
         <h3>Test Actions</h3>
         <p>
-            <button onclick="clickedRequest('api/v1/feed')">Raw Request Feed</button>
-            <button onclick="clickedRequest('api/v1/users/me')">Raw Request User</button>
+            <button onclick="clickedRequest('api/v1/users/me')">Raw V1 Request User</button>
         </p>
         <p>
             <button onclick="clickedUsersRepository(1)">UsersRepository GET</button>

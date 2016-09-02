@@ -4,9 +4,10 @@
 var library = require('./full');
 var adapters = library.API.adapters;
 
-adapters.JSONPRequestAdapter   = require('../src/api/request/adapter/JSONPRequestAdapter').default;
+// TODO Add JSONP back if/when Player enables JSONP for GraphQL
+// adapters.JSONPRequestAdapter   = require('../src/api/request/adapter/JSONPRequestAdapter').default;
 adapters.XMLHttpRequestAdapter = require('../src/api/request/adapter/XMLHttpRequestAdapter').default;
-library.API.APIService.setAdapter(adapters.JSONPRequestAdapter);
+library.API.APIService.setAdapter(adapters.XMLHttpRequestAdapter);
 
 try{
     if (typeof Promise === 'undefined') throw new ReferenceError("No Promise found");
