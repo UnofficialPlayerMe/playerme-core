@@ -26,14 +26,16 @@ class NodeRequestAdapter extends AbstractRequestAdapter{
 
         var options = {
             method: method,
+            headers: {},
             host: urlObject.hostname,
             port: urlObject.port,
-            path: urlObject.path,
-            headers: {
-                "Content-Type": "application/json",
-                "Content-Length": Buffer.byteLength(json)
-            }
+            path: urlObject.path
         };
+
+        if (method.toUpperCase() != 'GET') {
+            options.headers['Content-Type'] = "application/json";
+            options.headers['Content-Length'] = Buffer.byteLength(json);
+        }
 
         if (AuthService.oauthSession){
             options.headers['Authorization'] = AuthService.oauthSession.toHeaderString();

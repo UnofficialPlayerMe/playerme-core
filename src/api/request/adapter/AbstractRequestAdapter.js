@@ -121,7 +121,8 @@ class AbstractRequestAdapter {
             // Convert obj into uri component array
             for (var objKey in obj) {
                 if (obj.hasOwnProperty(objKey)) {
-                    resultParts.push(objKey + '=' + encodeURIComponent(obj[objKey]));
+                    var encoded = encodeURIComponent(obj[objKey]).replace(/'/g,"%27").replace(/"/g,"%22");
+                    resultParts.push(objKey + '=' + encoded);
                 }
             }
         }

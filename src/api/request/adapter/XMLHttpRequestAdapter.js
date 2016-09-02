@@ -87,7 +87,9 @@ class XMLHttpRequestAdapter extends AbstractRequestAdapter {
 
             try {
                 XHR.open(method, url);
-                XHR.setRequestHeader("Content-Type", "application/json");
+                if (method.toUpperCase() != 'GET') {
+                    XHR.setRequestHeader("Content-Type", "application/json");
+                }
                 if (AuthService.oauthSession){
                     //TODO Add auto-refresh auth token
                     XHR.setRequestHeader("Authorization", AuthService.oauthSession.toHeaderString());
