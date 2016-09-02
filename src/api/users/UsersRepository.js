@@ -1,5 +1,6 @@
 import APIService from '../request/APIService';
 import UserEntityResponse from './UserEntityResponse';
+import GraphQL from 'graphql-query-builder';
 
 /**
  * A repository for accessing Player Users
@@ -31,13 +32,25 @@ class UsersRepository {
 
         return new Promise((resolve, reject)=>{
             try {
-                var promise = APIService.get('api/v1/users/' + id, null);
+                var query = new GraphQL('user', {
+                    id: String(id)
+                }).find(
+                    'id', 'account_type', 'slug', 'short_description', 'username', 'avatar',
+                    'is_following', 'is_followed', 'is_online', 'is_blocked', 'can_message'
+                ).setAlias('result');
+
+                var queryString = "query{"+query.toString()+"}";
+
+                // TODO Switch to GET if we enable JSONP, or add a new method type.
+                var promise = APIService.post('api/graphql', {query: queryString});
+
             }catch(e){
                 reject(e);
                 return;
             }
 
             promise.then((rawResponse)=>{
+                console.log("UsersRepository", rawResponse);
                 var userResponse = new UserEntityResponse(rawResponse);
                 if (userResponse.success){
                     resolve(userResponse);

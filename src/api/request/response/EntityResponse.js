@@ -23,6 +23,9 @@ class EntityResponse extends AbstractResponse {
         if (typeof modelClass !== 'function'){
             throw new ReferenceError('Invalid modelClass defined by '+this.className);
         }
+        if (!rawResponse.body || !rawResponse.body.data || !rawResponse.body.data.result){
+            throw new EvalError('No result passed to '+this.className);
+        }
 
         /**
          * The class used to construct the result
@@ -33,7 +36,7 @@ class EntityResponse extends AbstractResponse {
         /**
          * The result object, instantiated with it's model class
          */
-        this._result = new modelClass(rawResponse.results);
+        this._result = new modelClass(rawResponse.body.data.result);
     }
 
     /**
@@ -43,7 +46,7 @@ class EntityResponse extends AbstractResponse {
      */
     get success(){
         if (this.statusCode < 200 || this.statusCode >= 300) return false;
-        return this.raw.body && this.raw.body.success;
+        return Boolean(this.raw.body && this.raw.body.data);
     }
 
     /**
