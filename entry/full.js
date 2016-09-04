@@ -5,16 +5,7 @@
 // <editor-fold desc="Models">
 
 var models = {
-    UserModel:          require('../src/models/user/UserModel').default,
-    UserExtendedModel:  require('../src/models/user/UserExtendedModel').default,
-
-    CommentModel:       require('../src/models/activity/comment/CommentModel').default,
-    ActivityModel:      require('../src/models/activity/ActivityModel').default,
-
-    GameModel:          require('../src/models/game/GameModel').default,
-    GameExtendedModel:  require('../src/models/game/GameExtendedModel').default,
-
-    NotificationModel:  require('../src/models/notification/NotificationModel').default
+    // TODO Add GraphQL models
 };
 
 // </editor-fold>

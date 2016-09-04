@@ -1,5 +1,5 @@
 import CollectionResponse from '../request/response/CollectionResponse';
-import UserExtendedModel from '../../models/user/UserExtendedModel';
+import UserExtendedModel from '../../models/account/user/UserExtendedModel';
 
 /**
  * Response containing a collection of users
