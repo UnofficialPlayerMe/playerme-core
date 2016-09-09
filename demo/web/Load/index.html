@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unofficial PlayerMe Core</title>
+
+    <script src="../../../dist/web/playerme-core.js"></script>
+    <script src="../../helpers/logLibrary.js"></script>
+
+    <script>
+        window.onload = function() {
+            logLibrary('PlayerMe', PlayerMe);
+
+            var QueryGroup = PlayerMe.GraphQL.QueryGroup;
+            var RootQuery = PlayerMe.GraphQL.RootQuery;
+            var QueryFragment = PlayerMe.GraphQL.QueryFragment;
+            var QuerySelection = PlayerMe.GraphQL.QuerySelection;
+
+            /*
+            var userQuery = RootQuery.user('me').as('self');
+            userQuery.get(
+                new QueryFragment("fragment"),
+                "string",
+                new QuerySelection("selection", {foo:'bar'}, ["baz"], 'alias')
+            );
+            var queryGroup = new QueryGroup(userQuery);
+            */
+
+
+            var userQuery = RootQuery.user('me').as('self');
+            userQuery.get(
+                new QueryFragment("id", null, "ID"),
+                "slug",
+                new QueryFragment("badges", ['title']),
+                new QuerySelection("avatar", {width:100, height:100}, null, 'pic')
+            );
+            var queryGroup = new QueryGroup(userQuery);
+
+            logLibrary(queryGroup, queryGroup.toQueryString());
+
+            /*
+             {
+                 self:user(id:"me"){
+                     badges{
+                        title
+                     }
+                 }
+             }
+             */
+        };
+    </script>
+</head>
+<body>
+
+<h1>Demo: Load</h1>
+<p>Just load the library. You can access it from the browser console too.</p>
+
+</body>
+</html>
