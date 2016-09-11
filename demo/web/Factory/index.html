@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unofficial PlayerMe Core</title>
+
+    <script src="../../../dist/web/playerme-core.js"></script>
+    <script src="../../helpers/logLibrary.js"></script>
+
+    <style>
+        #text_area {
+            resize:both;
+        }
+        div.factory{
+            margin-left: 20px;
+        }
+    </style>
+
+    <script>
+        window.onload = function() {
+            logLibrary('PlayerMe', PlayerMe);
+
+            var Factories = PlayerMe.Factories;
+            var factoriesDiv = document.getElementById('factories');
+            for (var key in Factories) addFactory(Factories[key].name, factoriesDiv);
+            factoriesDiv.firstChild.firstChild.checked = true;
+
+            document.getElementById('text_area').value = JSON.stringify({
+                username: "Sample",
+                short_description: "A sample Account",
+                id: 123,
+                account_type: "user",
+                avatars:[
+                    {id:123, filename:{original:"original_url"}}
+                ]
+            }, null, 2);
+        };
+        function addFactory(factory, parent){
+            var div   = document.createElement('div');
+            var input = document.createElement('input');
+            var text  = document.createTextNode(factory);
+
+            div.setAttribute('class',  "factory");
+            input.setAttribute('type',  "radio");
+            input.setAttribute('name',  "factory_radio");
+            input.setAttribute('value', factory);
+
+            div.appendChild(input);
+            div.appendChild(text);
+            parent.appendChild(div);
+        }
+        function processInput(){
+            var text = document.getElementById('text_area').value;
+            var radios = document.getElementsByName('factory_radio');
+            var factory = '';
+            var obj = null;
+
+            for (var i=0; i < radios.length; i++){
+                var radio = radios[i];
+                if (radio.checked){
+                    factory = radio.value;
+                    break;
+                }
+            }
+
+            if (!text){
+                return alert("No JSON input");
+            }
+            try {
+                obj = JSON.parse(text);
+            }catch(e){
+                return alert("Failed to parse input:\n"+e.message);
+            }
+            if (!factory){
+                return alert("No factory selected");
+            }
+            if (!PlayerMe.Factories.hasOwnProperty(factory)){
+                return alert("Cannot find factory: "+factory);
+            }
+
+            process(new PlayerMe.Factories[factory], obj);
+        }
+        function process(factory, obj){
+            try{
+                var model = factory.buildFromResponse(obj);
+                console.log(model);
+            }catch(e){
+                alert("Failed to build:\n"+e.message);
+            }
+        }
+    </script>
+</head>
+<body>
+
+<h1>Demo: Factory</h1>
+<p>
+    Select the factory to use, enter a valid JSON description of your model and then click 'Process'.<br />
+    The result will appear in the browser's console log.
+</p>
+
+<h3>Factories</h3>
+<div id="factories"></div>
+
+<h3>JSON</h3>
+<textarea id="text_area"
+          autofocus spellcheck="false"
+          placeholder="Model JSON to convert"
+          rows="20" cols="80"
+></textarea>
+<br />
+<button onclick="processInput()">Process</button>
+
+</body>

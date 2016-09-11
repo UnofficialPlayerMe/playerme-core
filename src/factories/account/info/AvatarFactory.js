@@ -19,7 +19,7 @@ const Fields = [
  * A model representing a Player.me Account.
  * @memberOf module:models/account
  */
-class AccountFactory extends Factory {
+class AvatarFactory extends Factory {
 
     /** @inheritDoc */
     getFields(){
@@ -45,4 +45,4 @@ class AccountFactory extends Factory {
     }
 }
 
-export default AccountFactory;
+export default AvatarFactory;

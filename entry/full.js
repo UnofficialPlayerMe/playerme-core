@@ -32,7 +32,9 @@ module.exports = {
     // API: api,
     // RealTime: realtime
     Factories: {
-        AccountFactory: require('../src/factories/account/AccountFactory').default
+        AccountFactory: require('../src/factories/account/AccountFactory').default,
+        AvatarFactory: require('../src/factories/account/info/AvatarFactory').default,
+        ImageDataFactory: require('../src/factories/image/ImageDataFactory').default
     },
     GraphQL: {
         RootQuery:                  require('../src/graphql/RootQuery').default,
