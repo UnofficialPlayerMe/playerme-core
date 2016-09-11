@@ -6,6 +6,7 @@ import Model from '../../Model';
 class Avatar extends Model {
     constructor()
     {
+        super();
         //TODO
     }
 }

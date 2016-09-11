@@ -31,6 +31,9 @@ module.exports = {
     // Model: models,
     // API: api,
     // RealTime: realtime
+    Factories: {
+        AccountFactory: require('../src/factories/account/AccountFactory').default
+    },
     GraphQL: {
         RootQuery:                  require('../src/graphql/RootQuery').default,
         QueryGroup:                 require('../src/graphql/QueryGroup').default,

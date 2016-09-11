@@ -6,6 +6,7 @@ import Model from '../Model';
 class ImageData extends Model {
     constructor()
     {
+        super();
         //TODO
     }
 }

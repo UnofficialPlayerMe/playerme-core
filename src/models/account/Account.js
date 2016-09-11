@@ -7,6 +7,8 @@ import Model from '../Model';
 class Account extends Model {
     constructor()
     {
+        super();
+
         /**
          *
          * @type {module:models.ID}
@@ -138,12 +140,6 @@ class Account extends Model {
          * @type {boolean}
          */
         this.is_following = undefined;
-
-        /**
-         *
-         * @type {boolean}
-         */
-        this.is_followed = undefined;
 
         /**
          *
