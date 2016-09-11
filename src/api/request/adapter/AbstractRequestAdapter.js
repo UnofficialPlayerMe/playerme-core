@@ -91,39 +91,40 @@ class AbstractRequestAdapter {
         if (typeof url !== 'string'){
             throw new TypeError('URL passed to addToQueryString() is not a string ('+typeof url+').');
         }
+        if (!obj){
+            return url;
+        }
         if (typeof obj !== 'object'){
             throw new TypeError('obj passed to addToQueryString() is not an object ('+typeof url+').');
         }
 
         var resultParts = [];
-        if (obj !== null) {
 
-            // Remove URL's query string and add to obj
-            var urlParts = url.split('?', 2);
-            if (urlParts.length > 1) {
-                url = urlParts[0]; // Remove query string from URL
+        // Remove URL's query string and add to obj
+        var urlParts = url.split('?', 2);
+        if (urlParts.length > 1) {
+            url = urlParts[0]; // Remove query string from URL
 
-                // For each part of the query string...
-                var queryStringArr = urlParts[1].split('&');
-                var queryStringLength = queryStringArr.length;
+            // For each part of the query string...
+            var queryStringArr = urlParts[1].split('&');
+            var queryStringLength = queryStringArr.length;
 
-                for (var i = 0; i < queryStringLength; i++) {
-                    var queryStringItem = queryStringArr[i].split('=', 2);
-                    var queryStringKey = queryStringItem[0];
+            for (var i = 0; i < queryStringLength; i++) {
+                var queryStringItem = queryStringArr[i].split('=', 2);
+                var queryStringKey = queryStringItem[0];
 
-                    // If this should override obj, or it doesn't exist on obj, then add it
-                    if (keepExisting || !obj.hasOwnProperty(queryStringKey)) {
-                        obj[queryStringKey] = queryStringItem[1];
-                    }
+                // If this should override obj, or it doesn't exist on obj, then add it
+                if (keepExisting || !obj.hasOwnProperty(queryStringKey)) {
+                    obj[queryStringKey] = queryStringItem[1];
                 }
             }
+        }
 
-            // Convert obj into uri component array
-            for (var objKey in obj) {
-                if (obj.hasOwnProperty(objKey)) {
-                    var encoded = encodeURIComponent(obj[objKey]).replace(/'/g,"%27").replace(/"/g,"%22");
-                    resultParts.push(objKey + '=' + encoded);
-                }
+        // Convert obj into uri component array
+        for (var objKey in obj) {
+            if (obj.hasOwnProperty(objKey)) {
+                var encoded = encodeURIComponent(obj[objKey]).replace(/'/g,"%27").replace(/"/g,"%22");
+                resultParts.push(objKey + '=' + encoded);
             }
         }
 
