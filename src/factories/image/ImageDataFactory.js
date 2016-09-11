@@ -3,8 +3,9 @@ import FactoryField from '../FactoryField';
 import ImageData from '../../models/image/ImageData';
 
 const Fields = [
-    //TODO
-    // new FactoryField('id'),
+    new FactoryField('original'),
+    new FactoryField('cached'),
+    new FactoryField('original_filename'),
 ];
 
 /**
@@ -19,14 +20,21 @@ class ImageDataFactory extends Factory {
     }
 
     /**
-     * Build
+     * Build a single model from the passed object
      * @param obj
-     * @return module:models/account.Account
+     * @return module:models/image.ImageData
      */
     buildFromResponse(obj){
-        return this.copyRemoteToLocal(
-            obj, new ImageData(), Fields
-        );
+        return super.buildFromResponse(obj, ImageData);
+    }
+
+    /**
+     * Build multiple models from an array of objects
+     * @param {object[]} arr
+     * @return {module:models/image.ImageData}
+     */
+    buildMultipleFromResponse(arr){
+        return super.buildMultipleFromResponse(arr, ImageData);
     }
 }
 

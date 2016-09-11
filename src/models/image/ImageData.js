@@ -7,7 +7,24 @@ class ImageData extends Model {
     constructor()
     {
         super();
-        //TODO
+
+        /**
+         *
+         * @type {string}
+         */
+        this.original = undefined;
+
+        /**
+         *
+         * @type {string}
+         */
+        this.cached = undefined;
+
+        /**
+         *
+         * @type {string}
+         */
+        this.original_filename = undefined;
     }
 }
 

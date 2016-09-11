@@ -55,14 +55,21 @@ class AccountFactory extends Factory {
     }
 
     /**
-     * Build
+     * Build a single model from the passed object
      * @param obj
      * @return module:models/account.Account
      */
     buildFromResponse(obj){
-        return this.copyRemoteToLocal(
-            obj, new Account(), Fields
-        );
+        return super.buildFromResponse(obj, Account);
+    }
+
+    /**
+     * Build multiple models from an array of objects
+     * @param {object[]} arr
+     * @return {module:models/account.Account}
+     */
+    buildMultipleFromResponse(arr){
+        return super.buildMultipleFromResponse(arr, Account);
     }
 }
 

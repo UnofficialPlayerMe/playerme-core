@@ -8,7 +8,7 @@ class Factory {
      * @param {object} source
      * @param {object} target
      * @param {module:factories.FactoryField[]} fields
-     * @returns {object} Updated target
+     * @returns {*} Updated target
      */
     copyRemoteToLocal(source, target, fields){
         for (var i=0; i < fields.length; i++){
@@ -33,12 +33,30 @@ class Factory {
         throw new Error("getFields not implemented on "+this.constructor.name);
     }
 
-    buildFromResponse(obj){
-        throw new Error("buildFromResponse not implemented on "+this.constructor.name);
+    /**
+     * Build
+     * @param {object} obj
+     * @param {function} modelConstructor
+     * @return {*} A new instance of modelConstructor
+     */
+    buildFromResponse(obj, modelConstructor){
+        return this.copyRemoteToLocal(
+            obj, new modelConstructor, this.getFields()
+        );
     }
 
-    buildMultipleFromResponse(obj){
-        throw new Error("buildMultipleFromResponse not implemented on "+this.constructor.name);
+    /**
+     * Build multiple
+     * @param {object[]} arr
+     * @param {function} modelConstructor
+     * @return {Array} New instances of modelConstructor
+     */
+    buildMultipleFromResponse(arr, modelConstructor){
+        var result = [];
+        for (var key in arr){
+            result.push(this.buildFromResponse(arr[key], modelConstructor));
+        }
+        return result;
     }
 }
 
