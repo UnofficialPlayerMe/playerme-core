@@ -14,6 +14,10 @@
         div.factory{
             margin-left: 20px;
         }
+        #examples pre {
+            background-color: #AADDFF;
+            padding: 3px;
+        }
     </style>
 
     <script>
@@ -25,16 +29,25 @@
             for (var key in Factories) addFactory(Factories[key].name, factoriesDiv);
             factoriesDiv.firstChild.firstChild.checked = true;
 
-            document.getElementById('text_area').value = JSON.stringify({
+            addExample("AccountFactory", {
                 username: "Sample",
                 short_description: "A sample Account",
                 id: 123,
                 account_type: "user",
-                avatars:[
-                    {id:123, filename:{original:"original_url"}}
-                ]
-            }, null, 2);
+                avatars: [ { id: 123, filename: { original: "original_url" } } ]
+            });
         };
+
+        function addExample(factoryName, obj){
+            var examples = document.getElementById('examples');
+            var text = JSON.stringify(obj, null, 2);
+            var pre = document.createElement('pre');
+
+            pre.appendChild(document.createTextNode(text));
+            examples.appendChild(document.createTextNode(factoryName));
+            examples.appendChild(pre);
+        }
+
         function addFactory(factory, parent){
             var div   = document.createElement('div');
             var input = document.createElement('input');
@@ -49,6 +62,7 @@
             div.appendChild(text);
             parent.appendChild(div);
         }
+
         function processInput(){
             var text = document.getElementById('text_area').value;
             var radios = document.getElementsByName('factory_radio');
@@ -109,5 +123,8 @@
 ></textarea>
 <br />
 <button onclick="processInput()">Process</button>
+
+<h3>Examples</h3>
+<div id="examples"></div>
 
 </body>
