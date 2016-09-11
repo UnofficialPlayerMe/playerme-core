@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unofficial PlayerMe Core</title>
+
+    <script src="../../../dist/web/playerme-core.js"></script>
+    <script src="../../helpers/logLibrary.js"></script>
+
+    <style>
+        #examples pre {
+            background-color: #AADDFF;
+            padding: 3px;
+        }
+    </style>
+
+    <script>
+        window.onload = function() {
+            logLibrary('PlayerMe', PlayerMe);
+        };
+
+        function getRequestURL(){
+            return PlayerMe.API.APIService.baseUrl + "/api/graphql";
+        }
+        function getRequestBody(){
+            var text = document.getElementById('text_area').value;
+            return {
+                query: text
+            };
+        }
+
+        function sendGet(){
+            var requestBody = getRequestBody();
+            console.log("GET", requestBody);
+
+            PlayerMe.API.APIService.get(
+                getRequestURL(),
+                getRequestBody()
+            ).then(console.log, console.error);
+        }
+        function sendPost(){
+            var requestBody = getRequestBody();
+            console.log("POST", requestBody);
+
+            PlayerMe.API.APIService.post(
+                getRequestURL(),
+                requestBody
+            ).then(console.log, console.error);
+        }
+    </script>
+</head>
+<body>
+
+<h1>Demo: GraphQL</h1>
+<p>
+    Enter a GraphQL query in the text field and click Submit.<br />
+    Response will be in the browser's console logs.
+</p>
+
+<textarea id="text_area"
+          autofocus spellcheck="false"
+          placeholder="Your GraphQL"
+          rows="20" cols="80"
+></textarea>
+<br />
+<button onclick="sendGet()">Submit GET</button>
+<button onclick="sendPost()">Submit POST</button>
+
+<h3>Examples</h3>
+<div id="examples">
+
+<pre>{
+    me {
+        id,
+        username
+    }
+}</pre>
+<pre>{
+    game(id:1){
+        title,
+        description
+    }
+}</pre>
+
+</div>
+</body>

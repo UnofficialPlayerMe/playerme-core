@@ -14,8 +14,8 @@ var models = {
 var api = {
     // AuthService:        require('../src/api/auth/AuthService').default,
     // UsersRepository:    require('../src/api/users/UsersRepository').default,
-    // APIService:         require('../src/api/request/APIService').default,
-    // adapters: {}
+    APIService:         require('../src/api/request/APIService').default,
+    adapters: {}
 };
 
 // </editor-fold>
@@ -29,7 +29,7 @@ var api = {
 
 module.exports = {
     // Model: models,
-    // API: api,
+    API: api,
     // RealTime: realtime
     Factories: {
         AccountFactory: require('../src/factories/account/AccountFactory').default,
