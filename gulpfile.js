@@ -1,14 +1,15 @@
 // <editor-fold desc="Dependencies">
 
-var gulp  = require('gulp');
-var path  = require('path');
-var argv  = require('yargs').argv;
+var gulp = require('gulp');
+var path = require('path');
+var argv = require('yargs').argv;
 
 var webpackStream = require('webpack-stream');
 var openBrowser   = require('gulp-open');
 
 var Env           = require('./gulp/Env');
 var Log           = require('./gulp/Log');
+var Notify        = require('./gulp/Notify');
 var WebpackConfig = require('./gulp/WebpackConfig');
 
 // </editor-fold> Dependencies
@@ -60,6 +61,8 @@ gulp.task('build:web', function(){
         )
     ).pipe(
         gulp.dest('dist/web')
+    ).pipe(
+        Notify.stream("Finished", "Build Web")
     );
 });
 
@@ -73,6 +76,8 @@ gulp.task('build:node', function(){
         )
     ).pipe(
         gulp.dest('dist/node')
+    ).pipe(
+        Notify.stream("Finished", "Build Node")
     );
 });
 
@@ -102,6 +107,8 @@ gulp.task('build:custom:web', function(){
         )
     ).pipe(
         gulp.dest('dist/web')
+    ).pipe(
+        Notify.stream("Finished", "Build Web Custom")
     );
 });
 
@@ -131,6 +138,8 @@ gulp.task('build:custom:node', function(){
         )
     ).pipe(
         gulp.dest('dist/web')
+    ).pipe(
+        Notify.stream("Finished", "Build Node Custom")
     );
 });
 
