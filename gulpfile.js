@@ -77,6 +77,50 @@ gulp.task('build:node', function(){
 });
 
 /**
+ * Pass a custom entry point to webpack with custom output settings
+ * Takes an entry flag and an output flag
+ * @example gulp build:custom --entry example.js --output playerme-core.example.js --libraryTarget var --target web
+ * TODO Prompt for input if required flags haven't been set
+ */
+gulp.task('build:custom', function(){
+    var entryFileName  = argv.entry         || argv.E || false;
+    var outputFileName = argv.output        || argv.O || false;
+    var target         = argv.target        || argv.T || 'web';
+    var libraryTarget  = argv.libraryTarget || argv.L || 'var';
+
+    var example = "(e.g. `" +
+        "gulp build:custom" +
+        " --entry example.js" +
+        " --output playerme-core.example.js" +
+        " --libraryTarget var" +
+        " --target web" +
+    "`)";
+
+    if (!entryFileName){
+        Log.red('Please pass an entry file name. '+example);
+        return;
+    }
+    if (!outputFileName){
+        Log.red('Please pass an output file name. '+example);
+        return;
+    }
+
+    var config = WebpackConfig.makeWeb(
+        path.resolve('./entry', entryFileName),
+        path.resolve(outputFileName)
+    );
+    config.target = target;
+    config.output.libraryTarget = libraryTarget;
+    config.output.umdNamedDefine = true;
+
+    return gulp.src('').pipe(
+        webpackStream(config)
+    ).pipe(
+        gulp.dest('./')
+    );
+});
+
+/**
  * Pass a custom entry point to webpack.
  * Takes an entry flag and an output flag
  * @example gulp build:custom --entry example.js --output playerme-core.example.js
