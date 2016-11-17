@@ -511,7 +511,6 @@ class GameCompany {
     }
 }
 
-export default GameExtendedModel;
 export {
     GameExtendedModel as default,
     GamePlatform,
